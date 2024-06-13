@@ -11,7 +11,7 @@
                 <li class="nav-item d-md-none">
                     <a class="navbar-brand" href="/dashboard">
                         <div class="avatar avatar-online avatar-50 d-block d-lg-none">
-                            <img class="brand-logo" alt="CryptoDash admin logo"
+                            <img class="brand-logo" alt="Logo"
                                 src="{{ asset('storage/logo/' . Session::get('logo')) }}" />
                         </div>
                     </a>

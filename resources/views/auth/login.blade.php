@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ $logo }}">
     <link rel="icon" type="image/png" href="{{ $logo }}">
     <title>
-        SIDBM &mdash; {{ $kec->nama_lembaga_sort }}
+        SIMAK &mdash; {{ $kec->nama_lembaga_sort }}
     </title>
     <link rel="apple-touch-icon" href="{{ $logo }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ $logo }}">

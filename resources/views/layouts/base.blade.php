@@ -9,7 +9,7 @@
         content="dbm, sidbm, sidbm.net, demo.sidbm.net, app.sidbm.net, asta brata teknologi, abt, dbm, kepmendesa 136, kepmendesa nomor 136 tahun 2022">
     <meta name="author" content="Enfii">
     <title>
-        {{ $title }} &mdash; Aplikasi Dana Bergulir Masyarakat SI DBM
+        {{ $title }} &mdash; Sistem Informasi Manajemen Keuangan
     </title>
     <link rel="apple-touch-icon" href="{{ asset('storage/logo/' . Session::get('logo')) }}">
     <link rel="shortcut icon" type="{{ asset('storage/logo/' . Session::get('logo')) }}">

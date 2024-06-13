@@ -18,8 +18,7 @@
     <div class="main-menu-content">
         <a class="navigation-brand d-none d-md-flex d-lg-flex d-xl-flex justify-content-center" href="/dashboard">
             <div class="avatar avatar-online avatar-md">
-                <img class="brand-logo" alt="CryptoDash admin logo"
-                    src="{{ asset('storage/logo/' . Session::get('logo')) }}" />
+                <img class="brand-logo" alt="Logo" src="{{ asset('storage/logo/' . Session::get('logo')) }}" />
             </div>
         </a>
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
