@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Sistem Informasi Dana Bergulir Masyarakat &mdash; Siap Audit Kapanpun Siapapun">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords"
+        content="dbm, sidbm, sidbm.net, demo.sidbm.net, app.sidbm.net, asta brata teknologi, abt, dbm, kepmendesa 136, kepmendesa nomor 136 tahun 2022">
+    <meta name="author" content="Enfii">
+    <title>
+        <?php echo e($title); ?> &mdash; Aplikasi Dana Bergulir Masyarakat SI DBM
+    </title>
+    <link rel="apple-touch-icon" href="/assets/images/ico/apple-icon-120.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/ico/favicon.ico">
+    <link
+        href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i|Comfortaa:300,400,500,700"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/vendors.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/app.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/core/menu/menu-types/vertical-compact-menu.css">
+    <link rel="stylesheet" type="text/css" href="/assets/vendors/css/cryptocoins/cryptocoins.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/pages/timeline.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/pages/dashboard-ico.css">
+
+    <style>
+        .select2-container .select2-selection--single {
+            padding: 0.5rem 0.75rem !important;
+            height: unset !important;
+        }
+
+        .modal-fullscreen {
+            width: 100vw;
+            max-width: none;
+            height: 100%;
+            margin: 0;
+        }
+
+        .main-menu {
+            z-index: 1050 !important;
+        }
+
+        .modal-dialog-scrollable .modal-body {
+            overflow-y: auto;
+        }
+
+        .modal-dialog-scrollable .modal-content {
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        .transactions-table-tbody .card .card-body {
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="vertical-layout vertical-compact-menu 2-columns   menu-expanded fixed-navbar" data-open="click"
+    data-menu="vertical-compact-menu" data-col="2-columns">
+
+    <?php echo $__env->make('layouts.navbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->make('layouts.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+    <div class="app-content content">
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+
+            <?php echo $__env->yieldContent('content'); ?>
+        </div>
+    </div>
+
+    <footer class="footer footer-static footer-transparent">
+        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
+            <span class="float-md-left d-block d-md-inline-block">
+                &copy;
+                <script>
+                    document.write(new Date().getFullYear())
+                </script>
+                <a href="https://abt.co.id" class="font-weight-bold" target="_blank">
+                    PT. Asta Brata Teknologi.
+                </a>
+            </span>
+            <span class="float-md-right d-block d-md-inline-blockd-none d-lg-block">
+                Made with <i class="fa fa-heart pink"></i>
+            </span>
+        </p>
+    </footer>
+
+    <form action="/logout" method="post" id="formLogout">
+        <?php echo csrf_field(); ?>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="/assets/vendors/js/vendors.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="/assets/vendors/js/timeline/horizontal-timeline.js" type="text/javascript"></script>
+    <script src="/assets/js/core/app-menu.js" type="text/javascript"></script>
+    <script src="/assets/js/core/app.js" type="text/javascript"></script>
+
+    <script src="/assets/js/plugins/flatpickr.min.js"></script>
+    <script src="//cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"
+        integrity="sha512-Rdk63VC+1UYzGSgd3u2iadi0joUrcwX0IWp2rTh6KXFoAmgOjRS99Vynz1lJPT8dLjvo6JZOqpAHJyfCEZ5KoA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+        integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+    <?php echo $__env->yieldContent('script'); ?>
+    <script>
+        function open_window(link) {
+            return window.open(link)
+        }
+
+        $('.select2').select2({
+            theme: 'bootstrap-5'
+        })
+
+        function Toastr(icon, text) {
+            font = "1.6rem Nimrod MT";
+
+            canvas = document.createElement("canvas");
+            context = canvas.getContext("2d");
+            context.font = font;
+            width = context.measureText(text).width;
+            formattedWidth = Math.ceil(width) + 100;
+
+            Toast.fire({
+                icon: icon,
+                title: text,
+                width: formattedWidth
+            })
+        }
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        $(document).on('click', '#logout', function(e) {
+            e.preventDefault()
+
+            Swal.fire({
+                title: 'Logout',
+                text: 'Dengan klik tombol logout maka anda tidak bisa membuka halaman ini lagi sebelum melakukan login ulang, Logout?',
+                showCancelButton: true,
+                confirmButtonText: 'Logout',
+                cancelButtonText: 'Batal',
+                icon: 'info'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#formLogout').submit()
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
+<?php /**PATH C:\laragon\www\demo\resources\views/layouts/base.blade.php ENDPATH**/ ?>
