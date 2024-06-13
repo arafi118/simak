@@ -269,8 +269,8 @@ Route::resource('/profil', UserController::class);
 
 Route::get('/sync/{lokasi}', [DashboardController::class, 'sync'])->middleware('auth');
 Route::get('/link', function () {
-    $target = '/home/dbm/public_html/simak/storage/app/public';
-    $shortcut = '/home/dbm/public_html/simak/public/storage';
+    $target = '/home/siupk/public_html/simak/storage/app/public';
+    $shortcut = '/home/siupk/public_html/simak/public/storage';
     symlink($target, $shortcut);
 });
 
