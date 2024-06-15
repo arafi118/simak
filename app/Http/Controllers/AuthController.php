@@ -26,7 +26,15 @@ class AuthController extends Controller
             return redirect('/master');
         }
 
-        $kec = Kecamatan::where('id', '1')->first();
+        $kec = Kecamatan::where('web_kec', explode('//', request()->url(''))[1])->orwhere('web_alternatif', explode('//', request()->url(''))[1])->first();
+        if (!$kec) {
+            $kab = Kabupaten::where('web_kab', explode('//', request()->url(''))[1])->orwhere('web_kab_alternatif', explode('//', request()->url(''))[1])->first();
+            if (!$kab) {
+                abort(404);
+            }
+
+            return redirect('/kab');
+        }
 
         $logo = '/assets/img/icon/favicon.png';
         if ($kec->logo) {
@@ -52,7 +60,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $kec = Kecamatan::where('id', '1')->with('kabupaten')->first();
+        $kec = Kecamatan::where('web_kec', $url)->orwhere('web_alternatif', $url)->with('kabupaten')->first();
         $lokasi = $kec->id;
 
         $icon = '/assets/img/icon/favicon.png';
