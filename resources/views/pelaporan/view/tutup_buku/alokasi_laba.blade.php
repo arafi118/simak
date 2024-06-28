@@ -2,12 +2,7 @@
     use App\Utils\Tanggal;
 
     $title_form = [
-        1 => 'Kegiatan sosial kemasyarakatan dan bantuan RTM',
-        2 => 'Pengembangan kapasitas kelompok SPP/UEP',
-        3 => 'Pelatihan masyarakat, dan kelompok pemanfaat umum',
-        4 => 'Penambahan Modal DBM',
-        5 => 'Penambahan Investasi Usaha',
-        6 => 'Pendirian Unit Usaha',
+        1 => 'Penambahan Modal Bumdes',
     ];
 
     $jumlah_laba_ditahan = $surplus;
@@ -45,98 +40,31 @@
                 <b>Alokasi Laba Usaha</b>
             </td>
         </tr>
-        @foreach ($rekening as $rek)
+        @foreach ($akun3 as $akn3)
             <tr style="background: rgb(167, 167, 167); font-weight: bold;">
-                <td colspan="2">{{ str_replace('UTANG', '', strtoupper($rek->nama_akun)) }}</td>
+                <td colspan="2">{{ $akn3->nama_akun }}</td>
             </tr>
 
-            {{-- Laba Bagian Masyarakat --}}
-            @if ($rek->kode_akun == '2.1.04.01')
-                @foreach ($saldo_calk as $saldo)
-                    @php
-                        $jumlah_laba_ditahan -= floatval($saldo->kredit);
-                    @endphp
-                    @if (substr($saldo->id, -1) <= 3)
-                        @php
-                            $jumlah += floatval($saldo->kredit);
-                            $bg = 'rgb(230, 230, 230)';
-                            if ($loop->iteration % 2 == 0) {
-                                $bg = 'rgba(255, 255, 255)';
-                            }
-                        @endphp
-                        <tr style="background: {{ $bg }}">
-                            <td>{{ $title_form[substr($saldo->id, -1)] }}</td>
-                            <td align="right">
-                                Rp. {{ number_format(floatval($saldo->kredit), 2) }}
-                            </td>
-                        </tr>
-                    @endif
-                @endforeach
-            @endif
-
-            {{-- Laba Bagian Desa --}}
-            @if ($rek->kode_akun == '2.1.04.02')
-                @foreach ($desa as $d)
-                    @php
-                        $saldo_desa = 0;
-                        if ($d->saldo) {
-                            $jumlah_laba_ditahan -= floatval($d->saldo->kredit);
-                            $jumlah += floatval($d->saldo->kredit);
-                            $saldo_desa = floatval($d->saldo->kredit);
-                        }
-                        $bg = 'rgb(230, 230, 230)';
-                        if ($loop->iteration % 2 == 0) {
-                            $bg = 'rgb(255, 255, 255)';
-                        }
-                    @endphp
-                    <tr style="background: {{ $bg }}">
-                        <td>
-                            Bagian {{ $d->sebutan_desa->sebutan_desa }}
-                            {{ $d->nama_desa }}
-                        </td>
-                        <td align="right">
-                            Rp. {{ number_format($saldo_desa, 2) }}
-                        </td>
-                    </tr>
-                @endforeach
-            @endif
-
-            {{-- Laba Bagian Penyerta Modal --}}
-            @if ($rek->kode_akun == '2.1.04.03')
+            @foreach ($akn3->rek as $rek)
                 @php
-                    $jumlah += $jumlah_laba_ditahan;
+                    $saldo = 0;
+                    if ($rek->saldo) {
+                        $saldo = $rek->saldo->kredit - $rek->saldo->debit;
+                    }
+                    $jumlah += floatval($saldo);
+
                     $bg = 'rgb(230, 230, 230)';
                     if ($loop->iteration % 2 == 0) {
-                        $bg = 'rgb(255, 255, 255)';
+                        $bg = 'rgba(255, 255, 255)';
                     }
                 @endphp
                 <tr style="background: {{ $bg }}">
-                    <td>
-                        {{ str_replace('Utang', '', $rek->nama_akun) }}
-                    </td>
+                    <td>{{ $rek->nama_akun }}</td>
                     <td align="right">
-                        Rp. {{ number_format($jumlah_laba_ditahan, 2) }}
+                        Rp. {{ number_format(floatval($saldo), 2) }}
                     </td>
                 </tr>
-            @endif
-
-            <tr style="background: rgb(150, 150, 150); font-weight: bold;">
-                <td height="15">
-                    <b>Jumlah</b>
-                </td>
-                <td align="right">
-                    <b>Rp. {{ number_format($jumlah, 2) }}</b>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2" height="2"></td>
-            </tr>
-
-            @php
-                $total += $jumlah;
-                $jumlah = 0;
-            @endphp
+            @endforeach
         @endforeach
 
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
@@ -144,22 +72,20 @@
         </tr>
 
         @foreach ($saldo_calk as $saldo)
-            @if (substr($saldo->id, -1) > 3)
-                @php
-                    $jumlah += floatval($saldo->kredit);
-                    $total += floatval($saldo->kredit);
-                    $bg = 'rgb(230, 230, 230)';
-                    if ($loop->iteration % 2 == 0) {
-                        $bg = 'rgb(255, 255, 255)';
-                    }
-                @endphp
-                <tr style="background: {{ $bg }}">
-                    <td>{{ $title_form[substr($saldo->id, -1)] }}</td>
-                    <td align="right">
-                        Rp. {{ number_format(floatval($saldo->kredit), 2) }}
-                    </td>
-                </tr>
-            @endif
+            @php
+                $jumlah += floatval($saldo->kredit);
+                $total += floatval($saldo->kredit);
+                $bg = 'rgb(230, 230, 230)';
+                if ($loop->iteration % 2 == 0) {
+                    $bg = 'rgb(255, 255, 255)';
+                }
+            @endphp
+            <tr style="background: {{ $bg }}">
+                <td>{{ $title_form[substr($saldo->id, -1)] }}</td>
+                <td align="right">
+                    Rp. {{ number_format(floatval($saldo->kredit), 2) }}
+                </td>
+            </tr>
         @endforeach
 
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">

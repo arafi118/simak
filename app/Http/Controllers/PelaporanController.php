@@ -1999,9 +1999,13 @@ class PelaporanController extends Controller
 
         $data['tahun_tb'] = $thn;
         $data['surplus'] = $keuangan->laba_rugi(($data['tahun'] - 1) . '-13-00');
-        $data['rekening'] = Rekening::where('kode_akun', 'like', '2.1.04%')->with([
-            'saldo' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun_tb']);
+        $data['akun3'] = AkunLevel3::where('kode_akun', 'LIKE', '2.1.01.%')->with([
+            'rek',
+            'rek.saldo' => function ($query) use ($data) {
+                $query->where([
+                    ['tahun', $data['tahun_tb']],
+                    ['bulan', '0']
+                ]);
             }
         ])->get();
         $data['desa'] = Desa::where('kd_kec', $data['kec']->kd_kec)->with([
