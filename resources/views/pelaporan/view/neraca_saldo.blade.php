@@ -58,9 +58,9 @@
             @endphp
 
             <tr>
-                <th class="t l b" align="left" style="padding: 2px 4px;">
+                <td class="t l b" align="left" style="padding: 2px 4px;">
                     {{ $rek->kode_akun . '. ' . $rek->nama_akun }}
-                </th>
+                </td>
                 <td class="t l b" align="right">
                     @if ($debit < 0)
                         ({{ number_format($debit * -1, 2) }})
