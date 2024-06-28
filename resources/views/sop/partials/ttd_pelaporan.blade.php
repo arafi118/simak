@@ -23,8 +23,9 @@
                     </span>
                 </small>
             @endif
-            <div class="d-flex justify-content-end mt-3">
-                <button type="button" id="simpanTtdPelaporan" class="btn btn-github btn-sm ms-2">
+
+            <div class="d-flex justify-content-end mt-1">
+                <button type="button" id="simpanTtdPelaporan" class="btn btn-warning btn-sm ms-2">
                     Simpan Perubahan
                 </button>
             </div>

@@ -25,6 +25,7 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="/assets/css/vendors.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/app.css">
@@ -61,6 +62,10 @@
 
         .transactions-table-tbody .card .card-body {
             padding: 0.5rem;
+        }
+
+        .tox-promotion {
+            display: none;
         }
     </style>
 </head>
@@ -108,8 +113,9 @@
     <script src="/assets/js/core/app-menu.js" type="text/javascript"></script>
     <script src="/assets/js/core/app.js" type="text/javascript"></script>
 
+    <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="/assets/js/plugins/flatpickr.min.js"></script>
-    <script src="//cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"
         integrity="sha512-Rdk63VC+1UYzGSgd3u2iadi0joUrcwX0IWp2rTh6KXFoAmgOjRS99Vynz1lJPT8dLjvo6JZOqpAHJyfCEZ5KoA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -174,6 +180,15 @@
                 }
             })
         })
+
+        tinymce.init({
+            selector: '.tiny-mce-editor',
+            plugins: 'table visualblocks fullscreen',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align | table fullscreen | removeformat',
+            font_family_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace;',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'ARAFII'
+        });
     </script>
 </body>
 

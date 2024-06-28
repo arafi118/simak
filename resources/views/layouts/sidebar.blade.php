@@ -40,6 +40,9 @@
                     <li>
                         <a class="menu-item" href="/pengaturan/coa">Cart Of Account</a>
                     </li>
+                    <li>
+                        <a class="menu-item" href="/pengaturan/ttd_pelaporan">Tanda Tangan</a>
+                    </li>
                 </ul>
             </li>
             <li class="{{ active('/jurnal_umum') }} nav-item">

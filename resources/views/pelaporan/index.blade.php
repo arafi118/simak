@@ -66,9 +66,9 @@
 
                 <div class="row">
                     <div id="namaLaporan" class="col-md-6">
-                        <div class="form-group">
+                        <div class="form-group w-100">
                             <label class="form-label" for="laporan">Nama Laporan</label>
-                            <select class="form-control select2" name="laporan" id="laporan">
+                            <select class="form-control select2 w-100" name="laporan" id="laporan">
                                 <option value="">---</option>
                                 @foreach ($laporan as $lap)
                                     <option value="{{ $lap->file }}">
@@ -81,9 +81,9 @@
                         </div>
                     </div>
                     <div class="col-md-6" id="subLaporan">
-                        <div class="form-group">
+                        <div class="form-group  w-100">
                             <label class="form-label" for="sub_laporan">Nama Sub Laporan</label>
-                            <select class="form-control select2" name="sub_laporan" id="sub_laporan">
+                            <select class="form-control select2 w-100" name="sub_laporan" id="sub_laporan">
                                 <option value="">---</option>
                             </select>
                             <small class="text-danger" id="msg_sub_laporan"></small>
@@ -141,14 +141,11 @@
                 $('#subLaporan').addClass('col-md-6')
             }
 
+            $('#subLaporan').html('')
             $.get('/pelaporan/sub_laporan/' + file + '?tahun=' + tahun + '&bulan=' + bulan, function(result) {
                 $('#subLaporan').html(result)
             })
         }
-
-        var quill = new Quill('#editor', {
-            theme: 'snow'
-        });
 
         $(document).on('click', '#Preview', async function(e) {
             e.preventDefault()

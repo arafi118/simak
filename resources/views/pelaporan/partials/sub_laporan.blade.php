@@ -9,7 +9,7 @@
         <small class="text-danger" id="msg_sub_laporan"></small>
     </div>
 @elseif ($file == 'calk')
-    <div class="my-3">
+    <div class="w-100">
         <div id="editor">
             <ol>
                 {!! $keterangan !!}
