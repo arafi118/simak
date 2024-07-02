@@ -24,6 +24,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="tab-pane fade" id="upload-logo" role="tabpanel" aria-labelledby="upload-logo-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Upload Logo</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            @include('sop.partials._logo')
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-2 col-12 order-1">
@@ -32,6 +42,8 @@
                     aria-controls="lembaga" aria-selected="true">Identitas Lembaga</a>
                 <a class="nav-link" id="pengelola-tab" data-toggle="pill" href="#pengelola" role="tab"
                     aria-controls="pengelola" aria-selected="false">Sebutan Pengelola</a>
+                <a class="nav-link" id="upload-logo-tab" data-toggle="pill" href="#upload-logo" role="tab"
+                    aria-controls="logo" aria-selected="false">Logo</a>
             </div>
         </div>
     </div>
@@ -85,10 +97,10 @@
         $(document).on('click', '#EditLogo', function(e) {
             e.preventDefault()
 
-            $('#logo_kec').trigger('click')
+            $('#logo').trigger('click')
         })
 
-        $(document).on('change', '#logo_kec', function(e) {
+        $(document).on('change', '#logo', function(e) {
             e.preventDefault()
 
             var logo = $(this).get(0).files[0]
@@ -108,8 +120,7 @@
 
                             reader.onload = function() {
                                 $("#previewLogo").attr("src", reader.result);
-                                $(".colored-shadow").css('background-image',
-                                    "url(" + reader.result + ")")
+                                $(".brand-logo").attr("src", reader.result);
                             }
 
                             reader.readAsDataURL(logo);

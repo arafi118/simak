@@ -220,29 +220,29 @@ class SopController extends Controller
         ]);
     }
 
-    public function logo(Request $request, Kecamatan $kec)
+    public function logo(Request $request, Kecamatan $usaha)
     {
         $data = $request->only([
-            'logo_kec'
+            'logo'
         ]);
 
         $validate = Validator::make($data, [
-            'logo_kec' => 'required|image|mimes:jpg,png,jpeg|max:4096'
+            'logo' => 'required|image|mimes:jpg,png,jpeg|max:4096'
         ]);
 
-        if ($request->file('logo_kec')->isValid()) {
-            $extension = $request->file('logo_kec')->getClientOriginalExtension();
+        if ($request->file('logo')->isValid()) {
+            $extension = $request->file('logo')->getClientOriginalExtension();
 
-            $filename = time() . '_' . $kec->id . '_' . date('Ymd') . '.' . $extension;
-            $path = $request->file('logo_kec')->storeAs('logo', $filename, 'public');
+            $filename = time() . '_' . $usaha->id . '_' . date('Ymd') . '.' . $extension;
+            $path = $request->file('logo')->storeAs('logo', $filename, 'public');
 
-            if (Storage::exists('logo/' . $kec->logo)) {
-                if ($kec->logo != '1.png') {
-                    Storage::delete('logo/' . $kec->logo);
+            if (Storage::exists('logo/' . $usaha->logo)) {
+                if ($usaha->logo != 'simak.png') {
+                    Storage::delete('logo/' . $usaha->logo);
                 }
             }
 
-            $kecamatan = Kecamatan::where('id', $kec->id)->update([
+            $u = Usaha::where('id', $usaha->id)->update([
                 'logo' => str_replace('logo/', '', $path)
             ]);
 
