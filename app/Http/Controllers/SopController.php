@@ -310,7 +310,7 @@ class SopController extends Controller
     public function ttdPelaporan()
     {
         $title = "Pengaturan Tanda Tangan Pelaporan";
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('ttd')->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with('ttd')->first();
         $ttd = TandaTanganLaporan::where([['lokasi', Session::get('lokasi')]])->first();
 
         $tanggal = false;
@@ -322,7 +322,7 @@ class SopController extends Controller
             }
         }
 
-        return view('sop.partials.ttd_pelaporan')->with(compact('title', 'kec', 'tanggal'));
+        return view('sop.partials.ttd_pelaporan')->with(compact('title', 'usaha', 'tanggal'));
     }
 
     public function ttdSpk()
