@@ -13,6 +13,7 @@
     </title>
     <link rel="apple-touch-icon" href="{{ asset('storage/logo/' . Session::get('logo')) }}">
     <link rel="shortcut icon" type="{{ asset('storage/logo/' . Session::get('logo')) }}">
+    <link rel="icon" type="{{ asset('storage/logo/' . Session::get('logo')) }}">
     <link
         href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i|Comfortaa:300,400,500,700"
         rel="stylesheet">
