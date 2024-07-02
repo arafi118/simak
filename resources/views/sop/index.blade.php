@@ -67,10 +67,6 @@
                 success: function(result) {
                     if (result.success) {
                         Toastr('success', result.msg)
-
-                        if (result.nama_lembaga) {
-                            $('#nama_lembaga_sort').html(result.nama_lembaga)
-                        }
                     }
                 },
                 error: function(result) {

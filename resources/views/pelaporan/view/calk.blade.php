@@ -3,8 +3,7 @@
     $keuangan = new Keuangan();
 
     $saldo_aset = 0;
-    $calk = json_decode($kec->calk, true);
-    $peraturan_desa = $calk['peraturan_desa'];
+    $peraturan_desa = $usaha->peraturan_desa;
 
     $calk = [
         '0' => [

@@ -97,7 +97,7 @@
                                 <label class="form-label" for="tahun">Tahunan</label>
                                 <select class="form-control select2" name="tahun" id="tahun">
                                     @php
-                                        $tgl_pakai = $kec->tgl_pakai;
+                                        $tgl_pakai = $usaha->tgl_pakai;
                                         $th_pakai = explode('-', $tgl_pakai)[0];
                                     @endphp
                                     @for ($i = $th_pakai; $i <= date('Y'); $i++)

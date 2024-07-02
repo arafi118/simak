@@ -16,6 +16,7 @@ use App\Models\Rekening;
 use App\Models\RencanaAngsuran;
 use App\Models\Saldo;
 use App\Models\Transaksi;
+use App\Models\Usaha;
 use App\Models\User;
 use App\Utils\Inventaris as UtilsInventaris;
 use App\Utils\Keuangan;
@@ -43,9 +44,9 @@ class TransaksiController extends Controller
         $title = 'Jurnal Umum';
         $jenis_transaksi = JenisTransaksi::all();
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->first();
 
-        return view('transaksi.jurnal_umum.index')->with(compact('title', 'jenis_transaksi', 'kec'));
+        return view('transaksi.jurnal_umum.index')->with(compact('title', 'jenis_transaksi', 'usaha'));
     }
 
     public function jurnalAngsuran()
@@ -715,9 +716,9 @@ class TransaksiController extends Controller
         $keuangan = new Keuangan;
 
         $tgl_transaksi = Tanggal::tglNasional($request->tgl_transaksi);
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->first();
 
-        if (strtotime($tgl_transaksi) < strtotime($kec->tgl_pakai)) {
+        if (strtotime($tgl_transaksi) < strtotime($usaha->tgl_pakai)) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Tanggal transaksi tidak boleh sebelum Tanggal Pakai Aplikasi'

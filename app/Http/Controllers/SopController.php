@@ -44,10 +44,10 @@ class SopController extends Controller
         return view('sop.coa')->with(compact('title', 'akun1'));
     }
 
-    public function lembaga(Request $request, Kecamatan $kec)
+    public function lembaga(Request $request, Usaha $usaha)
     {
         $data = $request->only([
-            'nama_bumdesma',
+            'nama_bumdes',
             'nomor_badan_hukum',
             'telpon',
             'email',
@@ -58,7 +58,7 @@ class SopController extends Controller
         ]);
 
         $validate = Validator::make($data, [
-            'nama_bumdesma' => 'required',
+            'nama_bumdes' => 'required',
             'nomor_badan_hukum' => 'required',
             'telpon' => 'required',
             'email' => 'required',
@@ -72,50 +72,30 @@ class SopController extends Controller
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $calk = [
-            'peraturan_desa' => $request->peraturan_desa,
-            "D" => [
-                "1" => [
-                    "d" => [
-                        "1" => 0,
-                        "2" => 0,
-                        "3" => 0
-                    ]
-                ],
-                "2" => [
-                    "a" => 0,
-                    "b" => 0,
-                    "c" => 0
-                ]
-            ]
-        ];
-
-        $kecamatan = Kecamatan::where('id', $kec->id)->update([
-            'nama_lembaga_sort' => ucwords(strtolower($data['nama_bumdesma'])),
-            'nama_lembaga_long' => ucwords(strtolower($data['nama_bumdesma'])),
+        $usaha = Usaha::where('id', $usaha->id)->update([
+            'nama_usaha' => ucwords(strtolower($data['nama_bumdes'])),
             'nomor_bh' => $data['nomor_badan_hukum'],
-            'telpon_kec' => $data['telpon'],
-            'email_kec' => $data['email'],
-            'alamat_kec' => $data['alamat'],
+            'telpon' => $data['telpon'],
+            'email' => $data['email'],
+            'alamat' => $data['alamat'],
             'npwp' => $data['npwp'],
             'tgl_npwp' => Tanggal::tglNasional($data['tanggal_npwp']),
-            'calk' => json_encode($calk),
+            'peraturan_desa' => $request->peraturan_desa,
         ]);
 
-        Session::put('nama_lembaga', ucwords(strtolower($data['nama_bumdesma'])));
+        Session::put('nama_usaha', ucwords(strtolower($data['nama_bumdes'])));
 
         return response()->json([
             'success' => true,
             'msg' => 'Identitas Lembaga Berhasil Diperbarui.',
-            'nama_lembaga' => ucwords(strtolower($data['nama_bumdesma']))
+            'nama_usaha' => ucwords(strtolower($data['nama_bumdes']))
         ]);
     }
 
-    public function pengelola(Request $request, Kecamatan $kec)
+    public function pengelola(Request $request, Kecamatan $usaha)
     {
         $data = $request->only([
             'sebutan_pengawas',
-            'sebutan_verifikator',
             'kepala_lembaga',
             'kabag_administrasi',
             'kabag_keuangan',
@@ -124,7 +104,6 @@ class SopController extends Controller
 
         $validate = Validator::make($data, [
             'sebutan_pengawas' => 'required',
-            'sebutan_verifikator' => 'required',
             'kepala_lembaga' => 'required',
             'kabag_administrasi' => 'required',
             'kabag_keuangan' => 'required',
@@ -135,15 +114,12 @@ class SopController extends Controller
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $kecamatan = Kecamatan::where('id', $kec->id)->update([
-            'nama_bp_long' => ucwords(strtolower($data['sebutan_pengawas'])),
-            'nama_bp_sort' => ucwords(strtolower($data['sebutan_pengawas'])),
-            'nama_tv_long' => ucwords(strtolower($data['sebutan_verifikator'])),
-            'nama_tv_sort' => ucwords(strtolower($data['sebutan_verifikator'])),
-            'sebutan_level_1' => ucwords(strtolower($data['kepala_lembaga'])),
-            'sebutan_level_2' => ucwords(strtolower($data['kabag_administrasi'])),
-            'sebutan_level_3' => ucwords(strtolower($data['kabag_keuangan'])),
-            'disiapkan' => ucwords(strtolower($data['bkk_bkm']))
+        $usaha = Usaha::where('id', $usaha->id)->update([
+            'badan_pengawas' => ucwords(strtolower($data['sebutan_pengawas'])),
+            'kepala_lembaga' => ucwords(strtolower($data['kepala_lembaga'])),
+            'kabag_administrasi' => ucwords(strtolower($data['kabag_administrasi'])),
+            'kabag_keuangan' => ucwords(strtolower($data['kabag_keuangan'])),
+            'bkk_bkm_bm' => ucwords(strtolower($data['bkk_bkm']))
         ]);
 
         return response()->json([

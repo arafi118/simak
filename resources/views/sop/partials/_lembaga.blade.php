@@ -1,5 +1,5 @@
 @php
-    $peraturan_desa = '';
+    $peraturan_desa = $usaha->peraturan_desa;
 @endphp
 
 <form action="/pengaturan/lembaga/{{ $usaha->id }}" method="post" id="FormLembaga">
@@ -25,10 +25,10 @@
         </div>
         <div class="col-md-8">
             <div class="form-group">
-                <label for="nama_bumdesma">Nama Bumdes</label>
-                <input autocomplete="off" type="text" name="nama_bumdesma" id="nama_bumdesma"
+                <label for="nama_bumdes">Nama Bumdes</label>
+                <input autocomplete="off" type="text" name="nama_bumdes" id="nama_bumdes"
                     class="form-control form-control-sm" value="{{ $usaha->nama_usaha }}">
-                <small class="text-danger" id="msg_nama_bumdesma"></small>
+                <small class="text-danger" id="msg_nama_bumdes"></small>
             </div>
         </div>
         <div class="col-md-8">
