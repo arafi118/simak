@@ -11,4 +11,9 @@ class Usaha extends Model
 
     protected $table = 'usaha';
     public $timestamps = false;
+
+    public function d()
+    {
+        return $this->belongsTo(Desa::class, 'kd_desa', 'kode_desa');
+    }
 }

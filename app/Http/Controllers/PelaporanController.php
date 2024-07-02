@@ -19,6 +19,7 @@ use App\Models\PinjamanKelompok;
 use App\Models\Rekening;
 use App\Models\Saldo;
 use App\Models\Transaksi;
+use App\Models\Usaha;
 use App\Models\User;
 use App\Utils\Keuangan;
 use App\Utils\Tanggal;
@@ -32,11 +33,11 @@ class PelaporanController extends Controller
 {
     public function index()
     {
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->first();
         $laporan = JenisLaporan::where([['file', '!=', '0']])->orderBy('urut', 'ASC')->get();
 
         $title = 'Pelaporan';
-        return view('pelaporan.index')->with(compact('title', 'kec', 'laporan'));
+        return view('pelaporan.index')->with(compact('title', 'usaha', 'laporan'));
     }
 
     public function subLaporan($file)
@@ -151,17 +152,13 @@ class PelaporanController extends Controller
         }
 
         $request->hari = ($request->hari) ?: 31;
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with([
-            'kabupaten',
-            'desa',
-            'desa.saldo' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun']]
-                ]);
-            },
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with([
+            'd',
+            'd.sebutan_desa',
+            'd.kec.kabupaten',
             'ttd'
         ])->first();
-        $kab = $kec->kabupaten;
+        $kab = $usaha->d->kec->kabupaten;
 
         $jabatan = '1';
         $level = '1';
@@ -173,9 +170,9 @@ class PelaporanController extends Controller
             ['sejak', '<=', date('Y-m-t', strtotime($request->tahun . '-' . $request->bulan . '-01'))]
         ])->first();
 
-        $data['logo'] = $kec->logo;
-        $data['nama_lembaga'] = $kec->nama_lembaga_sort;
-        $data['nama_kecamatan'] = $kec->sebutan_kec . ' ' . $kec->nama_kec;
+        $data['logo'] = $usaha->logo;
+        $data['nama_lembaga'] = $usaha->nama_usaha;
+        $data['nama_kecamatan'] = $usaha->d->kec->sebutan_kec . ' ' . $usaha->d->kec->nama_kec;
 
         if (Keuangan::startWith($kab->nama_kab, 'KOTA') || Keuangan::startWith($kab->nama_kab, 'KAB')) {
             $data['nama_kecamatan'] .= ' ' . ucwords(strtolower($kab->nama_kab));
@@ -185,10 +182,10 @@ class PelaporanController extends Controller
             $data['nama_kabupaten'] = ' Kabupaten ' . ucwords(strtolower($kab->nama_kab));
         }
 
-        $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $kec->nomor_bh;
-        $data['info'] = $kec->alamat_kec . ', Telp.' . $kec->telpon_kec;
-        $data['email'] = $kec->email_kec;
-        $data['kec'] = $kec;
+        $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $usaha->nomor_bh;
+        $data['info'] = $usaha->alamat . ', Telp.' . $usaha->telpon;
+        $data['email'] = $usaha->email;
+        $data['kec'] = $usaha->d->kec;
         $data['kab'] = $kab;
         $data['dir'] = $dir;
 
@@ -209,7 +206,7 @@ class PelaporanController extends Controller
         }
 
         $data['tgl_kondisi'] = $data['tahun'] . '-' . $data['bulan'] . '-' . $data['hari'];
-        $data['tanggal_kondisi'] = $kec->nama_kec . ', ' . Tanggal::tglLatin($data['tgl_kondisi']);
+        $data['tanggal_kondisi'] = $usaha->d->kec->nama_kec . ', ' . Tanggal::tglLatin($data['tgl_kondisi']);
 
         $file = $request->laporan;
         if ($file == 3) {

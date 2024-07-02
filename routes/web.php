@@ -3,29 +3,19 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\InvoiceController;
-use App\Http\Controllers\Admin\KabupatenController as AdminKabupatenController;
 use App\Http\Controllers\Admin\KecamatanController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\UpkController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\GenerateController;
-use App\Http\Controllers\Kabupaten\AuthController as KabupatenAuthController;
-use App\Http\Controllers\Kabupaten\KabupatenController;
-use App\Http\Controllers\Kabupaten\LaporanController;
-use App\Http\Controllers\KelompokController;
-use App\Http\Controllers\LembagaLainController;
 use App\Http\Controllers\PelaporanController;
-use App\Http\Controllers\PinjamanAnggotaController;
-use App\Http\Controllers\PinjamanKelompokController;
 use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Models\Kecamatan;
-use App\Models\PinjamanKelompok;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -48,11 +38,6 @@ Route::group(['prefix' => 'master', 'as' => 'master.', 'middleware' => 'master']
     Route::get('/simpan_saldo', [DashboardController::class, 'simpanSaldo']);
 
     Route::get('/kecamatan/{kd_prov}/{kd_kab}/{kd_kec}', [KecamatanController::class, 'index']);
-
-    Route::get('/kabupaten/{kd_prov}/{kd_kab}/', [AdminKabupatenController::class, 'index']);
-    Route::get('/kabupaten/laporan/sub_laporan/{laporan}/', [AdminKabupatenController::class, 'subLaporan']);
-    Route::get('/kabupaten/laporan/data/{lokasi}/', [AdminKabupatenController::class, 'data']);
-    Route::post('/kabupaten/laporan/preview/{kd_kab}', [AdminKabupatenController::class, 'preview']);
 
     Route::resource('/users', AdminUserController::class);
 
@@ -84,29 +69,8 @@ Route::group(['prefix' => 'master', 'as' => 'master.', 'middleware' => 'master']
     Route::post('/logout', [AdminAuthController::class, 'logout']);
 });
 
-Route::get('/kab', [KabupatenAuthController::class, 'index'])->middleware('guest');
-Route::post('/kab/login', [KabupatenAuthController::class, 'login'])->middleware('guest');
-
-Route::group(['prefix' => 'kab', 'as' => 'kab.', 'middleware' => 'kab'], function () {
-    Route::get('/dashboard', [KabupatenController::class, 'index']);
-    Route::get('/tanda_tangan', [KabupatenController::class, 'tandaTangan']);
-    Route::post('/tanda_tangan/simpan', [KabupatenController::class, 'simpanTandaTangan']);
-
-    Route::get('/simpan_saldo', [DashboardController::class, 'simpanSaldo']);
-    Route::get('/kecamatan/{kd_kec}', [KabupatenController::class, 'kecamatan']);
-
-    Route::get('/laporan', [LaporanController::class, 'index']);
-    Route::get('/laporan/sub_laporan/{laporan}/', [LaporanController::class, 'subLaporan']);
-    Route::get('/laporan/data/{lokasi}/', [LaporanController::class, 'data']);
-    Route::post('/laporan/preview/{kd_kab}', [LaporanController::class, 'preview']);
-
-    Route::post('/logout', [KabupatenAuthController::class, 'logout']);
-});
-
 Route::get('/', [AuthController::class, 'index'])->middleware('guest')->name('/');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
-
-// Route::get('/force/{uname}', [AuthController::class, 'force'])->middleware('guest');
 
 Route::get('/pelaporan', [PelaporanController::class, 'index'])->middleware('basic');
 Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan'])->middleware('basic');
@@ -152,62 +116,6 @@ Route::get('/pengaturan/{inv}/invoice', [SopController::class, 'detailInvoice'])
 Route::post('/pengaturan/sop/simpanttdpelaporan', [SopController::class, 'simpanTtdPelaporan'])->middleware('auth');
 
 Route::resource('/database/desa', DesaController::class)->middleware('auth');
-
-Route::get('/database/lembaga_lain/register_lembaga', [LembagaLainController::class, 'register'])->middleware('auth');
-Route::get('/database/lembaga_lain/generatekode', [LembagaLainController::class, 'generateKode'])->middleware('auth');
-Route::resource('/database/lembaga_lain', LembagaLainController::class)->middleware('auth');
-
-Route::get('/database/kelompok/detail_kelompok/{id}', [KelompokController::class, 'detailKelompok'])->middleware('auth');
-Route::get('/database/kelompok/register_kelompok', [KelompokController::class, 'register'])->middleware('auth');
-Route::get('/database/kelompok/generatekode', [KelompokController::class, 'generateKode'])->middleware('auth');
-Route::resource('/database/kelompok', KelompokController::class)->middleware('auth');
-
-Route::get('/database/penduduk/register_penduduk', [AnggotaController::class, 'register'])->middleware('auth');
-Route::get('/database/penduduk/cari_nik', [AnggotaController::class, 'cariNik'])->middleware('auth');
-Route::post('/database/penduduk/{nik}/blokir', [AnggotaController::class, 'blokir'])->middleware('auth');
-Route::resource('/database/penduduk', AnggotaController::class)->middleware('auth');
-
-Route::get('/register_proposal', [PinjamanKelompokController::class, 'create'])->middleware('auth');
-Route::get('/register_proposal/{id_kel}', [PinjamanKelompokController::class, 'register'])->middleware('auth');
-Route::get('/daftar_kelompok', [PinjamanKelompokController::class, 'DaftarKelompok'])->middleware('auth');
-
-Route::get('/detail/{perguliran}', [PinjamanKelompokController::class, 'detail'])->middleware('auth');
-Route::get('/perguliran/proposal', [PinjamanKelompokController::class, 'proposal'])->middleware('auth');
-Route::get('/perguliran/verified', [PinjamanKelompokController::class, 'verified'])->middleware('auth');
-Route::get('/perguliran/waiting', [PinjamanKelompokController::class, 'waiting'])->middleware('auth');
-Route::get('/perguliran/aktif', [PinjamanKelompokController::class, 'aktif'])->middleware('auth');
-Route::get('/perguliran/lunas', [PinjamanKelompokController::class, 'lunas'])->middleware('auth');
-Route::get('/perguliran/generate/{id_pinj}', [PinjamanKelompokController::class, 'generate'])->middleware('auth');
-Route::get('/lunas/{perguliran}', [PinjamanKelompokController::class, 'pelunasan'])->middleware('auth');
-Route::get('/cetak_keterangan_lunas/{perguliran}', [PinjamanKelompokController::class, 'keterangan'])->middleware('auth');
-
-Route::get('/perguliran/cari_kelompok', [PinjamanKelompokController::class, 'cariKelompok'])->middleware('auth');
-Route::post('/perguliran/simpan_data/{id}', [PinjamanKelompokController::class, 'simpan'])->middleware('auth');
-Route::post('/perguliran/rescedule', [PinjamanKelompokController::class, 'rescedule'])->middleware('auth');
-Route::post('/perguliran/hapus', [PinjamanKelompokController::class, 'hapus'])->middleware('auth');
-Route::resource('/perguliran', PinjamanKelompokController::class)->middleware('auth');
-
-Route::get('/perguliran/dokumen/kartu_angsuran/{id}', [PinjamanKelompokController::class, 'kartuAngsuran'])->middleware('auth');
-Route::get('/perguliran/dokumen/kartu_angsuran/{id}/{idtp}', [PinjamanKelompokController::class, 'cetakPadaKartu'])->middleware('auth');
-
-Route::get('/perguliran/dokumen/kartu_angsuran_anggota/{id}/{nia?}', [PinjamanKelompokController::class, 'kartuAngsuranAnggota'])->middleware('auth');
-
-Route::get('/perguliran/dokumen/cetak_kartu_angsuran_anggota/{id}/{idtp}/{nia?}', [PinjamanKelompokController::class, 'cetakKartuAngsuranAnggota'])->middleware('auth');
-
-Route::post('/perguliran/dokumen', [PinjamanKelompokController::class, 'dokumen'])->middleware('auth');
-
-Route::post('/perguliran/kembali_proposal/{id}', [PinjamanKelompokController::class, 'kembaliProposal'])->middleware('auth');
-
-Route::get('/pinjaman_anggota/register/{id_pinkel}', [PinjamanAnggotaController::class, 'create'])->middleware('auth');
-Route::get('/pinjaman_anggota/cari_pemanfaat', [PinjamanAnggotaController::class, 'cariPemanfaat'])->middleware('auth');
-Route::get('/hapus_pemanfaat/{id}', [PinjamanAnggotaController::class, 'hapus'])->middleware('auth');
-
-Route::get('/pinjaman_anggota/form_hapus/{pinj}', [PinjamanAnggotaController::class, 'form_penghapusan'])->middleware('auth');
-
-Route::resource('/pinjaman_anggota', PinjamanAnggotaController::class)->middleware('auth');
-
-Route::post('/lunaskan_pemanfaat/{pinjaman}', [PinjamanAnggotaController::class, 'lunaskan'])->middleware('auth');
-Route::post('/hapus_pemanfaat/{pinjaman}', [PinjamanAnggotaController::class, 'penghapusan'])->middleware('auth');
 
 Route::get('/transaksi/jurnal_umum', [TransaksiController::class, 'jurnalUmum'])->middleware('auth');
 Route::get('/transaksi/jurnal_angsuran', [TransaksiController::class, 'jurnalAngsuran'])->middleware('auth');
@@ -293,5 +201,3 @@ Route::get('/unpaid', [DashboardController::class, 'unpaid'])->middleware('auth'
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::get('/{invoice}', [PelaporanController::class, 'invoice']);
-
-Route::get('/excel/{filename}/{lokasi}', [PinjamanKelompokController::class, 'excel']);

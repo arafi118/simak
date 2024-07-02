@@ -1,5 +1,5 @@
 @php
-    $thn_awal = explode('-', $kec->tgl_pakai)[0];
+    $thn_awal = explode('-', $usaha->tgl_pakai)[0];
 @endphp
 
 @extends('layouts.base')

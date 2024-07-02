@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ $logo }}">
     <link rel="icon" type="image/png" href="{{ $logo }}">
     <title>
-        SIMAK &mdash; {{ $kec->nama_lembaga_sort }}
+        SIMAK &mdash; {{ $usaha->nama_usaha }}
     </title>
     <link rel="apple-touch-icon" href="{{ $logo }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ $logo }}">
@@ -40,10 +40,11 @@
                         <div class="col-xl-3 col-lg-4 col-md-5 col-sm-5 col-12 p-0">
                             <div class="card border-grey border-lighten-3 m-0 card-account-right height-400 shadow">
                                 <div class="card-body p-3">
-                                    <p class="text-center h5 text-capitalize">{{ $kec->nama_lembaga_sort }}</p>
-                                    <p class="mb-3 text-center">
-                                        {{ $kec->sebutan_kec }} {{ $kec->nama_kec }}
-                                    </p>
+                                    <p class="text-center h5 text-capitalize">{{ $usaha->nama_usaha }}</p>
+                                    <div class="mb-3 text-center">
+                                        {{ $usaha->d->sebutan_desa->sebutan_desa }} {{ $usaha->d->nama_desa }},
+                                        {{ $usaha->d->kec->nama_kec }}
+                                    </div>
                                     <form class="form-horizontal form-signin" action="/login" method="post">
                                         @csrf
 
@@ -64,7 +65,7 @@
                                             &copy; {{ date('Y') }} PT. Asta Brata Teknologi
                                         </div>
                                         <p class="text-center">
-                                            {{ str_pad($kec->id, 4, '0', STR_PAD_LEFT) }}
+                                            {{ str_pad($usaha->id, 4, '0', STR_PAD_LEFT) }}
                                         </p>
                                     </form>
                                 </div>
