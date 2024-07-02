@@ -16,4 +16,9 @@ class Usaha extends Model
     {
         return $this->belongsTo(Desa::class, 'kd_desa', 'kode_desa');
     }
+
+    public function ttd()
+    {
+        return $this->belongsTo(TandaTanganLaporan::class, 'id', 'lokasi');
+    }
 }

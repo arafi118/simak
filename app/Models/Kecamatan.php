@@ -22,11 +22,6 @@ class Kecamatan extends Model
         return $this->hasMany(Desa::class, 'kd_kec', 'kd_kec')->orderBy('kd_desa', 'ASC');
     }
 
-    public function ttd()
-    {
-        return $this->belongsTo(TandaTanganLaporan::class, 'id', 'lokasi');
-    }
-
     public function saldo()
     {
         return $this->hasMany(Saldo::class, 'kode_akun', 'kd_kec');

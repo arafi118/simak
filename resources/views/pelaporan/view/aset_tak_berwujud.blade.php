@@ -99,7 +99,11 @@
                     $umur_pakai = $akum_umur - $pakai_lalu;
                     $penyusutan = $satuan_susut * $umur_pakai;
 
-                    if (($inv->status == 'Hilang' and $tgl_kondisi >= $inv->tgl_validasi) || ($inv->status == 'Dijual' && $tgl_kondisi >= $inv->tgl_validasi) || ($inv->status == 'Hapus' && $tgl_kondisi >= $inv->tgl_validasi)) {
+                    if (
+                        ($inv->status == 'Hilang' and $tgl_kondisi >= $inv->tgl_validasi) ||
+                        ($inv->status == 'Dijual' && $tgl_kondisi >= $inv->tgl_validasi) ||
+                        ($inv->status == 'Hapus' && $tgl_kondisi >= $inv->tgl_validasi)
+                    ) {
                         $akum_susut = $inv->harsat * $inv->unit;
                         $nilai_buku = 0;
                         $penyusutan = 0;
@@ -178,7 +182,7 @@
                         <tr>
                             <td colspan="9">
                                 <div style="margin-top: 16px;"></div>
-                                {!! json_decode(str_replace('{tanggal}', $tanggal_kondisi, $kec->ttd->tanda_tangan_pelaporan), true) !!}
+                                {!! json_decode(str_replace('{tanggal}', $tanggal_kondisi, $usaha->ttd->tanda_tangan_pelaporan), true) !!}
                             </td>
                         </tr>
                     </table>

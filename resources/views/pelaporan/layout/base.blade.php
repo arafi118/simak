@@ -95,7 +95,7 @@
                             alt="{{ $kec->id }}">
                     </td>
                     <td align="center">
-                        <div><b>{{ strtoupper($nama_lembaga) }}</b></div>
+                        <div>{{ strtoupper($nama_usaha) }}</div>
                         <div>
                             <b>{{ strtoupper($nama_kecamatan) }}</b>
                         </div>
@@ -119,24 +119,16 @@
                             alt="{{ $logo }}">
                     </td>
                     <td>
-                        <div style="font-size: 12px;">{{ strtoupper($nama_lembaga) }}</div>
+                        <div style="font-size: 12px;">{{ strtoupper($nama_usaha) }}</div>
                         <div style="font-size: 12px;">
                             <b>{{ strtoupper($nama_kecamatan) }}</b>
                         </div>
-                    </td>
-                </tr>
-            </table>
-            <table width="100%" style="position: relative; top: -10px;">
-                <tr>
-                    <td>
-                        <span style="font-size: 8px; color: grey;">
-                            <i>{{ $nomor_usaha }}</i>
-                        </span>
-                    </td>
-                    <td align="right">
-                        <span style="font-size: 8px; color: grey;">
+                        <div style="font-size: 8px;">
+                            {{ $nomor_usaha }}
+                        </div>
+                        <div style="font-size: 8px;">
                             <i>{{ $info }}</i>
-                        </span>
+                        </div>
                     </td>
                 </tr>
             </table>

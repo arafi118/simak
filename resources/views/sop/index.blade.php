@@ -17,7 +17,7 @@
                 <div class="tab-pane fade" id="pengelola" role="tabpanel" aria-labelledby="pengelola-tab">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="mb-0">Sebutan Pengelola Bumdesma</h5>
+                            <h5 class="mb-0">Sebutan Pengelola Bumdes</h5>
                         </div>
                         <div class="card-body pt-0">
                             @include('sop.partials._pengelola')

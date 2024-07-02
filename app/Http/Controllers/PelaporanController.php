@@ -171,7 +171,7 @@ class PelaporanController extends Controller
         ])->first();
 
         $data['logo'] = $usaha->logo;
-        $data['nama_lembaga'] = $usaha->nama_usaha;
+        $data['nama_usaha'] = $usaha->nama_usaha . ' ' . $usaha->d->nama_desa;
         $data['nama_kecamatan'] = $usaha->d->kec->sebutan_kec . ' ' . $usaha->d->kec->nama_kec;
 
         if (Keuangan::startWith($kab->nama_kab, 'KOTA') || Keuangan::startWith($kab->nama_kab, 'KAB')) {
@@ -185,6 +185,8 @@ class PelaporanController extends Controller
         $data['nomor_usaha'] = 'SK Kemenkumham RI No.' . $usaha->nomor_bh;
         $data['info'] = $usaha->alamat . ', Telp.' . $usaha->telpon;
         $data['email'] = $usaha->email;
+
+        $data['usaha'] = $usaha;
         $data['kec'] = $usaha->d->kec;
         $data['kab'] = $kab;
         $data['dir'] = $dir;

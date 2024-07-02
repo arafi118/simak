@@ -54,7 +54,7 @@
         <table width="100%">
             <tr>
                 <td align="center">
-                    <div>{{ strtoupper($nama_lembaga) }}</div>
+                    <div>{{ strtoupper($nama_usaha) }}</div>
                     <div>
                         <b>{{ strtoupper($nama_kecamatan) }}</b>
                     </div>

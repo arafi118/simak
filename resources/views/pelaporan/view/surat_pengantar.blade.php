@@ -40,7 +40,9 @@
             <td colspan="2" style="padding-left: 8px; text-align: justify;">
                 <div>Dengan Hormat,</div>
                 <div>
-                    Bersama ini kami sampaikan Laporan Keuangan {{ $nama_lembaga }} {{ $kec->nama_kec }} sampai dengan
+                    Bersama ini kami sampaikan Laporan Keuangan {{ $nama_usaha }}
+                    {{ $usaha->d->sebutan_desa->sebutan_desa }} {{ $usaha->d->nama_desa }} {{ $kec->nama_kec }} sampai
+                    dengan
                     {{ $sub_judul }} sebagai berikut:
                     <ol>
                         <li>Laporan Neraca</li>
@@ -61,7 +63,7 @@
         <tr>
             <td colspan="2"></td>
             <td align="center">
-                <div>{{ $nama_lembaga }} {{ $kec->nama_kec }}</div>
+                <div>{{ $nama_usaha }} {{ $kec->nama_kec }}</div>
                 <div>
                     @if ($dir_utama)
                         {{ $dir_utama->j->nama_jabatan }},

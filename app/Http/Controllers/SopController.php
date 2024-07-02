@@ -6,6 +6,7 @@ use App\Models\AdminInvoice;
 use App\Models\AkunLevel1;
 use App\Models\Kecamatan;
 use App\Models\TandaTanganLaporan;
+use App\Models\Usaha;
 use App\Models\User;
 use App\Utils\Pinjaman;
 use App\Utils\Tanggal;
@@ -24,11 +25,11 @@ class SopController extends Controller
     {
         $api = env('APP_API', 'https://api-whatsapp.sidbm.net');
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('ttd')->first();
-        $token = "DBM-" . str_pad($kec->id, 4, '0', STR_PAD_LEFT);
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with('ttd')->first();
+        $token = "DBM-" . str_pad($usaha->id, 4, '0', STR_PAD_LEFT);
 
         $title = "Personalisasi SOP";
-        return view('sop.index')->with(compact('title', 'kec', 'api', 'token'));
+        return view('sop.index')->with(compact('title', 'usaha', 'api', 'token'));
     }
 
     public function coa()

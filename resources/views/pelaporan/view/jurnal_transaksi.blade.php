@@ -44,7 +44,11 @@
             @php
                 $data_idtp[] = $trx->idtp;
 
-                if ($trx->idtp != '0' && array_count_values($data_idtp)[$trx->idtp] > 1 && $trx->tgl_transaksi == $tgl_trx[$trx->idtp]) {
+                if (
+                    $trx->idtp != '0' &&
+                    array_count_values($data_idtp)[$trx->idtp] > 1 &&
+                    $trx->tgl_transaksi == $tgl_trx[$trx->idtp]
+                ) {
                     continue;
                 }
                 $tgl_trx[$trx->idtp] = $trx->tgl_transaksi;
@@ -173,7 +177,7 @@
                 </table>
 
                 <div style="margin-top: 16px;"></div>
-                {!! json_decode(str_replace('{tanggal}', $tanggal_kondisi, $kec->ttd->tanda_tangan_pelaporan), true) !!}
+                {!! json_decode(str_replace('{tanggal}', $tanggal_kondisi, $usaha->ttd->tanda_tangan_pelaporan), true) !!}
             </td>
         </tr>
     </table>
