@@ -19,16 +19,16 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0" class="table table-striped midle">
     <thead class="bg-dark text-white">
         <tr>
-            <td height="40" align="center" width="40">No</td>
-            <td align="center" width="100">Tanggal</td>
-            <td align="center" width="100">Kode Akun</td>
-            <td align="center">Keterangan</td>
-            <td align="center" width="70">Kode Trx.</td>
-            <td align="center" width="140">Debit</td>
-            <td align="center" width="140">Kredit</td>
-            <td align="center" width="150">Saldo</td>
-            <td align="center" width="40">Ins</td>
-            <td align="center" width="170">&nbsp;</td>
+            <th height="40" align="center">No</th>
+            <th align="center">Tanggal</th>
+            <th align="center">Kode Akun</th>
+            <th align="center">Keterangan</th>
+            <th align="center">Kode Trx.</th>
+            <th align="center">Debit</th>
+            <th align="center">Kredit</th>
+            <th align="center">Saldo</th>
+            <th align="center">Ins</th>
+            <th align="center">&nbsp;</th>
         </tr>
     </thead>
 
@@ -182,91 +182,45 @@
                 <td align="right">{{ number_format($kredit, 2) }}</td>
                 <td align="right">{{ number_format($total_saldo, 2) }}</td>
                 <td align="center">{{ $ins }}</td>
-                <td align="right">
-                    <div class="btn-group">
-                        @if ($kuitansi)
-                            @if ($trx->idtp > 0 && $trx->id_pinj != 0)
-                                <button type="button" data-idtp="{{ $trx->idtp }}"
-                                    class="btn btn-info btn-sm btn-tooltip" data-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <span class="btn-inner--icon"><i class="fas fa-file"></i></span>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li>
-                                        <a class="dropdown-item border-radius-md" target="_blank"
-                                            href="/transaksi/dokumen/struk/{{ $trx->idtp }}">
-                                            Kuitansi
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item border-radius-md" target="_blank"
-                                            href="/transaksi/dokumen/struk_matrix/{{ $trx->idtp }}">
-                                            Kuitansi Dot Matrix
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item border-radius-md" target="_blank"
-                                            href="/transaksi/dokumen/struk_thermal/{{ $trx->idtp }}">
-                                            Kuitansi Thermal
-                                        </a>
-                                    </li>
-                                </ul>
-                            @else
-                                <button type="button" class="btn btn-info btn-sm btn-tooltip" data-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <span class="btn-inner--icon"><i class="fas fa-file"></i></span>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li>
-                                        <a class="dropdown-item border-radius-md" target="_blank"
-                                            href="/transaksi/dokumen/kuitansi/{{ $trx->idt }}">
-                                            Kuitansi
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item border-radius-md" target="_blank"
-                                            href="/transaksi/dokumen/kuitansi_thermal/{{ $trx->idt }}">
-                                            Kuitansi Thermal
-                                        </a>
-                                    </li>
-                                </ul>
+                <td align="center">
+                    <div class="dropdown dropleft">
+                        <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="{{ $trx->id }}"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-info"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="{{ $trx->id }}">
+                            @if ($kuitansi)
+                                <a class="dropdown-item" target="_blank"
+                                    href="/transaksi/dokumen/kuitansi/{{ $trx->idt }}">
+                                    Kuitansi
+                                </a>
+                                <a class="dropdown-item" target="_blank"
+                                    href="/transaksi/dokumen/kuitansi_thermal/{{ $trx->idt }}">
+                                    Kuitansi Thermal
+                                </a>
                             @endif
-                        @endif
-
-                        @if ($trx->idtp > 0 && $trx->id_pinj != 0)
-                            <button type="button"
-                                data-action="/transaksi/dokumen/{{ $files }}_angsuran/{{ $trx->idt }}"
-                                class="btn btn-warning btn-sm btn-tooltip btn-link" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="{{ $files }}" data-container="body"
-                                data-animation="true">
-                                <span class="btn-inner--icon"><i class="fas fa-file-circle-exclamation"></i></span>
-                            </button>
-                        @else
-                            <button type="button"
+                            <a class="dropdown-item btn-link" target="_blank"
                                 data-action="/transaksi/dokumen/{{ $files }}/{{ $trx->idt }}"
-                                class="btn btn-warning btn-sm btn-tooltip btn-link" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="{{ $files }}" data-container="body"
-                                data-animation="true">
-                                <span class="btn-inner--icon"><i class="fas fa-file-circle-exclamation"></i></span>
-                            </button>
-                        @endif
-
-                        @if ($is_dir)
-                            <button type="button" data-idt="{{ $trx->idt }}"
-                                class="btn btn-warning btn-sm btn-tooltip btn-reversal" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="Reversal" data-container="body"
-                                data-animation="true">
-                                <span class="btn-inner--icon"><i class="fas fa-code-pull-request"></i></span>
-                            </button>
-                            @if (!$is_ben)
-                                <button type="button" data-idt="{{ $trx->idt }}"
-                                    class="btn btn-danger btn-sm btn-tooltip btn-delete" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title="Hapus" data-container="body"
-                                    data-animation="true">
-                                    <span class="btn-inner--icon"><i class="fas fa-trash-can"></i></span>
-                                </button>
+                                href="#">
+                                @if ($files == 'bkm')
+                                    Bukti Kas Masuk
+                                @elseif ($files == 'bkk')
+                                    Bukti Kas Keluar
+                                @else
+                                    Bukti Memorial
+                                @endif
+                            </a>
+                            @if ($is_dir)
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item btn-reversal" data-idt="{{ $trx->idt }}" href="#">
+                                    Reversal
+                                </a>
+                                <a class="dropdown-item text-danger btn-delete" data-idt="{{ $trx->idt }}"
+                                    href="#">
+                                    Hapus Transaksi
+                                </a>
                             @endif
-                        @endif
+                        </div>
                     </div>
                 </td>
             </tr>
