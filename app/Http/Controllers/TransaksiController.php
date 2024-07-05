@@ -36,17 +36,69 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        //
+        Session::put('edit', 'false');
+        Session::put('transaksi', []);
+        Session::put('inv', []);
+
+        $title = 'Jurnal Umum';
+        $jenis_transaksi = JenisTransaksi::all();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->first();
+
+        return view('transaksi.jurnal_umum.index')->with(compact('title', 'jenis_transaksi', 'usaha'));
     }
 
     public function jurnalUmum()
     {
-        $title = 'Jurnal Umum';
         $jenis_transaksi = JenisTransaksi::all();
 
-        $usaha = Usaha::where('id', Session::get('lokasi'))->first();
+        Session::put('edit', 'false');
+        Session::put('transaksi', []);
+        Session::put('inv', []);
 
-        return view('transaksi.jurnal_umum.index')->with(compact('title', 'jenis_transaksi', 'usaha'));
+        return response()->json([
+            'success' => true,
+            'view' => view('transaksi.jurnal_umum.partials.jurnal_umum')->with(compact('jenis_transaksi'))->render()
+        ]);
+    }
+
+    public function editTransaksi(Transaksi $transaksi)
+    {
+        $trx = $transaksi;
+        $jenis_transaksi = JenisTransaksi::all();
+
+        $relasi = false;
+        if (Keuangan::startWith($trx->rekening_debit, '1.1.01') && !Keuangan::startWith($trx->rekening_kredit, '1.1.01')) {
+            $relasi = true;
+        } elseif (!Keuangan::startWith($trx->rekening_debit, '1.1.01') && Keuangan::startWith($trx->rekening_kredit, '1.1.01')) {
+            $relasi = true;
+        } elseif (Keuangan::startWith($trx->rekening_debit, '1.1.02') && !(Keuangan::startWith($trx->rekening_kredit, '1.1.01') || Keuangan::startWith($trx->rekening_kredit, '1.1.02'))) {
+            $relasi = true;
+        }
+
+        Session::put('edit', 'true');
+        Session::put('transaksi', $trx);
+
+        $rek_inventaris = ['1.2.01.01', '1.2.01.02', '1.2.01.03', '1.2.01.04', '1.2.03.01', '1.2.03.02', '1.2.03.03', '1.2.03.04'];
+        if (in_array($trx->rekening_debit, $rek_inventaris)) {
+            $jenis = intval(explode('.', $trx->rekening_debit)[2]);
+            $kategori = intval(explode('.', $trx->rekening_debit)[3]);
+            $nama_barang = trim(explode(')', $trx->keterangan_transaksi)[1]);
+
+            $inv = Inventaris::Where([
+                ['jenis', $jenis],
+                ['kategori', $kategori],
+                ['tgl_beli', $trx->tgl_transaksi],
+                ['nama_barang', $nama_barang]
+            ])->first();
+
+            Session::put('inv', $inv);
+        }
+
+        $rekening = Rekening::all();
+        return response()->json([
+            'success' => true,
+            'view' => view('transaksi.jurnal_umum.partials.edit.jurnal_umum')->with(compact('trx', 'jenis_transaksi', 'relasi', 'rekening'))->render(),
+        ]);
     }
 
     public function jurnalAngsuran()
@@ -700,17 +752,6 @@ class TransaksiController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $keuangan = new Keuangan;
@@ -994,6 +1035,180 @@ class TransaksiController extends Controller
             'success' => true,
             'msg' => $msg,
             'view' => $view
+        ]);
+    }
+
+    public function update(Request $request, Transaksi $transaksi)
+    {
+        $keuangan = new Keuangan;
+
+        $tgl_transaksi = Tanggal::tglNasional($request->tgl_transaksi);
+        $usaha = Usaha::where('id', Session::get('lokasi'))->first();
+
+        if (strtotime($tgl_transaksi) < strtotime($usaha->tgl_pakai)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Tanggal transaksi tidak boleh sebelum Tanggal Pakai Aplikasi'
+            ]);
+        }
+
+        if (Keuangan::startWith($request->sumber_dana, '1.2.01') && Keuangan::startWith($request->disimpan_ke, '5.3.02.01')) {
+            //
+        } else {
+            if (Keuangan::startWith($request->disimpan_ke, '1.2.01') || Keuangan::startWith($request->disimpan_ke, '1.2.03')) {
+                $data = $request->only([
+                    'tgl_transaksi',
+                    'jenis_transaksi',
+                    'sumber_dana',
+                    'disimpan_ke',
+                    'relasi',
+                    'nama_barang',
+                    'jumlah',
+                    'harga_satuan',
+                    'umur_ekonomis',
+                ]);
+
+                $validate = Validator::make($data, [
+                    'tgl_transaksi' => 'required',
+                    'jenis_transaksi' => 'required',
+                    'sumber_dana' => 'required',
+                    'disimpan_ke' => 'required',
+                    'nama_barang' => 'required',
+                    'jumlah' => 'required',
+                    'harga_satuan' => 'required',
+                    'umur_ekonomis' => 'required'
+                ]);
+
+                if ($validate->fails()) {
+                    return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+                }
+
+                $rek_simpan = Rekening::where('kode_akun', $request->disimpan_ke)->first();
+
+                $update = [
+                    'tgl_transaksi' => (string) Tanggal::tglNasional($request->tgl_transaksi),
+                    'rekening_debit' => (string) $request->disimpan_ke,
+                    'rekening_kredit' => (string) $request->sumber_dana,
+                    'idtp' => 0,
+                    'id_pinj' => 0,
+                    'id_pinj_i' => 0,
+                    'keterangan_transaksi' => (string) '(' . $rek_simpan->nama_akun . ') ' . $request->nama_barang,
+                    'relasi' => (string) $request->relasi,
+                    'jumlah' => str_replace(',', '', str_replace('.00', '', $request->harga_satuan)) * $request->jumlah,
+                    'urutan' => 0,
+                    'id_user' => auth()->user()->id,
+                ];
+
+                $inventaris = [
+                    'lokasi' => Session::get('lokasi'),
+                    'nama_barang' => $request->nama_barang,
+                    'tgl_beli' => Tanggal::tglNasional($request->tgl_transaksi),
+                    'unit' => $request->jumlah,
+                    'harsat' => str_replace(',', '', str_replace('.00', '', $request->harga_satuan)),
+                    'umur_ekonomis' => $request->umur_ekonomis,
+                    'jenis' => str_pad($rek_simpan->lev3, 1, "0", STR_PAD_LEFT),
+                    'kategori' => str_pad($rek_simpan->lev4, 1, "0", STR_PAD_LEFT),
+                    'status' => 'Baik',
+                    'tgl_validasi' => Tanggal::tglNasional($request->tgl_transaksi),
+                ];
+
+                $jenis = intval(explode('.', $request->disimpan_ke)[2]);
+                $kategori = intval(explode('.', $request->disimpan_ke)[3]);
+                $nama_barang = $request->nama_barang;
+
+                $inv = Inventaris::where([
+                    ['jenis', $jenis],
+                    ['kategori', $kategori],
+                    ['tgl_beli', tanggal::tglNasional($request->tgl_transaksi)],
+                    ['nama_barang', $nama_barang]
+                ]);
+                if ($inv->count() > 0) {
+                    $inv->update($inventaris);
+                } else {
+                    Inventaris::insert($inventaris);
+                }
+
+                Transaksi::where('idt', $transaksi->idt)->update($update);
+
+                $msg = 'Transaksi ' .  $rek_simpan->nama_akun . ' (' . $update['keterangan_transaksi'] . ') berhasil disimpan';
+            } else {
+                $data = $request->only([
+                    'tgl_transaksi',
+                    'jenis_transaksi',
+                    'sumber_dana',
+                    'disimpan_ke',
+                    'relasi',
+                    'keterangan',
+                    'nominal'
+                ]);
+
+                $validate = Validator::make($data, [
+                    'tgl_transaksi' => 'required',
+                    'jenis_transaksi' => 'required',
+                    'sumber_dana' => 'required',
+                    'disimpan_ke' => 'required',
+                    'nominal' => 'required'
+                ]);
+
+                if ($validate->fails()) {
+                    return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
+                }
+
+                $relasi = '';
+                if ($request->relasi) $relasi = $request->relasi;
+
+                $update = [
+                    'tgl_transaksi' => (string) Tanggal::tglNasional($request->tgl_transaksi),
+                    'rekening_debit' => (string) $request->disimpan_ke,
+                    'rekening_kredit' => (string) $request->sumber_dana,
+                    'idtp' => 0,
+                    'id_pinj' => 0,
+                    'id_pinj_i' => 0,
+                    'keterangan_transaksi' => (string) $request->keterangan,
+                    'relasi' => (string) $relasi,
+                    'jumlah' => str_replace(',', '', str_replace('.00', '', $request->nominal)),
+                    'urutan' => 0,
+                    'id_user' => auth()->user()->id,
+                ];
+
+                Transaksi::where('idt', $transaksi->idt)->update($update);
+                $msg = 'Transaksi ' . $update['keterangan_transaksi'] . ' berhasil disimpan';
+            }
+        }
+
+        $jenis_transaksi = JenisTransaksi::all();
+        $trx = Transaksi::where('idt', $transaksi->idt)->with([
+            'rek_debit', 'rek_kredit'
+        ])->first();
+
+        $bulan = Tanggal::bulan($transaksi->tgl_transaksi);
+        if (Tanggal::bulan($update['tgl_transaksi']) < $bulan) {
+            $bulan = Tanggal::bulan($update['tgl_transaksi']);
+        }
+
+        $tahun = Tanggal::tahun($transaksi->tgl_transaksi);
+        if (Tanggal::tahun($update['tgl_transaksi']) < $tahun) {
+            $tahun = Tanggal::tahun($update['tgl_transaksi']);
+        }
+
+        $kode_akun[$update['rekening_debit']] = $update['rekening_debit'];
+        $kode_akun[$update['rekening_kredit']] = $update['rekening_kredit'];
+        $kode_akun[$transaksi->rekening_debit] = $transaksi->rekening_debit;
+        $kode_akun[$transaksi->rekening_kredit] = $transaksi->rekening_kredit;
+
+        Session::put('edit', 'false');
+        Session::put('transaksi', []);
+        Session::put('inv', []);
+
+        $kode_akun = array_values($kode_akun);
+        return response()->json([
+            'success' => true,
+            'msg' => 'Transaksi Berhasil Diperbarui.',
+            'kode_akun' => implode(',', $kode_akun),
+            'bulan' => str_pad($bulan, 2, "0", STR_PAD_LEFT),
+            'tahun' => $tahun,
+            'notif' => view('transaksi.jurnal_umum.partials.notifikasi')->with(compact('trx', 'keuangan'))->render(),
+            'view' => view('transaksi.jurnal_umum.partials.jurnal_umum')->with(compact('jenis_transaksi'))->render()
         ]);
     }
 
@@ -1408,38 +1623,6 @@ class TransaksiController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Transaksi $transaksi)
-    {
-        //
-    }
-
     public function rekening($id)
     {
         $jenis_transaksi = JenisTransaksi::where('id', $id)->firstOrFail();
@@ -1488,6 +1671,7 @@ class TransaksiController extends Controller
         $sumber_dana = request()->get('sumber_dana');
         $disimpan_ke = request()->get('disimpan_ke');
 
+        $susut = 0;
         if (Keuangan::startWith($sumber_dana, '1.2.01') && Keuangan::startWith($disimpan_ke, '5.3.02.01') && $jenis_transaksi == 2) {
             $kode = explode('.', $sumber_dana);
             $jenis = intval($kode[2]);
@@ -1599,7 +1783,6 @@ class TransaksiController extends Controller
                     $files = "BM";
                 }
 
-                $susut = 0;
                 if (Keuangan::startWith($disimpan_ke, '5.1.07.10')) {
                     $tanggal = date('Y-m-t', strtotime($tgl_transaksi));
                     if ($sumber_dana == '1.2.02.01') {
@@ -1921,33 +2104,37 @@ class TransaksiController extends Controller
         $id_pinj = $request->del_id_pinj;
 
         if ($idtp != '0') {
+            $transaksi = Transaksi::where('idtp', $idtp)->get();
             $trx = Transaksi::where('idtp', $idtp)->delete();
-            $pinkel = PinjamanKelompok::where('id', $id_pinj)->with('pinjaman_anggota')->first();
 
-            $pinjaman_anggota = $pinkel->pinjaman_anggota;
-            foreach ($pinjaman_anggota as $pa) {
-                $kom_pokok = json_decode($pa->kom_pokok, true);
-                $kom_jasa = json_decode($pa->kom_jasa, true);
+            if ($id_pinj != '0') {
+                $pinkel = PinjamanKelompok::where('id', $id_pinj)->with('pinjaman_anggota')->first();
 
-                if (is_array($kom_pokok)) {
-                    unset($kom_pokok[$idtp]);
-                } else {
-                    $kom_pokok = [];
+                $pinjaman_anggota = $pinkel->pinjaman_anggota;
+                foreach ($pinjaman_anggota as $pa) {
+                    $kom_pokok = json_decode($pa->kom_pokok, true);
+                    $kom_jasa = json_decode($pa->kom_jasa, true);
+
+                    if (is_array($kom_pokok)) {
+                        unset($kom_pokok[$idtp]);
+                    } else {
+                        $kom_pokok = [];
+                    }
+
+                    if (is_array($kom_jasa)) {
+                        unset($kom_jasa[$idtp]);
+                    } else {
+                        $kom_jasa = [];
+                    }
+
+                    PinjamanAnggota::where('id', $pa->id)->update([
+                        'kom_pokok' => $kom_pokok,
+                        'kom_jasa' => $kom_jasa
+                    ]);
                 }
 
-                if (is_array($kom_jasa)) {
-                    unset($kom_jasa[$idtp]);
-                } else {
-                    $kom_jasa = [];
-                }
-
-                PinjamanAnggota::where('id', $pa->id)->update([
-                    'kom_pokok' => $kom_pokok,
-                    'kom_jasa' => $kom_jasa
-                ]);
+                $this->regenerateReal($pinkel);
             }
-
-            $this->regenerateReal($pinkel);
         } else {
             if ($id_pinj != '0') {
                 $pinkel = PinjamanKelompok::where('id', $id_pinj)->update([
@@ -1977,12 +2164,29 @@ class TransaksiController extends Controller
                 ])->delete();
             }
 
+            $transaksi = Transaksi::where('idt', $idt)->get();
             $trx = Transaksi::where('idt', $idt)->delete();
         }
 
+        $bulan = 0;
+        $tahun = 0;
+        $kode_akun = [];
+        foreach ($transaksi as $trx) {
+            $tgl = explode('-', $trx->tgl_transaksi);
+            $tahun = $tgl[0];
+            $bulan = $tgl[1];
+
+            $kode_akun[$trx->rekening_debit] = $trx->rekening_debit;
+            $kode_akun[$trx->rekening_kredit] = $trx->rekening_kredit;
+        }
+        $kode_akun = array_values($kode_akun);
+
         return response()->json([
             'success' => true,
-            'msg' => 'Transaksi Berhasil Dihapus.'
+            'msg' => 'Transaksi Berhasil Dihapus.',
+            'kode_akun' => implode(',', $kode_akun),
+            'bulan' => str_pad($bulan, 2, "0", STR_PAD_LEFT),
+            'tahun' => $tahun
         ]);
     }
 

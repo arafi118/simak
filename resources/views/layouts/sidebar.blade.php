@@ -10,6 +10,10 @@
         if (in_array($page, $paths)) {
             return 'active';
         }
+
+        if (str_contains(Request::path(), $path) && $path != '') {
+            return 'active';
+        }
     }
 
 @endphp
@@ -45,8 +49,8 @@
                     </li>
                 </ul>
             </li>
-            <li class="{{ active('/jurnal_umum') }} nav-item">
-                <a href="/transaksi/jurnal_umum">
+            <li class="{{ active('/transaksi') }} nav-item">
+                <a href="/transaksi">
                     <i class="icon-shuffle"></i>
                     <span class="menu-title">Jurnal Umum</span>
                 </a>

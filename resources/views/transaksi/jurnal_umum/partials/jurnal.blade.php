@@ -215,6 +215,10 @@
                                 <a class="dropdown-item btn-reversal" data-idt="{{ $trx->idt }}" href="#">
                                     Reversal
                                 </a>
+                                <a class="dropdown-item text-warning btn-edit" data-idt="{{ $trx->idt }}"
+                                    href="#">
+                                    Edit Transaksi
+                                </a>
                                 <a class="dropdown-item text-danger btn-delete" data-idt="{{ $trx->idt }}"
                                     href="#">
                                     Hapus Transaksi

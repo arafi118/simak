@@ -3,81 +3,11 @@
 @section('content')
     <div class="row">
         <div class="col-lg-9">
-            <div class="card">
-                <div class="card-body">
-                    <form action="/transaksi" method="post" id="FormTransaksi">
-                        @csrf
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="tgl_transaksi">Tgl Transaksi</label>
-                                    <input autocomplete="off" type="text" name="tgl_transaksi" id="tgl_transaksi"
-                                        class="form-control form-control-sm date" value="{{ date('d/m/Y') }}">
-                                    <small class="text-danger" id="msg_tgl_transaksi"></small>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="jenis_transaksi">Jenis Transaksi</label>
-                                    <select class="form-control select2" name="jenis_transaksi" id="jenis_transaksi">
-                                        <option value="">-- Pilih Jenis Transaksi --</option>
-                                        @foreach ($jenis_transaksi as $jt)
-                                            <option value="{{ $jt->id }}">
-                                                {{ $jt->nama_jt }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="text-danger" id="msg_jenis_transaksi"></small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" id="kd_rekening">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="sumber_dana">Sumber Dana</label>
-                                    <select class="form-control select2" name="sumber_dana" id="sumber_dana">
-                                        <option value="">-- Sumber Dana --</option>
-                                    </select>
-                                    <small class="text-danger" id="msg_sumber_dana"></small>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="disimpan_ke">Disimpan Ke</label>
-                                    <select class="form-control select2" name="disimpan_ke" id="disimpan_ke">
-                                        <option value="">-- Disimpan Ke --</option>
-                                    </select>
-                                    <small class="text-danger" id="msg_disimpan_ke"></small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" id="form_nominal">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="keterangan">Keterangan</label>
-                                    <input autocomplete="off" type="text" name="keterangan" id="keterangan"
-                                        class="form-control form-control-sm">
-                                    <small class="text-danger" id="msg_keterangan"></small>
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="nominal">Nominal Rp.</label>
-                                    <input autocomplete="off" type="text" name="nominal" id="nominal"
-                                        class="form-control form-control-sm">
-                                    <small class="text-danger" id="msg_nominal"></small>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
-                    <div class="d-flex justify-content-end">
-                        <button type="button" id="SimpanTransaksi" class="btn btn-sm btn-warning">Simpan Transaksi</button>
-                    </div>
-                </div>
+            <div class="card" id="formJurnalUmum">
+                @include('transaksi.jurnal_umum.partials.jurnal_umum')
             </div>
         </div>
+
         <div class="col-lg-3">
             <div class="card">
                 <div class="card-body">
@@ -159,8 +89,7 @@
 
     <div id="notifikasi"></div>
 
-    <div class="modal fade" id="detailTransaksi" tabindex="-1" aria-labelledby="detailTransaksiLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="detailTransaksi" tabindex="-1" aria-labelledby="detailTransaksiLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -358,6 +287,46 @@
             })
         })
 
+        $(document).on('click', '#SimpanEditTransaksi', function(e) {
+            e.preventDefault()
+            $('small').html('')
+            $('#notifikasi').html('')
+
+            var form = $('#FormEditTransaksi')
+            $.ajax({
+                type: 'POST',
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        Swal.fire('Berhasil', result.msg, 'success').then(() => {
+                            childWindow = window.open(
+                                '/simpan_saldo?bulan=' + result
+                                .bulan + '&tahun=' +
+                                result.tahun + '&kode_akun=' +
+                                result.kode_akun, '_blank');
+                        })
+
+                        $('#notifikasi').html(result.notif)
+                        $('#saldo').html(formatter.format(0))
+                        $('#formJurnalUmum').html(result.view)
+                    } else {
+                        Swal.fire('Error', result.msg, 'error')
+                    }
+                },
+                error: function(result) {
+                    const respons = result.responseJSON;
+
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error')
+                    $.map(respons, function(res, key) {
+                        $('#' + key).parent('.form-group.form-group-static').addClass(
+                            'is-invalid')
+                        $('#msg_' + key).html(res)
+                    })
+                }
+            })
+        })
+
         $(document).on('change', '#nama_barang', function(e) {
             var value = $(this).val().split('#')
 
@@ -523,6 +492,30 @@
             })
         })
 
+        $(document).on('click', '.btn-edit', function(e) {
+            e.preventDefault()
+
+            var idt = $(this).attr('data-idt')
+            $.get('/transaksi/jurnal_umum/' + idt, function(result) {
+                if (result.success) {
+                    $('#formJurnalUmum').html(result.view)
+                    $('#detailTransaksi').modal('hide')
+
+                    $('#sumber_dana').trigger('change')
+                }
+            })
+        })
+
+        $(document).on('click', '#batalEdit', function(e) {
+            e.preventDefault()
+
+            $.get('/transaksi/jurnal_umum/', function(result) {
+                if (result.success) {
+                    $('#formJurnalUmum').html(result.view)
+                }
+            })
+        })
+
         $(document).on('click', '.btn-delete', function(e) {
             e.preventDefault()
 
@@ -550,6 +543,11 @@
                                 if (result.success) {
                                     Swal.fire('Berhasil!', result.msg, 'success')
                                         .then(() => {
+                                            childWindow = window.open(
+                                                '/simpan_saldo?bulan=' + result
+                                                .bulan + '&tahun=' +
+                                                result.tahun + '&kode_akun=' +
+                                                result.kode_akun, '_blank');
                                             $('#detailTransaksi').modal('hide')
                                         })
                                 }

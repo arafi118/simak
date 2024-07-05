@@ -210,6 +210,9 @@ class PelaporanController extends Controller
         $data['tgl_kondisi'] = $data['tahun'] . '-' . $data['bulan'] . '-' . $data['hari'];
         $data['tanggal_kondisi'] = $usaha->d->kec->nama_kec . ', ' . Tanggal::tglLatin($data['tgl_kondisi']);
 
+        $data['nama_hari'] = Tanggal::namaHari($data['tgl_kondisi']);
+        $data['nama_bulan'] = Tanggal::namaBulan($data['tgl_kondisi']);
+
         $file = $request->laporan;
         if ($file == 3) {
             $laporan = explode('_', $request->sub_laporan);

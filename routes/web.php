@@ -117,7 +117,9 @@ Route::post('/pengaturan/sop/simpanttdpelaporan', [SopController::class, 'simpan
 
 Route::resource('/database/desa', DesaController::class)->middleware('auth');
 
-Route::get('/transaksi/jurnal_umum', [TransaksiController::class, 'jurnalUmum'])->middleware('auth');
+Route::get('/transaksi/jurnal_umum/', [TransaksiController::class, 'jurnalUmum'])->middleware('auth');
+Route::get('/transaksi/jurnal_umum/{transaksi}', [TransaksiController::class, 'editTransaksi'])->middleware('auth');
+
 Route::get('/transaksi/jurnal_angsuran', [TransaksiController::class, 'jurnalAngsuran'])->middleware('auth');
 Route::get('/transaksi/tutup_buku', [TransaksiController::class, 'jurnalTutupBuku'])->middleware('auth');
 Route::get('/trasaksi/saldo/{kode_akun}', [TransaksiController::class, 'saldo'])->middleware('auth');
