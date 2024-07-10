@@ -93,9 +93,13 @@ Route::get('/dashboard/pinjaman', [DashboardController::class, 'pinjaman'])->mid
 Route::get('/dashboard/pemanfaat', [DashboardController::class, 'pemanfaat'])->middleware('auth');
 
 Route::get('/pengaturan/sop', [SopController::class, 'index'])->middleware('auth');
-Route::get('/pengaturan/coa', [SopController::class, 'coa'])->middleware('auth');
 Route::get('/pengaturan/ttd_pelaporan', [SopController::class, 'ttdPelaporan'])->middleware('auth');
 Route::get('/pengaturan/ttd_spk', [SopController::class, 'ttdSpk'])->middleware('auth');
+
+Route::get('/pengaturan/coa', [SopController::class, 'coa'])->middleware('auth');
+Route::post('/pengaturan/coa', [SopController::class, 'createCoa'])->middleware('auth');
+Route::put('/pengaturan/coa/{rekening}', [SopController::class, 'updateCoa'])->middleware('auth');
+Route::delete('/pengaturan/coa/{rekening}', [SopController::class, 'deleteCoa'])->middleware('auth');
 
 Route::put('/pengaturan/lembaga/{usaha}', [SopController::class, 'lembaga'])->middleware('auth');
 Route::put('/pengaturan/pengelola/{usaha}', [SopController::class, 'pengelola'])->middleware('auth');

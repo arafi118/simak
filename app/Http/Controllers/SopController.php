@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AdminInvoice;
 use App\Models\AkunLevel1;
 use App\Models\Kecamatan;
+use App\Models\Rekening;
 use App\Models\TandaTanganLaporan;
 use App\Models\Usaha;
 use App\Models\User;
@@ -35,13 +36,154 @@ class SopController extends Controller
     public function coa()
     {
         $title = "Chart Of Account (CoA)";
-        $akun1 = AkunLevel1::with([
-            'akun2',
-            'akun2.akun3',
-            'akun2.akun3.rek'
-        ])->get();
 
-        return view('sop.coa')->with(compact('title', 'akun1'));
+        if (request()->ajax()) {
+            $akun1 = AkunLevel1::with([
+                'akun2',
+                'akun2.akun3',
+                'akun2.akun3.rek'
+            ])->get();
+
+            $coa = [];
+            foreach ($akun1 as $ak1) {
+                $akun_level_1 = [
+                    "id" => $ak1->kode_akun,
+                    "text" => $ak1->kode_akun . '. ' . $ak1->nama_akun,
+                    'children' => []
+                ];
+
+                foreach ($ak1->akun2 as $ak2) {
+                    $akun2 = [
+                        "id" => $ak2->kode_akun,
+                        "text" => $ak2->kode_akun . '. ' . $ak2->nama_akun,
+                        'children' => []
+                    ];
+
+                    foreach ($ak2->akun3 as $ak3) {
+                        $akun3 = [
+                            "id" => $ak3->kode_akun,
+                            "text" => $ak3->kode_akun . '. ' . $ak3->nama_akun,
+                            'children' => []
+                        ];
+
+                        foreach ($ak3->rek as $rek) {
+                            $akun4 = [
+                                "id" => $rek->kode_akun,
+                                "text" => $rek->kode_akun . '. ' . $rek->nama_akun,
+                            ];
+
+                            array_push($akun3['children'], $akun4);
+                        }
+                        array_push($akun2['children'], $akun3);
+                    }
+                    array_push($akun_level_1['children'], $akun2);
+                }
+                array_push($coa, $akun_level_1);
+            }
+
+            return response()->json($coa);
+        }
+
+        return view('sop.coa')->with(compact('title'));
+    }
+
+    public function createCoa(Request $request)
+    {
+        $data = $request->only([
+            'id_akun',
+            'nama_akun'
+        ]);
+
+        $rek = Rekening::where('kode_akun', $data['id_akun'])->count();
+        if ($rek <= 0) {
+            $kode_akun = explode('.', $data['id_akun']);
+            $lev1 = $kode_akun[0];
+            $lev2 = $kode_akun[1];
+            $lev3 = str_pad($kode_akun[2], 2, '0', STR_PAD_LEFT);
+            $lev4 = str_pad($kode_akun[3], 2, '0', STR_PAD_LEFT);
+
+            $nama_akun = preg_replace('/\d/', '', $data['nama_akun']);
+            $nama_akun = preg_replace('/[^A-Za-z\s]/', '', $nama_akun);
+            $nama_akun = trim($nama_akun);
+
+            $insert = [
+                'parent_id' => $lev1 . $lev2 . intval($lev3),
+                'lev1' => $lev1,
+                'lev2' => $lev2,
+                'lev3' => $lev3,
+                'lev4' => $lev4,
+                'kode_akun' => $data['id_akun'],
+                'nama_akun' => $nama_akun,
+                'jenis_mutasi' => ($lev1 == '1' || $lev1 == '5') ? 'debet' : 'kredit'
+            ];
+
+            $rekening = Rekening::insert($insert);
+
+            return response()->json([
+                'success' => true,
+                'msg' => 'Akun ' . $nama_akun . ' berhasil ditambahkan dengan kode ' . $data['id_akun'],
+                'nama_akun' => $data['id_akun'] . '. ' . $nama_akun,
+                'id' => $data['id_akun'],
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'msg' => 'Akun gagal ditambahkan'
+        ]);
+    }
+
+    public function updateCoa(Request $request, Rekening $rekening)
+    {
+        $data = $request->only([
+            'id_akun',
+            'nama_akun'
+        ]);
+
+        $nama_akun = preg_replace('/\d/', '', $data['nama_akun']);
+        $nama_akun = preg_replace('/[^A-Za-z\s]/', '', $nama_akun);
+        $nama_akun = trim($nama_akun);
+
+        if ($rekening->nama_akun != $nama_akun && $rekening->kode_akun == $data['id_akun']) {
+            Rekening::where('kode_akun', $rekening->kode_akun)->update([
+                'nama_akun' => $nama_akun,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'msg' => 'Akun dengan kode ' . $data['id_akun'] . ' berhasil diperbarui',
+                'nama_akun' => $data['id_akun'] . '. ' . $nama_akun,
+                'id' => $data['id_akun'],
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'msg' => 'Akun gagal diperbarui'
+        ]);
+    }
+
+    public function deleteCoa(Request $request, Rekening $rekening)
+    {
+        $data = $request->only([
+            'id_akun',
+            'nama_akun'
+        ]);
+
+        if ($rekening->kode_akun == $data['id_akun']) {
+            Rekening::where('kode_akun', $rekening->kode_akun)->delete();
+
+            return response()->json([
+                'success' => true,
+                'msg' => 'Akun dengan kode ' . $data['id_akun'] . ' berhasil dihapus',
+                'id' => $data['id_akun'],
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'msg' => 'Akun gagal dihapus'
+        ]);
     }
 
     public function lembaga(Request $request, Usaha $usaha)
@@ -536,36 +678,3 @@ class SopController extends Controller
         ])->cookie($cookie);
     }
 }
-
-[
-    'sidebar-color' => [
-        'target' => '#sidenav-main',
-        'attr' => 'data-color',
-        'default-value' => 'success',
-        'value' => ''
-    ],
-    'sidebar-tipe' => [
-        'target' => '#sidenav-main',
-        'attr' => 'class',
-        'default-value' => 'bg-gradient-dark',
-        'value' => ''
-    ],
-    'navbar-fixed' => [
-        'target' => '#navbarBlur',
-        'attr' => 'class',
-        'default-value' => 'position-sticky blur shadow-blur mt-4 left-auto top-1 z-index-sticky',
-        'value' => ''
-    ],
-    'sidebar-mini' => [
-        'target' => 'body',
-        'attr' => 'class',
-        'default-value' => 'g-sidenav-pinned',
-        'value' => 'g-sidenav-hidden'
-    ],
-    'sidebar-mini' => [
-        'target' => 'body',
-        'attr' => 'class',
-        'default-value' => '',
-        'value' => 'dark-version'
-    ],
-];
