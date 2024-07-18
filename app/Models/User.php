@@ -11,6 +11,8 @@ class User extends Authenticatable
     use HasFactory;
     public $timestamps = false;
 
+    protected $guarded = ['id'];
+
     public function j()
     {
         return $this->belongsTo(Jabatan::class, 'jabatan');

@@ -70,7 +70,16 @@ Route::group(['prefix' => 'master', 'as' => 'master.', 'middleware' => 'master']
 });
 
 Route::get('/', [AuthController::class, 'index'])->middleware('guest')->name('/');
+Route::get('/register', [AuthController::class, 'register'])->middleware('guest')->name('/');
+Route::get('/register/user', [AuthController::class, 'user'])->middleware('guest');
+
+Route::get('/ambil_prov', [AuthController::class, 'provinsi'])->middleware('guest')->name('/');
+Route::get('/ambil_kab/{kode}', [AuthController::class, 'kabupaten'])->middleware('guest')->name('/');
+Route::get('/ambil_kec/{kode}', [AuthController::class, 'kecamatan'])->middleware('guest')->name('/');
+Route::get('/ambil_des/{kode}', [AuthController::class, 'desa'])->middleware('guest')->name('/');
+
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
+Route::post('/register', [AuthController::class, 'store'])->middleware('guest');
 
 Route::get('/pelaporan', [PelaporanController::class, 'index'])->middleware('basic');
 Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan'])->middleware('basic');
