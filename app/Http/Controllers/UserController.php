@@ -20,14 +20,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->first();
-        $user = User::where('id', auth()->user()->id)->with('l', 'j', 'kec', 'kec.kabupaten')->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->first();
+        $user = User::where('id', auth()->user()->id)->with('l', 'j', 'usaha')->first();
         $pendidikan = Pendidikan::all();
 
         $pass = $this->RandomString(strlen($user->pass));
 
         $title = 'Profil User';
-        return view('profil.index')->with(compact('title', 'kec', 'user', 'pendidikan', 'pass'));
+        return view('profil.index')->with(compact('title', 'usaha', 'user', 'pendidikan', 'pass'));
     }
 
     /**
