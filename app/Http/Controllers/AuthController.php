@@ -365,6 +365,69 @@ class AuthController extends Controller
             "hak_akses" => "",
         ]);
 
+        $lokasi = Session::get('lokasi');
+        DB::statement("CREATE TABLE ebudgeting_$lokasi LIKE transaksi_1");
+        DB::statement("CREATE TABLE inventaris_$lokasi LIKE inventaris_1");
+        DB::statement("CREATE TABLE rekening_$lokasi LIKE rekening_1");
+        DB::statement("CREATE TABLE transaksi_$lokasi LIKE transaksi_1");
+        DB::statement("CREATE TABLE saldo_$lokasi LIKE saldo_1");
+
+        DB::statement("INSERT rekening_$lokasi SELECT * FROM rekening_1");
+
+        $create = "
+            CREATE TRIGGER `create_saldo_debit_$lokasi` AFTER INSERT ON `transaksi_$lokasi`
+                FOR EACH ROW BEGIN
+                    INSERT INTO saldo_$lokasi (`id`, `kode_akun`, `tahun`, `bulan`, `debit`, `kredit`)
+                        VALUES (CONCAT(REPLACE(NEW.rekening_debit, '.',''), YEAR(NEW.tgl_transaksi), LPAD(MONTH(NEW.tgl_transaksi), 2, '0')), NEW.rekening_debit, YEAR(NEW.tgl_transaksi), LPAD(MONTH(NEW.tgl_transaksi), 2, '0'), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=NEW.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi)), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=NEW.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi))) ON DUPLICATE KEY UPDATE 
+                        debit= (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=NEW.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi)),
+                        kredit=(SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=NEW.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi));
+
+                    INSERT INTO saldo_$lokasi (`id`, `kode_akun`, `tahun`, `bulan`, `debit`, `kredit`)
+                        VALUES (CONCAT(REPLACE(NEW.rekening_kredit, '.',''), YEAR(NEW.tgl_transaksi), LPAD(MONTH(NEW.tgl_transaksi), 2, '0')), NEW.rekening_kredit, YEAR(NEW.tgl_transaksi), LPAD(MONTH(NEW.tgl_transaksi), 2, '0'), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=NEW.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi)), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=NEW.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi))) ON DUPLICATE KEY UPDATE 
+                        debit= (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=NEW.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi)),
+                        kredit=(SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=NEW.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi));
+
+                END;
+            ";
+
+        $update = "
+            CREATE TRIGGER `update_saldo_debit_$lokasi` AFTER UPDATE ON `transaksi_$lokasi`
+                FOR EACH ROW BEGIN
+
+                    INSERT INTO saldo_$lokasi (`id`, `kode_akun`, `tahun`, `bulan`, `debit`, `kredit`)
+                        VALUES (CONCAT(REPLACE(NEW.rekening_debit, '.',''), YEAR(NEW.tgl_transaksi), LPAD(MONTH(NEW.tgl_transaksi), 2, '0')), NEW.rekening_debit, YEAR(NEW.tgl_transaksi), LPAD(MONTH(NEW.tgl_transaksi), 2, '0'), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=NEW.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi)), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=NEW.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi))) ON DUPLICATE KEY UPDATE 
+                        debit= (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=NEW.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi)),
+                        kredit=(SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=NEW.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi));
+
+                    INSERT INTO saldo_$lokasi (`id`, `kode_akun`, `tahun`, `bulan`, `debit`, `kredit`)
+                        VALUES (CONCAT(REPLACE(NEW.rekening_kredit, '.',''), YEAR(NEW.tgl_transaksi), LPAD(MONTH(NEW.tgl_transaksi), 2, '0')), NEW.rekening_kredit, YEAR(NEW.tgl_transaksi), LPAD(MONTH(NEW.tgl_transaksi), 2, '0'), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=NEW.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi)), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=NEW.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi))) ON DUPLICATE KEY UPDATE 
+                        debit= (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=NEW.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi)),
+                        kredit=(SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=NEW.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(NEW.tgl_transaksi),'-01-01') AND LAST_DAY(NEW.tgl_transaksi));
+
+                END;
+            ";
+
+        $delete = "
+            CREATE TRIGGER `delete_saldo_debit_$lokasi` AFTER DELETE ON `transaksi_$lokasi`
+                FOR EACH ROW BEGIN
+
+                    INSERT INTO saldo_$lokasi (`id`, `kode_akun`, `tahun`, `bulan`, `debit`, `kredit`)
+                        VALUES (CONCAT(REPLACE(OLD.rekening_debit, '.',''), YEAR(OLD.tgl_transaksi), LPAD(MONTH(OLD.tgl_transaksi), 2, '0')), OLD.rekening_debit, YEAR(OLD.tgl_transaksi), MONTH(OLD.tgl_transaksi), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=OLD.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(OLD.tgl_transaksi),'-01-01') AND LAST_DAY(OLD.tgl_transaksi)), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=OLD.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(OLD.tgl_transaksi),'-01-01') AND LAST_DAY(OLD.tgl_transaksi))) ON DUPLICATE KEY UPDATE 
+                        debit= (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=OLD.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(OLD.tgl_transaksi),'-01-01') AND LAST_DAY(OLD.tgl_transaksi)),
+                        kredit=(SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=OLD.rekening_debit AND tgl_transaksi BETWEEN CONCAT(YEAR(OLD.tgl_transaksi),'-01-01') AND LAST_DAY(OLD.tgl_transaksi));
+
+                    INSERT INTO saldo_$lokasi (`id`, `kode_akun`, `tahun`, `bulan`, `debit`, `kredit`)
+                        VALUES (CONCAT(REPLACE(OLD.rekening_kredit, '.',''), YEAR(OLD.tgl_transaksi), LPAD(MONTH(OLD.tgl_transaksi), 2, '0')), OLD.rekening_kredit, YEAR(OLD.tgl_transaksi), MONTH(OLD.tgl_transaksi), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=OLD.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(OLD.tgl_transaksi),'-01-01') AND LAST_DAY(OLD.tgl_transaksi)), (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=OLD.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(OLD.tgl_transaksi),'-01-01') AND LAST_DAY(OLD.tgl_transaksi))) ON DUPLICATE KEY UPDATE 
+                        debit= (SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_debit=OLD.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(OLD.tgl_transaksi),'-01-01') AND LAST_DAY(OLD.tgl_transaksi)),
+                        kredit=(SELECT SUM(jumlah) FROM transaksi_$lokasi WHERE rekening_kredit=OLD.rekening_kredit AND tgl_transaksi BETWEEN CONCAT(YEAR(OLD.tgl_transaksi),'-01-01') AND LAST_DAY(OLD.tgl_transaksi));
+
+                END;
+            ";
+
+        DB::statement($create);
+        DB::statement($update);
+        DB::statement($delete);
+
         return redirect('/register')->with('sucess', 'Register berhasil');
     }
 
