@@ -27,6 +27,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/vendors/css/cryptocoins/cryptocoins.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/pages/account-login.css">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
@@ -97,7 +98,7 @@
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="form-label" for="desa">
                                                             Pilih Desa
@@ -109,12 +110,22 @@
                                                         <small class="text-danger" id="msg_desa"></small>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="nama_usaha">Nama Usaha</label>
                                                         <input autocomplete="off" type="text" name="nama_usaha"
                                                             id="nama_usaha" class="form-control form-control-sm">
                                                         <small class="text-danger" id="msg_nama_usaha"></small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="tgl_register">Tgl Register</label>
+                                                        <input autocomplete="off" type="text" name="tgl_register"
+                                                            id="tgl_register"
+                                                            class="form-control form-control-sm date"
+                                                            value="{{ date('d/m/Y') }}">
+                                                        <small class="text-danger" id="msg_tgl_register"></small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -171,8 +182,13 @@
     <script src="/assets/js/scripts/forms/form-login-register.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="/assets/js/plugins/flatpickr.min.js"></script>
 
     <script>
+        $(".date").flatpickr({
+            dateFormat: "d/m/Y"
+        })
+
         $('.select2').select2({
             theme: 'bootstrap-5'
         })
