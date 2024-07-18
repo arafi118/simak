@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kecamatan;
 use App\Models\Pendidikan;
+use App\Models\Usaha;
 use App\Models\User;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
