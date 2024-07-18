@@ -33,7 +33,7 @@ class User extends Authenticatable
         return $this->belongsTo(Kecamatan::class, 'lokasi', 'id');
     }
 
-    public function usaha()
+    public function u()
     {
         return $this->belongsTo(Usaha::class, 'usaha', 'id');
     }

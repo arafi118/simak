@@ -64,7 +64,7 @@
                                 <div class="form-group">
                                     <label>NIK</label>
                                     <input type="text" class="form-control form-control-sm" name="nik" id="nik"
-                                        placeholder="{{ str_replace('.', '', $user->usaha->kd_desa) }}"
+                                        placeholder="{{ str_replace('.', '', $user->u->kd_desa) }}"
                                         value="{{ $user->nik }}" maxlength="16">
                                     <small class="text-danger" id="msg_nik"></small>
                                 </div>
@@ -104,7 +104,7 @@
                                     <label>Tempat Lahir</label>
                                     <input type="text" name="tempat_lahir" id="tempat_lahir"
                                         class="form-control form-control-sm"
-                                        placeholder="{{ $user->usaha->d->kec->kabupaten->nama_kab }}"
+                                        placeholder="{{ $user->u->d->kec->kabupaten->nama_kab }}"
                                         value="{{ $user->tempat_lahir }}">
                                     <small class="text-danger" id="msg_tempat_lahir"></small>
                                 </div>

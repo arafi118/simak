@@ -22,7 +22,8 @@ class UserController extends Controller
     public function index()
     {
         $usaha = Usaha::where('id', Session::get('lokasi'))->first();
-        $user = User::where('id', auth()->user()->id)->with('l', 'j', 'usaha')->first();
+        $user = User::where('id', auth()->user()->id)->with('l', 'j', 'u')->first();
+
         $pendidikan = Pendidikan::all();
 
         $pass = $this->RandomString(strlen($user->pass));
