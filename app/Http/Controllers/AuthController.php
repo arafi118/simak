@@ -53,6 +53,10 @@ class AuthController extends Controller
             'd.kec'
         ])->first();
 
+        if ($usaha->id != '1') {
+            abort(404);
+        }
+
         $logo = '/assets/img/icon/favicon.png';
         if ($usaha->logo) {
             $logo = '/storage/logo/' . $usaha->logo;
