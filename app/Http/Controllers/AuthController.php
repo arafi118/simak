@@ -247,7 +247,7 @@ class AuthController extends Controller
                 "nama_kec" => $kec->nama_kec,
                 "kd_desa" => str_replace('.', '', $data['desa']),
                 "nama_desa" => $desa->nama,
-                "alamat_desa" => "-",
+                "alamat_desa" => $data['alamat'],
                 "telp_desa" => "-",
                 "sebutan" => "1",
                 "kode_desa" => $data['desa'],
