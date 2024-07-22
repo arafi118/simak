@@ -1631,13 +1631,7 @@ class TransaksiController extends Controller
         if ($id == 1) {
             $rek1 = Rekening::where(function ($query) {
                 $query->where('lev1', '2')->orwhere('lev1', '3')->orwhere('lev1', '4');
-            })->where([
-                ['kode_akun', '!=', '2.1.04.01'],
-                ['kode_akun', '!=', '2.1.04.02'],
-                ['kode_akun', '!=', '2.1.04.03'],
-                ['kode_akun', '!=', '2.1.02.01'],
-                ['kode_akun', '!=', '2.1.03.01']
-            ])->orderBy('kode_akun', 'ASC')->get();
+            })->orderBy('kode_akun', 'ASC')->get();
 
             $rek2 = Rekening::where('lev1', '1')->orderBy('kode_akun', 'ASC')->get();
 
@@ -1645,9 +1639,7 @@ class TransaksiController extends Controller
         } elseif ($id == 2) {
             $rek1 = Rekening::where(function ($query) {
                 $query->where('lev1', '1')->orwhere('lev1', '2');
-            })->where([
-                ['kode_akun', 'NOT LIKE', '2.1.04%']
-            ])->orderBy('kode_akun', 'ASC')->get();
+            })->orderBy('kode_akun', 'ASC')->get();
 
             $rek2 = Rekening::where('lev1', '2')->orwhere('lev1', '3')->orwhere('lev1', '5')->orderBy('kode_akun', 'ASC')->get();
 
