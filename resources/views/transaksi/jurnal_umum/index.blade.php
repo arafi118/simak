@@ -147,6 +147,8 @@
         <input type="hidden" name="del_idtp" id="del_idtp">
         <input type="hidden" name="del_id_pinj" id="del_id_pinj">
     </form>
+
+    <input type="hidden" name="saldo_trx" id="saldo_trx">
 @endsection
 
 @section('script')
@@ -184,6 +186,13 @@
 
             $('select#tahun').val(tahun).change()
             $('select#bulan').val(bulan).change()
+
+            if ($('#sumber_dana').val() != '') {
+                var sumber_dana = $('#sumber_dana').val();
+                var tgl_transaksi = $(this).val().split('/')
+
+                setSaldo(sumber_dana, tgl_transaksi)
+            }
         })
 
         $(document).on('change', '#sumber_dana', function(e) {
@@ -203,14 +212,7 @@
             }
 
             var tgl_transaksi = $('#tgl_transaksi').val().split('/')
-            var tahun = tgl_transaksi[2];
-            var bulan = tgl_transaksi[1];
-            var hari = tgl_transaksi[0];
-
-            $.get('/trasaksi/saldo/' + sumber_dana + '?tahun=' + tahun + '&bulan=' + bulan + '&hari=' + hari,
-                function(result) {
-                    $('#saldo').html(formatter.format(result.saldo))
-                })
+            setSaldo(sumber_dana, tgl_transaksi)
         })
 
         $(document).on('change', '#sumber_dana,#disimpan_ke', function(e) {
@@ -246,45 +248,70 @@
             $('small').html('')
             $('#notifikasi').html('')
 
-            var form = $('#FormTransaksi')
-            $.ajax({
-                type: 'POST',
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function(result) {
-                    if (result.success) {
-                        Swal.fire('Berhasil', result.msg, 'success').then(() => {
+            var nominal = parseFloat($('#nominal').val().split(',').join(''))
+            var saldo_rek = parseFloat($('#saldo_trx').val())
 
-                            $('#notifikasi').html(result.view)
-                            var sumber_dana = $('#sumber_dana').val()
-                            var tgl_transaksi = $('#tgl_transaksi').val().split('/')
-                            var tahun = tgl_transaksi[2];
-                            var bulan = tgl_transaksi[1];
-                            var hari = tgl_transaksi[0];
+            var sumber_dana = $('#sumber_dana').val()
+            if (sumber_dana == '1.2.02.01') {
+                saldo_rek *= -1;
+            }
 
-                            $.get('/trasaksi/saldo/' + sumber_dana + '?tahun=' + tahun +
-                                '&bulan=' + bulan + '&hari=' + hari,
-                                function(res) {
-                                    $('#saldo').html(formatter.format(res.saldo))
-                                })
+            if (sumber_dana == '1.2.02.02') {
+                saldo_rek *= -1;
+            }
 
-                            $('#nominal').val('0')
+            if (sumber_dana == '1.2.02.03') {
+                saldo_rek *= -1;
+            }
+
+            if (sumber_dana == '1.1.04.01') {
+                saldo_rek *= -1;
+            }
+
+            if (sumber_dana == '1.1.04.02') {
+                saldo_rek *= -1;
+            }
+
+            if (sumber_dana == '1.1.04.03') {
+                saldo_rek *= -1;
+            }
+
+            if (saldo_rek >= nominal) {
+                var form = $('#FormTransaksi')
+                $.ajax({
+                    type: 'POST',
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(result) {
+                        if (result.success) {
+                            Swal.fire('Berhasil', result.msg, 'success').then(() => {
+
+                                $('#notifikasi').html(result.view)
+                                var sumber_dana = $('#sumber_dana').val()
+                                var tgl_transaksi = $('#tgl_transaksi').val().split('/')
+                                setSaldo(sumber_dana, tgl_transaksi)
+
+                                $('#nominal').val('0')
+                            })
+                        } else {
+                            Swal.fire('Error', result.msg, 'error')
+                        }
+                    },
+                    error: function(result) {
+                        const respons = result.responseJSON;
+
+                        Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error')
+                        $.map(respons, function(res, key) {
+                            $('#' + key).parent('.form-group.form-group-static').addClass(
+                                'is-invalid')
+                            $('#msg_' + key).html(res)
                         })
-                    } else {
-                        Swal.fire('Error', result.msg, 'error')
                     }
-                },
-                error: function(result) {
-                    const respons = result.responseJSON;
+                })
+            } else {
+                Swal.fire('Error', 'Nominal transaksi melebihi saldo', 'error')
+            }
 
-                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error')
-                    $.map(respons, function(res, key) {
-                        $('#' + key).parent('.form-group.form-group-static').addClass(
-                            'is-invalid')
-                        $('#msg_' + key).html(res)
-                    })
-                }
-            })
         })
 
         $(document).on('click', '#SimpanEditTransaksi', function(e) {
@@ -569,6 +596,18 @@
                 tooltipList = tooltipTriggerList.map(function(e) {
                     return new bootstrap.Tooltip(e)
                 });
+        }
+
+        function setSaldo(sumber_dana, tgl_transaksi) {
+            var tahun = tgl_transaksi[2];
+            var bulan = tgl_transaksi[1];
+            var hari = tgl_transaksi[0];
+
+            $.get('/trasaksi/saldo/' + sumber_dana + '?tahun=' + tahun + '&bulan=' + bulan + '&hari=' + hari,
+                function(result) {
+                    $('#saldo').html(formatter.format(result.saldo))
+                    $('#saldo_trx').val(result.saldo)
+                })
         }
     </script>
 @endsection
