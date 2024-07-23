@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminInvoice;
 use App\Models\AkunLevel1;
-use App\Models\Kecamatan;
 use App\Models\Rekening;
 use App\Models\TandaTanganLaporan;
 use App\Models\Usaha;
@@ -234,7 +233,7 @@ class SopController extends Controller
         ]);
     }
 
-    public function pengelola(Request $request, Kecamatan $usaha)
+    public function pengelola(Request $request, Usaha $usaha)
     {
         $data = $request->only([
             'sebutan_pengawas',
@@ -270,99 +269,7 @@ class SopController extends Controller
         ]);
     }
 
-    public function pinjaman(Request $request, Kecamatan $kec)
-    {
-        $data = $request->only([
-            'default_jasa',
-            'default_jangka',
-            'pembulatan',
-            'sistem'
-        ]);
-
-        $validate = Validator::make($data, [
-            'default_jasa' => 'required',
-            'default_jangka' => 'required',
-            'pembulatan' => 'required'
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-        }
-
-        $data['pembulatan'] = "$data[sistem]$data[pembulatan]";
-
-        $kecamatan = Kecamatan::where('id', $kec->id)->update([
-            'def_jasa' => $data['default_jasa'],
-            'def_jangka' => $data['default_jangka'],
-            'pembulatan' => $data['pembulatan'],
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'msg' => 'Sistem Pinjaman Berhasil Diperbarui.',
-        ]);
-    }
-
-    public function asuransi(Request $request, Kecamatan $kec)
-    {
-        $data = $request->only([
-            'nama_asuransi',
-            'jenis_asuransi',
-            'usia_maksimal',
-            'presentase_premi',
-        ]);
-
-        $validate = Validator::make($data, [
-            'nama_asuransi' => 'required',
-            'jenis_asuransi' => 'required',
-            'usia_maksimal' => 'required',
-            'presentase_premi' => 'required'
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-        }
-
-        $kecamatan = Kecamatan::where('id', $kec->id)->update([
-            'nama_asuransi_p' => $data['nama_asuransi'],
-            'pengaturan_asuransi' => $data['jenis_asuransi'],
-            'usia_mak' => $data['usia_maksimal'],
-            'besar_premi' => $data['presentase_premi'],
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'msg' => 'Pengaturan Asuransi Berhasil Diperbarui.',
-        ]);
-    }
-
-    public function spk(Request $request, Kecamatan $kec)
-    {
-        $data = $request->only([
-            'spk'
-        ]);
-
-        $validate = Validator::make($data, [
-            'spk' => 'required'
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-        }
-
-        $spk = json_encode($data['spk']);
-
-        $kecamatan = Kecamatan::where('id', $kec->id)->update([
-            'redaksi_spk' => $spk
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'msg' => 'Redaksi Dokumen SPK Berhasil Diperbarui.',
-        ]);
-    }
-
-    public function logo(Request $request, Kecamatan $usaha)
+    public function logo(Request $request, Usaha $usaha)
     {
         $data = $request->only([
             'logo'
@@ -413,42 +320,6 @@ class SopController extends Controller
         ]);
     }
 
-    public function beritaAcara(Request $request, Kecamatan $kec)
-    {
-        $data = $request->only([
-            'ba'
-        ]);
-
-        $validate = Validator::make($data, [
-            'ba' => 'required'
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-        }
-
-        $ba = $data['ba'];
-        $ba = str_replace("<p>", "<div>", $ba);
-        $ba = str_replace("</p>", "</div>", $ba);
-
-        if ($ba != "<div><br></div>") {
-            $ba = json_encode($ba);
-            $kecamatan = Kecamatan::where('id', $kec->id)->update([
-                'berita_acara' => $ba
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'msg' => 'Berita Acara Berhasil Diperbarui.',
-            ]);
-        }
-
-        return response()->json([
-            'success' => false,
-            'msg' => 'Berita Acara Gagal Diperbarui.',
-        ]);
-    }
-
     public function ttdPelaporan()
     {
         $title = "Pengaturan Tanda Tangan Pelaporan";
@@ -465,15 +336,6 @@ class SopController extends Controller
         }
 
         return view('sop.partials.ttd_pelaporan')->with(compact('title', 'usaha', 'tanggal'));
-    }
-
-    public function ttdSpk()
-    {
-        $title = "Pengaturan Tanda Tangan SPK";
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('ttd')->first();
-        $keyword = Pinjaman::keyword();
-
-        return view('sop.partials.ttd_spk')->with(compact('title', 'kec', 'keyword'));
     }
 
     public function simpanTtdPelaporan(Request $request)
@@ -553,95 +415,6 @@ class SopController extends Controller
 
         $title = 'Daftar Invoice';
         return view('sop.invoice')->with(compact('title'));
-    }
-
-    public function calk(Request $request, Kecamatan $kec)
-    {
-        $data = $request->only([
-            'peraturan_desa',
-            'bantuan_rumah_tangga',
-            'pengembangan_kapasitas',
-            'pelatihan_masyarakat',
-            'peningkatan_modal',
-            'penambahan_investasi',
-            'pendirian_unit_usaha',
-        ]);
-
-        $validate = Validator::make($data, [
-            'peraturan_desa' => 'required',
-            'bantuan_rumah_tangga' => 'required',
-            'pengembangan_kapasitas' => 'required',
-            'pelatihan_masyarakat' => 'required',
-            'peningkatan_modal' => 'required',
-            'penambahan_investasi' => 'required',
-            'pendirian_unit_usaha' => 'required'
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-        }
-
-        $data = [
-            'peraturan_desa' => $request->peraturan_desa,
-            "D" => [
-                "1" => [
-                    "d" => [
-                        "1" => $request->bantuan_rumah_tangga,
-                        "2" => $request->pengembangan_kapasitas,
-                        "3" => $request->pelatihan_masyarakat
-                    ]
-                ],
-                "2" => [
-                    "a" => str_replace(',', '', $request->peningkatan_modal),
-                    "b" => str_replace(',', '', $request->penambahan_investasi),
-                    "c" => str_replace(',', '', $request->pendirian_unit_usaha)
-                ]
-            ]
-        ];
-
-        $kec = Kecamatan::where('id', $kec->id)->update([
-            'calk' => json_encode($data)
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'msg' => 'Pengaturan CALK Berhasil Diperbarui.',
-        ]);
-    }
-
-    public function pesanWhatsapp(Request $request, Kecamatan $kec)
-    {
-        if ($kec->id != Session::get('lokasi')) {
-            abort(404);
-        }
-
-        $data = $request->only([
-            'tagihan',
-            'angsuran'
-        ]);
-
-        $validate = Validator::make($data, [
-            'tagihan' => 'required',
-            'angsuran' => 'required',
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
-        }
-
-        $wa = [
-            'tagihan' => $data['tagihan'],
-            'angsuran' => $data['angsuran']
-        ];
-
-        Kecamatan::where('id', $kec->id)->update([
-            'whatsapp' => $wa
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'msg' => 'Pengaturan Pesan Whatsapp Berhasil Diperbarui.',
-        ]);
     }
 
     public function detailInvoice($inv)

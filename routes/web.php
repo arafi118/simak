@@ -112,13 +112,7 @@ Route::delete('/pengaturan/coa/{rekening}', [SopController::class, 'deleteCoa'])
 
 Route::put('/pengaturan/lembaga/{usaha}', [SopController::class, 'lembaga'])->middleware('auth');
 Route::put('/pengaturan/pengelola/{usaha}', [SopController::class, 'pengelola'])->middleware('auth');
-Route::put('/pengaturan/pinjaman/{usaha}', [SopController::class, 'pinjaman'])->middleware('auth');
-Route::put('/pengaturan/asuransi/{usaha}', [SopController::class, 'asuransi'])->middleware('auth');
-Route::put('/pengaturan/spk/{usaha}', [SopController::class, 'spk'])->middleware('auth');
 Route::put('/pengaturan/logo/{usaha}', [SopController::class, 'logo'])->middleware('auth');
-Route::put('/pengaturan/calk/{usaha}', [SopController::class, 'calk'])->middleware('auth');
-Route::put('/pengaturan/pesan_whatsapp/{usaha}', [SopController::class, 'pesanWhatsapp'])->middleware('auth');
-Route::put('/pengaturan/berita_acara/{usaha}', [SopController::class, 'beritaAcara'])->middleware('auth');
 Route::get('/pengaturan/local_view/{key}/{val?}', [SopController::class, 'localView'])->middleware('auth');
 
 Route::post('/pengaturan/whatsapp/{token}', [SopController::class, 'whatsapp'])->middleware('auth');
