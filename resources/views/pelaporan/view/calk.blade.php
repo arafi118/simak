@@ -59,7 +59,7 @@
                     <b>CATATAN ATAS LAPORAN KEUANGAN</b>
                 </div>
                 <div style="font-size: 18px; text-transform: uppercase;">
-                    <b>{{ $kec->nama_lembaga_sort }}</b>
+                    <b>{{ $usaha->nama_usaha }}</b>
                 </div>
                 <div style="font-size: 16px;">
                     <b>{{ strtoupper($sub_judul) }}</b>
@@ -97,7 +97,7 @@
             </p>
             <table style="margin-top: -10px; margin-left: 15px;">
                 <tr>
-                    <td style="padding: 0px; 4px;" width="100">{{ $kec->nama_bp_long }}</td>
+                    <td style="padding: 0px; 4px;" width="100">{{ $usaha->badan_pengawas }}</td>
                     <td style="padding: 0px; 4px;">:</td>
                     <td style="padding: 0px; 4px;">
                         {{ $pengawas ? $pengawas->namadepan . ' ' . $pengawas->namabelakang : '......................................' }}
@@ -113,7 +113,7 @@
                     </tr>
                 @else
                     <tr>
-                        <td style="padding: 0px; 4px;">{{ $kec->sebutan_level_1 }}</td>
+                        <td style="padding: 0px; 4px;">{{ $usaha->kepala_lembaga }}</td>
                         <td style="padding: 0px; 4px;">:</td>
                         <td style="padding: 0px; 4px;">
                             {{ $dir ? $dir->namadepan . ' ' . $dir->namabelakang : '......................................' }}
@@ -121,14 +121,14 @@
                     </tr>
                 @endif
                 <tr>
-                    <td style="padding: 0px; 4px;">{{ $kec->sebutan_level_2 }}</td>
+                    <td style="padding: 0px; 4px;">{{ $usaha->kabag_administrasi }}</td>
                     <td style="padding: 0px; 4px;">:</td>
                     <td style="padding: 0px; 4px;">
                         {{ $sekr ? $sekr->namadepan . ' ' . $sekr->namabelakang : '......................................' }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding: 0px; 4px;">{{ $kec->sebutan_level_3 }}</td>
+                    <td style="padding: 0px; 4px;">{{ $usaha->kabag_keuangan }}</td>
                     <td style="padding: 0px; 4px;">:</td>
                     <td style="padding: 0px; 4px;">
                         {{ $bend ? $bend->namadepan . ' ' . $bend->namabelakang : '......................................' }}
@@ -136,7 +136,7 @@
                 </tr>
                 @if ($dir_utama)
                     <tr>
-                        <td style="padding: 0px; 4px;">{{ $kec->sebutan_level_1 }}</td>
+                        <td style="padding: 0px; 4px;">{{ $usaha->kepala_lembaga }}</td>
                         <td style="padding: 0px; 4px;">:</td>
                         <td style="padding: 0px; 4px;">
                             {{ $dir ? $dir->namadepan . ' ' . $dir->namabelakang : '......................................' }}

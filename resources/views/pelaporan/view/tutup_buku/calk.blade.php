@@ -3,8 +3,7 @@
     $keuangan = new Keuangan();
 
     $saldo_aset = 0;
-    $calk = json_decode($kec->calk, true);
-    $peraturan_desa = $calk['peraturan_desa'];
+    $peraturan_desa = $usaha->peraturan_desa;
 
     $calk = [
         '0' => [
@@ -42,8 +41,6 @@
 
         $i++;
     }
-
-    $rek_alokasi_laba = ['2.1.04.01', '2.1.04.02', '2.1.04.03'];
 @endphp
 
 @extends('pelaporan.layout.base')
@@ -62,7 +59,7 @@
                     <b>CATATAN ATAS LAPORAN KEUANGAN</b>
                 </div>
                 <div style="font-size: 18px; text-transform: uppercase;">
-                    <b>{{ $kec->nama_lembaga_sort }}</b>
+                    <b>{{ $usaha->nama_usaha }}</b>
                 </div>
                 <div style="font-size: 16px;">
                     <b>{{ strtoupper($sub_judul) }}</b>
@@ -78,55 +75,29 @@
         <li>
             <div style="text-transform: uppercase;">Gambaran Umum</div>
             <div style="text-align: justify">
-                {{ $kec->nama_lembaga_sort }} adalah Badan Usaha yang didirikan dari transformasi UPK PNPM-MPd
-                dengan
-                kegiatan usaha Dana Bergulir Masyarakat (DBM) melalui produk usahanya SPP dan UEP. Dalam
-                perkembangannya sebagian dari laba DBM UPK PNPM-MPd kemudian sebelum
-                ditetapkannya PP 11 tahun 2021 telah digunakan untuk membentuk unit usaha Perdagangan dan
-                Produksi*.
+                {{ $usaha->nama_usaha }} adalah Badan Usaha yang didirikan oleh {{ $usaha->d->sebutan_desa->sebutan_desa }}
+                {{ $usaha->d->nama_desa }} sebagai tindak lanjut dari amanat Pemerintahan Republik Indonesia yang antara
+                lain tertuang dalam UU nomer 6 Tahun 2014 Tentang Desa., Peraturan Menteri Desa Pembangunan Daerah
+                Tertinggal dan Transmigrasi Nomor 4 Tahun 2015 tentang Pendirian, Pengurusan dan Pengelolaan, dan Pembubaran
+                Badan Usaha Milik Desa., Peraturan Menteri Dalam Negeri Nomor 1 Tahun 2016 tentang Pengelolaan Aset Desa.,
+                PP No.72 Tahun 2005 tentang Desa Peraturan Pemerintah Nomor 11 Tahun 2011 Tentang Bumdes.
             </div>
             <p style="text-align: justify">
-                Bumdesma Lkd setelah didirikan sesuai ketentuan PP 11 tahun 2021 dilaksanakan transformasi
-                sesuai Permendesa
-                PDTT Nomor 15 tahun 2021 yang meliputi pengalihan aset, pengalihan kelembagaan, pengalihan
-                personil, dan
-                pengalihan kegiatan usaha. Modal awal Pendirian Bumdesma Lkd sesuai dengan ketentuan tersebut
-                adalah berasal
-                dari keseluruhan pengalihan keseluruhan aset DBM Eks PNPM MPd (Permendesa PDTT 15 tahun 2021
-                Pasal 5) yang
-                dicatat sebagai Ekuitas Bumdesma Lkd ditambah dengan Penyertaan Modal Desa. Yang kemudian
-                didalam laporan
-                posisi keuangan ekuitas yang berasal dari Aset DBM Eks PNPM Mpd disebut Modal Masyarakat Desa
-                (Permendesa
-                PDTT 15 tahun 2021 Pasal 6).
+                Sesuai amanat regulasi maka setiap desa bisa berivestasi kepada Bumdes melalu penetapan APBDes sebagai modal
+                mayoritas dan bisa menerima investasi masyarakat sebagai tambahan modal Bumdes. Modal tersebut digunakan
+                untuk meningkatkan produktifitas ekonomi masyarakat dan keuangan desa dengan mengembangkan fungsi dan
+                manfaat potensi sumber daya alam dan sumber daya manusia di wilayah desa setempat, disamping mencari sumber
+                dukungan pengembangan dari pihak swasta dan pemerintah baik dilingkungan desa sendiri maupun luar desa.
             </p>
             <p style="text-align: justify">
-                Sesuai dengan ketentuan UU Cipta Kerja No 11 Tahun 2020 bahwa Menetapkan status Badan hukum BUM
-                Desa pada
-                ketentuan Pasal 117 "bahwa Badan Usaha Milik Desa yang selanjutnya disebut BUM Desa adalah Badan
-                hukum yang
-                didirikan oleh desa dan atau bersama desa-desa guna mengelola usaha, memanfaatkan aset,
-                mengembangkan
-                investasi dan produktivitas, menyediakan jasa pelayanan, dan atau jenis usaha lainnya untuk
-                sebesar-besarnya
-                kesejahteraan masyarakat desa." Status inilah yang menjadi dasar hukum pelaksanaan usaha
-                didirikan dengan
-                kegiatan Usaha Utama DBM.
+                {{ $usaha->nama_usaha }} didirikan di {{ $usaha->d->sebutan_desa->sebutan_desa }} {{ $usaha->d->nama_desa }}
+                berdasarkan PERATURAN KEPALA DESA NOMOR {{ $usaha->peraturan_desa }} dan mendapatkan Sertifikat Badan Hukum
+                dari Menteri Hukum dan Hak Asasi Manusia No. {{ $usaha->nomor_bh }}. Dalam perjalanan pengelolaan
+                manajeman dan bisnis {{ $usaha->nama_usaha }} memiliki struktur kepengurusan pusat sebagai berikut :
             </p>
-            <p style="text-align: justify">
-                {{ $kec->nama_lembaga_sort }} didirikan di {{ $kec->nama_kec }} berdasarkan PERATURAN BERSAMA
-                KEPALA DESA
-                NOMOR {{ $peraturan_desa }} dan mendapatkan Sertifikat Badan Hukum dari Menteri Hukum dan Hak
-                Asasi Manusia
-                No. {{ $kec->nomor_bh }}. {{ $kec->nama_lembaga_sort }}
-                menjalankan usaha
-                pinjaman Dana Bergulir Masyarakat yang masuk dalam kategori usaha mikrofinance dan berdomisili
-                di {{ $kec->nama_kec }}
-                dengan perangkat organisasi sebagai berikut:
-
             <table style="margin-top: -10px; margin-left: 15px;">
                 <tr>
-                    <td style="padding: 0px; 4px;" width="100">{{ $kec->nama_bp_long }}</td>
+                    <td style="padding: 0px; 4px;" width="100">{{ $usaha->badan_pengawas }}</td>
                     <td style="padding: 0px; 4px;">:</td>
                     <td style="padding: 0px; 4px;">
                         {{ $pengawas ? $pengawas->namadepan . ' ' . $pengawas->namabelakang : '......................................' }}
@@ -142,7 +113,7 @@
                     </tr>
                 @else
                     <tr>
-                        <td style="padding: 0px; 4px;">{{ $kec->sebutan_level_1 }}</td>
+                        <td style="padding: 0px; 4px;">{{ $usaha->kepala_lembaga }}</td>
                         <td style="padding: 0px; 4px;">:</td>
                         <td style="padding: 0px; 4px;">
                             {{ $dir ? $dir->namadepan . ' ' . $dir->namabelakang : '......................................' }}
@@ -150,14 +121,14 @@
                     </tr>
                 @endif
                 <tr>
-                    <td style="padding: 0px; 4px;">{{ $kec->sebutan_level_2 }}</td>
+                    <td style="padding: 0px; 4px;">{{ $usaha->kabag_administrasi }}</td>
                     <td style="padding: 0px; 4px;">:</td>
                     <td style="padding: 0px; 4px;">
                         {{ $sekr ? $sekr->namadepan . ' ' . $sekr->namabelakang : '......................................' }}
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding: 0px; 4px;">{{ $kec->sebutan_level_3 }}</td>
+                    <td style="padding: 0px; 4px;">{{ $usaha->kabag_keuangan }}</td>
                     <td style="padding: 0px; 4px;">:</td>
                     <td style="padding: 0px; 4px;">
                         {{ $bend ? $bend->namadepan . ' ' . $bend->namabelakang : '......................................' }}
@@ -165,7 +136,7 @@
                 </tr>
                 @if ($dir_utama)
                     <tr>
-                        <td style="padding: 0px; 4px;">{{ $kec->sebutan_level_1 }}</td>
+                        <td style="padding: 0px; 4px;">{{ $usaha->kepala_lembaga }}</td>
                         <td style="padding: 0px; 4px;">:</td>
                         <td style="padding: 0px; 4px;">
                             {{ $dir ? $dir->namadepan . ' ' . $dir->namabelakang : '......................................' }}
@@ -178,7 +149,6 @@
                     <td style="padding: 0px; 4px;">.................................</td>
                 </tr> --}}
             </table>
-            </p>
         </li>
         <li style="margin-top: 12px;">
             <div style="text-transform: uppercase;">
@@ -189,14 +159,12 @@
                     Pernyataan Kepatuhan
                     <ol style="list-style: lower-alpha;">
                         <li>
-                            Laporan keuangan disusun menggunakan Standar Akuntansi Keuangan
-                            Perusahaan Jasa Keuangan
+                            Laporan keuangan disusun menggunakan Standar Akuntansi Keuangan ETAP dan/atau EP
                         </li>
                         <li>Dasar Penyusunan Kepmendesa 136 Tahun 2022</li>
                         <li>
-                            Dasar penyusunan laporan keuangan adalah biaya historis dan
-                            menggunakan asumsi dasar akrual. Mata uang penyajian yang digunakan untuk menyusun laporan
-                            keuangan ini adalah Rupiah.
+                            Dasar penyusunan laporan keuangan adalah biaya historis dan menggunakan asumsi dasar akrual.
+                            Mata uang penyajian yang digunakan untuk menyusun laporan keuangan ini adalah Rupiah.
                         </li>
                     </ol>
                 </li>
@@ -213,9 +181,8 @@
                     Aset Tetap (berwujud dan tidak berwujud)
                     <ol style="list-style: lower-alpha">
                         <li>
-                            Aset tetap dicatat sebesar biaya perolehannya jika aset
-                            tersebut dimiliki secara hukum oleh Bumdesma Lkd Aset
-                            tetap disusutkan menggunakan metode garis lurus tanpa nilai residu.
+                            Aset tetap dicatat sebesar biaya perolehannya jika aset tersebut dimiliki secara hukum oleh
+                            Bumdesma Lkd Aset tetap disusutkan menggunakan metode garis lurus tanpa nilai residu.
                         </li>
                     </ol>
                 </li>
@@ -223,10 +190,10 @@
                     Pengakuan Pendapatan dan Beban
                     <ol style="list-style: lower-alpha;">
                         <li>
-                            Jasa piutang kelompok dan lembaga lain yang sudah memasuki
-                            jatuh tempo pembayaran diakui sebagai pendapatan meskipun tidak diterbitkan kuitansi sebagai
-                            bukti pembayaran jasa piutang. Sedangkan denda keterlambatan pembayaran/pinalti diakui
-                            sebagai pendapatan pada saat diterbitkan kuitansi pembayaran.
+                            Laba penjualan dan Jasa piutang yang sudah memasuki jatuh tempo pembayaran diakui sebagai
+                            pendapatan meskipun tidak diterbitkan kuitansi sebagai bukti pembayaran jasa piutang. Sedangkan
+                            denda keterlambatan pembayaran/pinalti diakui sebagai pendapatan pada saat diterbitkan kuitansi
+                            pembayaran.
                         </li>
                         <li>
                             Adapun kewajiban bayar atas kebutuhan operasional, pemasaran
@@ -376,112 +343,34 @@
             <div style="text-transform: uppercase;">
                 Ketentuan Pembagian Laba Usaha
             </div>
+            <div style="text-align: justify">
+                Pembagian laba {{ $usaha->nama_usaha }} ditentukan dalam rapat pertanggungjawaban pengurus dan RUPS.
+                Adapun hasil keputusan pembagian laba tahun buku {{ $tahun }} adalah sebagai berikut:
+            </div>
             <ol>
                 <li>
-                    Pembagian atas laba usaha dibagi menjadi Laba dibagikan dan laba ditahan sesuai dengan ketentuan pada
-                    Permendesa PDTT nomor 15 tahun 2021 yaitu:
-                    <ol style="list-style: lower-latin;">
-                        <li>
-                            Hasil usaha yang dibagikan paling sedikit terdiri atas: bagian milik bersama masyarakat Desa;
-                            dan bagian Desa;
-                        </li>
-                        <li>
-                            Besaran masing-masing bagian dihitung berdasarkan persentase penyertaan modal dan dituangkan
-                            dalamanggaran dasar.
-                        </li>
-                        <li>
-                            <div>Bagian Desa;</div>
-                            <ul>
-                                <li style="list-style: none; margin-left: -20px;">
-                                    <table cellspacing="0" cellpadding="0">
-                                        <tr>
-                                            <td class="b" colspan="3" align="center">Desa</td>
-                                            <td class="b" align="center">s/d Tahun lalu</td>
-                                            <td class="b" align="center">Tahun ini</td>
-                                            <td class="b" align="center">s/d Tahun Ini</td>
-                                        </tr>
-
-                                        @foreach ($kec->desa as $desa)
-                                            @php
-                                                $laba_th_lalu = 0;
-                                                $laba_th_ini = 0;
-                                                if ($desa->saldo && $tgl_kondisi >= $tgl_mad) {
-                                                    $laba_th_lalu = floatval($desa->saldo->debit);
-                                                    $laba_th_ini = floatval($desa->saldo->kredit);
-                                                }
-                                            @endphp
-                                            <tr>
-                                                <td>{{ $loop->iteration }}.</td>
-                                                <td>{{ $desa->sebutan_desa->sebutan_desa }} {{ $desa->nama_desa }}</td>
-                                                <td>:</td>
-                                                <td width="70" align="right">{{ number_format($laba_th_lalu, 2) }}
-                                                </td>
-                                                <td width="70" align="right">
-                                                    {{ number_format($laba_th_ini - $laba_th_lalu, 2) }}</td>
-                                                <td width="70" align="right">{{ number_format($laba_th_ini, 2) }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </table>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            Bagian milik bersama masyarakat Desa digunakan untuk:
-                            <ol>
-                                <li>
-                                    Kegiatan sosial kemasyarakatan dan bantuan rumah tangga miskin
-                                    <ul style="list-style: lower-alpha">
-                                        <li>
-                                            s/d Tahun Lalu Rp. {{ number_format($calk[0]['th_lalu'], 2) }}
-                                        </li>
-                                        <li>
-                                            dan Tahun Ini Rp. {{ number_format($calk[0]['th_ini'], 2) }}
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    Pengembangan kapasitas kelompok simpan pinjam perempuan/usaha ekonomi produktif
-                                    <ul style="list-style: lower-alpha">
-                                        <li>
-                                            s/d Tahun Lalu Rp. {{ number_format($calk[1]['th_lalu'], 2) }}
-                                        </li>
-                                        <li>
-                                            dan Tahun Ini Rp. {{ number_format($calk[1]['th_ini'], 2) }}
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    Pelatihan masyarakat, dan kelompok pemanfaat umum
-                                    <ul style="list-style: lower-alpha">
-                                        <li>
-                                            s/d Tahun Lalu Rp. {{ number_format($calk[2]['th_lalu'], 2) }}
-                                        </li>
-                                        <li>
-                                            dan Tahun Ini Rp. {{ number_format($calk[2]['th_ini'], 2) }}
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </li>
-                    </ol>
+                    Total Laba bersih Rp. .....................
                 </li>
                 <li>
-                    <div>Laba Ditahan</div>
-                    <ol style="list-style: lower-latin;">
-                        <li>
-                            Laba Ditahan untuk Penambahan Modal Kegiatan DBM Rp. {{ number_format($calk[3]['th_ini'], 2) }}
-                        </li>
-                        <li>
-                            Laba Ditahan untuk Penambahan Investasi Usaha Rp. {{ number_format($calk[4]['th_ini'], 2) }}
-                        </li>
-                        <li>
-                            Laba Ditahan untuk Pendirian Unit Usaha Rp. {{ number_format($calk[5]['th_ini'], 2) }}
-                        </li>
-                    </ol>
+                    Alokasi penambahan modal {{ $usaha->nama_usaha }} Rp. .................
+                </li>
+                <li>
+                    Alokasi PADes {{ $usaha->nama_usaha }} Rp. .................
                 </li>
             </ol>
         </li>
+
+        @if ($keterangan)
+            <li style="margin-top: 12px;">
+                <div style="text-transform: uppercase;">
+                    Lain Lain
+                </div>
+                <div style="text-align: justify">
+                    {!! $keterangan->catatan !!}.
+                </div>
+            </li>
+        @endif
+
         <li style="margin-top: 12px;">
             <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;">
                 <tr>
@@ -490,15 +379,15 @@
                             Penutup
                         </div>
                         <div style="text-align: justify">
-                            Laporan Keuangan {{ $kec->nama_lembaga_sort }} ini disajikan dengan berpedoman pada Keputusan
-                            Kementerian Desa Nomor 136/2022 Tentang Panduan Penyusunan Pelaporan Bumdes. Dimana yang
-                            dimaksud Bumdes yang dimaksud dalam Keputusan Kementerian Desa adalah meliputi Bumdes, Bumdesma
-                            dan Bumdesma Lkd. Catatan atas Laporan Keuangan (CaLK) ini merupakan bagian tidak terpisahkan
-                            dari Laporan Keuangan Badan Usaha Milik Desa Bersama {{ $kec->nama_lembaga_sort }} untuk
-                            Laporan Operasi {{ $nama_tgl }}. Selanjutnya Catatan atas Laporan Keuangan ini diharapkan
-                            untuk dapat berguna bagi pihak-pihak yang berkepentingan (stakeholders) serta memenuhi
-                            prinsip-prinsip transparansi, akuntabilitas, pertanggungjawaban, independensi, dan fairness
-                            dalam pengelolaan keuangan {{ $kec->nama_lembaga_sort }}.
+                            Laporan Keuangan {{ $usaha->nama_usaha }} ini disajikan dengan berpedoman pada Keputusan
+                            Kementerian
+                            Desa Nomor 136/2022 Tentang Panduan Penyusunan Pelaporan Bumdes. Catatan atas Laporan Keuangan
+                            (CaLK) ini merupakan bagian tidak terpisahkan dari Laporan Keuangan Badan Usaha Milik Desa
+                            (Bumdes) Maju Jaya untuk Laporan Operasi Bulan {{ $nama_bulan }} Tahun {{ $tahun }}.
+                            Selanjutnya Catatan atas Laporan Keuangan ini diharapkan untuk dapat berguna bagi pihak-pihak
+                            yang berkepentingan (stakeholders) serta memenuhi prinsip-prinsip transparansi, akuntabilitas,
+                            pertanggungjawaban, independensi, dan fairness dalam pengelolaan keuangan
+                            {{ $usaha->nama_usaha }}.
                         </div>
 
                         <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;"
