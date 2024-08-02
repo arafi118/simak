@@ -126,12 +126,12 @@
                 <div class="flex align-items-center">
                     <img src="<?php echo $gambar; ?>" width="50" height="50">
                     <div class="ml-4">
-                        <div class="block fw-bold">{{ strtoupper($kec->nama_lembaga_sort) }}</div>
+                        <div class="block fw-bold">{{ strtoupper($usaha->nama_usaha) }}</div>
                         <div class="block fw-bold">
-                            {{ strtoupper('Kec. ' . $kec->nama_kec . ' Kab. ' . $kec->kabupaten->nama_kab . ' ' . $kec->kabupaten->nama_prov) }}
+                            {{ strtoupper('Kec. ' . $usaha->d->kec->nama_kec . ' Kab. ' . $usaha->d->kec->kabupaten->nama_kab . ' ' . $usaha->d->kec->kabupaten->nama_prov) }}
                         </div>
-                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $kec->nomor_bh }}</div>
-                        <div class="block fs-10">{{ $kec->alamat_kec . ', Telp. ' . $kec->telpon_kec }}</div>
+                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $usaha->nomor_bh }}</div>
+                        <div class="block fs-10">{{ $usaha->alamat . ', Telp. ' . $usaha->telpon }}</div>
                     </div>
                 </div>
                 <div class="justify-right">
@@ -202,8 +202,8 @@
                         <td align="center">Disiapkan Oleh :</td>
                     </tr>
                     <tr>
-                        <td align="center"><?php echo $kec->sebutan_level_1; ?></td>
-                        <td align="center"><?php echo $kec->sebutan_level_3; ?></td>
+                        <td align="center"><?php echo $usaha->kepala_lembaga; ?></td>
+                        <td align="center"><?php echo $usaha->kabag_keuangan; ?></td>
                         <td align="center">&nbsp;</td>
                     </tr>
                     <tr>
@@ -219,7 +219,7 @@
                     <tr>
                         <td align="center">{{ $dir->namadepan . ' ' . $dir->namabelakang }}</td>
                         <td align="center">{{ $sekr->namadepan . ' ' . $sekr->namabelakang }}</td>
-                        <td align="center"><?php echo $kec->disiapkan; ?></td>
+                        <td align="center"><?php echo $usaha->bkk_bkm_bm; ?></td>
                     </tr>
                 </table>
             </div>

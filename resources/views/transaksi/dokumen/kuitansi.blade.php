@@ -177,14 +177,14 @@
         <div class="box">
             <div class="box-header flex align-items-center justify-content-between">
                 <div class="flex align-items-center">
-                    <img src="{{ $gambar }}" width="50" height="50">
+                    <img src="<?php echo $gambar; ?>" width="50" height="50">
                     <div class="ml-4">
-                        <div class="block fw-bold">{{ strtoupper($kec->nama_lembaga_sort) }}</div>
+                        <div class="block fw-bold">{{ strtoupper($usaha->nama_usaha) }}</div>
                         <div class="block fw-bold">
-                            {{ strtoupper('Kec. ' . $kec->nama_kec . ' Kab. ' . $kec->kabupaten->nama_kab . ' ' . $kec->kabupaten->nama_prov) }}
+                            {{ strtoupper('Kec. ' . $usaha->d->kec->nama_kec . ' Kab. ' . $usaha->d->kec->kabupaten->nama_kab . ' ' . $usaha->d->kec->kabupaten->nama_prov) }}
                         </div>
-                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $kec->nomor_bh }}</div>
-                        <div class="block fs-10">{{ $kec->alamat_kec . ', Telp. ' . $kec->telpon_kec }}</div>
+                        <div class="block fs-10">{{ 'SK Kemenkumham RI No. ' . $usaha->nomor_bh }}</div>
+                        <div class="block fs-10">{{ $usaha->alamat . ', Telp. ' . $usaha->telpon }}</div>
                     </div>
                 </div>
                 <div class="fw-medium">
@@ -239,7 +239,9 @@
                     </tr>
                     <tr>
                         <td align="center">&nbsp;</td>
-                        <td align="center">{{ $kec->nama_kec . ', ' . Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
+                        <td align="center">
+                            {{ $usaha->d->kec->nama_kec . ', ' . Tanggal::tglLatin($trx->tgl_transaksi) }}
+                        </td>
                     </tr>
                     <tr>
                         <td width="25%" align="center">Dibayar Oleh</td>

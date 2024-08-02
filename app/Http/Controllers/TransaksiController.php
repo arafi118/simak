@@ -2328,7 +2328,11 @@ class TransaksiController extends Controller
     {
         $keuangan = new Keuangan;
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with([
+            'd',
+            'd.kec',
+            'd.kec.kabupaten'
+        ])->first();
         $trx = Transaksi::where('idt', $id)->first();
         $user = User::where('id', $trx->id_user)->first();
 
@@ -2338,19 +2342,19 @@ class TransaksiController extends Controller
         $dibayar = ucwords($trx->relasi);
         if ($trx->rekening_kredit == '1.1.01.01' or ($keuangan->startWith($trx->rekening_kredit, '1.1.02') || $keuangan->startWith($trx->rekening_kredit, '1.1.01'))) {
             $jenis = 'BKK';
-            $dari = $kec->sebutan_level_3 . " " . ucwords($kec->nama_lembaga_sort);
+            $dari = $usaha->kabag_keuangan . " " . ucwords($usaha->nama_usaha);
             $oleh = ucwords($trx->relasi);
             $dibayar = ucwords($user->namadepan . ' ' . $user->namabelakang);
         }
 
-        $logo = $kec->logo;
+        $logo = $usaha->logo;
         if (empty($logo)) {
             $gambar = '/storage/logo/1.png';
         } else {
             $gambar = '/storage/logo/' . $logo;
         }
 
-        return view('transaksi.dokumen.kuitansi')->with(compact('trx', 'kec', 'jenis', 'dari', 'oleh', 'dibayar', 'gambar', 'keuangan'));
+        return view('transaksi.dokumen.kuitansi')->with(compact('trx', 'usaha', 'jenis', 'dari', 'oleh', 'dibayar', 'gambar', 'keuangan'));
     }
 
     public function kuitansi_thermal($id)
@@ -2362,7 +2366,11 @@ class TransaksiController extends Controller
 
         $keuangan = new Keuangan;
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with([
+            'd',
+            'd.kec',
+            'd.kec.kabupaten'
+        ])->first();
         $trx = Transaksi::where('idt', $id)->first();
         $user = User::where('id', $trx->id_user)->first();
 
@@ -2372,26 +2380,30 @@ class TransaksiController extends Controller
         $dibayar = ucwords($trx->relasi);
         if ($trx->rekening_kredit == '1.1.01.01' or ($keuangan->startWith($trx->rekening_kredit, '1.1.02') || $keuangan->startWith($trx->rekening_kredit, '1.1.01'))) {
             $jenis = 'BKK';
-            $dari = $kec->sebutan_level_3 . " " . ucwords($kec->nama_lembaga_sort);
+            $dari = $usaha->kabag_keuangan . " " . ucwords($usaha->nama_usaha);
             $oleh = ucwords($trx->relasi);
             $dibayar = ucwords($user->namadepan . ' ' . $user->namabelakang);
         }
 
-        $logo = $kec->logo;
+        $logo = $usaha->logo;
         if (empty($logo)) {
             $gambar = '/storage/logo/1.png';
         } else {
             $gambar = '/storage/logo/' . $logo;
         }
 
-        return view('transaksi.dokumen.kuitansi_thermal')->with(compact('trx', 'kec', 'jenis', 'dari', 'oleh', 'dibayar', 'gambar', 'keuangan', 'kertas'));
+        return view('transaksi.dokumen.kuitansi_thermal')->with(compact('trx', 'usaha', 'jenis', 'dari', 'oleh', 'dibayar', 'gambar', 'keuangan', 'kertas'));
     }
 
     public function bkk($id)
     {
         $keuangan = new Keuangan;
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with([
+            'd',
+            'd.kec',
+            'd.kec.kabupaten'
+        ])->first();
         $trx = Transaksi::where('idt', $id)->with('rek_debit')->with('rek_kredit')->first();
         $user = User::where('id', $trx->id_user)->first();
 
@@ -2407,17 +2419,21 @@ class TransaksiController extends Controller
             ['lokasi', Session::get('lokasi')]
         ])->first();
 
-        $logo = $kec->logo;
+        $logo = $usaha->logo;
         $gambar = '/storage/logo/' . $logo;
 
-        return view('transaksi.dokumen.bkk')->with(compact('trx', 'kec', 'dir', 'sekr', 'gambar', 'keuangan'));
+        return view('transaksi.dokumen.bkk')->with(compact('trx', 'usaha', 'dir', 'sekr', 'gambar', 'keuangan'));
     }
 
     public function bkm($id)
     {
         $keuangan = new Keuangan;
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with([
+            'd',
+            'd.kec',
+            'd.kec.kabupaten'
+        ])->first();
         $trx = Transaksi::where('idt', $id)->with('rek_debit')->with('rek_kredit')->first();
         $user = User::where('id', $trx->id_user)->first();
 
@@ -2433,17 +2449,21 @@ class TransaksiController extends Controller
             ['lokasi', Session::get('lokasi')]
         ])->first();
 
-        $logo = $kec->logo;
+        $logo = $usaha->logo;
         $gambar = '/storage/logo/' . $logo;
 
-        return view('transaksi.dokumen.bkm')->with(compact('trx', 'kec', 'dir', 'sekr', 'gambar', 'keuangan'));
+        return view('transaksi.dokumen.bkm')->with(compact('trx', 'usaha', 'dir', 'sekr', 'gambar', 'keuangan'));
     }
 
     public function bm($id)
     {
         $keuangan = new Keuangan;
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with([
+            'd',
+            'd.kec',
+            'd.kec.kabupaten'
+        ])->first();
         $trx = Transaksi::where('idt', $id)->with('rek_debit')->with('rek_kredit')->first();
         $user = User::where('id', $trx->id_user)->first();
 
@@ -2459,17 +2479,21 @@ class TransaksiController extends Controller
             ['lokasi', Session::get('lokasi')]
         ])->first();
 
-        $logo = $kec->logo;
+        $logo = $usaha->logo;
         $gambar = '/storage/logo/' . $logo;
 
-        return view('transaksi.dokumen.bm')->with(compact('trx', 'kec', 'dir', 'sekr', 'gambar', 'keuangan'));
+        return view('transaksi.dokumen.bm')->with(compact('trx', 'usaha', 'dir', 'sekr', 'gambar', 'keuangan'));
     }
 
     public function bkmAngsuran($id)
     {
         $keuangan = new Keuangan;
 
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with('kabupaten')->first();
+        $usaha = Usaha::where('id', Session::get('lokasi'))->with([
+            'd',
+            'd.kec',
+            'd.kec.kabupaten'
+        ])->first();
         $trx = Transaksi::where('idt', $id)->with('rek_debit', 'tr_idtp', 'tr_idtp.rek_kredit')->withSum('tr_idtp', 'jumlah')->first();
         $user = User::where('id', $trx->id_user)->first();
 
@@ -2485,10 +2509,10 @@ class TransaksiController extends Controller
             ['lokasi', Session::get('lokasi')]
         ])->first();
 
-        $logo = $kec->logo;
+        $logo = $usaha->logo;
         $gambar = '/storage/logo/' . $logo;
 
-        return view('transaksi.jurnal_angsuran.dokumen.bkm')->with(compact('trx', 'kec', 'dir', 'sekr', 'gambar', 'keuangan'));
+        return view('transaksi.jurnal_angsuran.dokumen.bkm')->with(compact('trx', 'usaha', 'dir', 'sekr', 'gambar', 'keuangan'));
     }
 
     public function cetak(Request $request)
