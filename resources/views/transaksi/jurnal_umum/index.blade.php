@@ -248,7 +248,12 @@
             $('small').html('')
             $('#notifikasi').html('')
 
-            var nominal = parseFloat($('#nominal').val().split(',').join(''))
+            var nominal = $('nominal').val()
+            if (!nominal) {
+                nominal = $('#harga_satuan').val()
+            }
+
+            var nominal = parseFloat(nominal.split(',').join(''))
             var saldo_rek = parseFloat($('#saldo_trx').val())
 
             var sumber_dana = $('#sumber_dana').val()
