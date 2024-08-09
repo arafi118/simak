@@ -198,7 +198,7 @@ class AuthController extends Controller
 
             $nama_kab = $kabupaten->nama;
             $nama_kab = ucwords(strtolower(str_replace('KAB. ', '', $nama_kab)));
-            Kabupaten::insert([
+            Kabupaten::create([
                 "kd_prov" => $data['provinsi'],
                 "kd_kab" => $data['kabupaten'],
                 "nama_kab" => $nama_kab,
@@ -220,7 +220,7 @@ class AuthController extends Controller
         if (!$kec) {
             $kecamatan = Wilayah::where('kode', $data['kecamatan'])->first();
 
-            $kec = Kecamatan::insert([
+            $kec = Kecamatan::create([
                 "kd_kab" => $data['kabupaten'],
                 "kd_kec" => $data['kecamatan'],
                 "nama_kec" => $kecamatan->nama,
@@ -287,8 +287,8 @@ class AuthController extends Controller
             "domain_alt" => $domain . '.siupk.net',
             "logo" => "-",
             "background" => "-",
-            "tgl_register" => $data['tgl_register'],
-            "tgl_pakai" => $data['tgl_register'],
+            "tgl_register" => Tanggal::tglNasional($data['tgl_register']),
+            "tgl_pakai" => Tanggal::tglNasional($data['tgl_register']),
             "biaya" => "0",
             "peraturan_desa" => "-",
         ]);
