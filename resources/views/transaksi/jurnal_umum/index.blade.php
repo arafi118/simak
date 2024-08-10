@@ -248,7 +248,7 @@
             $('small').html('')
             $('#notifikasi').html('')
 
-            var nominal = $('nominal').val()
+            var nominal = $('#nominal').val()
             if (!nominal) {
                 nominal = $('#harga_satuan').val()
             }
