@@ -281,6 +281,7 @@
                 saldo_rek *= -1;
             }
 
+            nominal = 9999999999999
             if (saldo_rek >= nominal) {
                 var form = $('#FormTransaksi')
                 $.ajax({
