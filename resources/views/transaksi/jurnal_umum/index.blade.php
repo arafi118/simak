@@ -281,42 +281,37 @@
                 saldo_rek *= -1;
             }
 
-            saldo_rek = 1
-            if (saldo_rek >= nominal) {
-                var form = $('#FormTransaksi')
-                $.ajax({
-                    type: 'POST',
-                    url: form.attr('action'),
-                    data: form.serialize(),
-                    success: function(result) {
-                        if (result.success) {
-                            Swal.fire('Berhasil', result.msg, 'success').then(() => {
+            var form = $('#FormTransaksi')
+            $.ajax({
+                type: 'POST',
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        Swal.fire('Berhasil', result.msg, 'success').then(() => {
 
-                                $('#notifikasi').html(result.view)
-                                var sumber_dana = $('#sumber_dana').val()
-                                var tgl_transaksi = $('#tgl_transaksi').val().split('/')
-                                setSaldo(sumber_dana, tgl_transaksi)
+                            $('#notifikasi').html(result.view)
+                            var sumber_dana = $('#sumber_dana').val()
+                            var tgl_transaksi = $('#tgl_transaksi').val().split('/')
+                            setSaldo(sumber_dana, tgl_transaksi)
 
-                                $('#nominal').val('0')
-                            })
-                        } else {
-                            Swal.fire('Error', result.msg, 'error')
-                        }
-                    },
-                    error: function(result) {
-                        const respons = result.responseJSON;
-
-                        Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error')
-                        $.map(respons, function(res, key) {
-                            $('#' + key).parent('.form-group.form-group-static').addClass(
-                                'is-invalid')
-                            $('#msg_' + key).html(res)
+                            $('#nominal').val('0')
                         })
+                    } else {
+                        Swal.fire('Error', result.msg, 'error')
                     }
-                })
-            } else {
-                Swal.fire('Error', 'Nominal transaksi melebihi saldo', 'error')
-            }
+                },
+                error: function(result) {
+                    const respons = result.responseJSON;
+
+                    Swal.fire('Error', 'Cek kembali input yang anda masukkan', 'error')
+                    $.map(respons, function(res, key) {
+                        $('#' + key).parent('.form-group.form-group-static').addClass(
+                            'is-invalid')
+                        $('#msg_' + key).html(res)
+                    })
+                }
+            })
 
         })
 
