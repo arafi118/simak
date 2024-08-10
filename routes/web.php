@@ -80,6 +80,7 @@ Route::get('/ambil_des/{kode}', [AuthController::class, 'desa'])->middleware('gu
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/register', [AuthController::class, 'store'])->middleware('guest');
+Route::post('/app', [AuthController::class, 'app']);
 
 Route::get('/pelaporan', [PelaporanController::class, 'index'])->middleware('basic');
 Route::get('/pelaporan/sub_laporan/{file}', [PelaporanController::class, 'subLaporan'])->middleware('basic');
