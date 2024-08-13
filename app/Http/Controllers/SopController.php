@@ -101,6 +101,7 @@ class SopController extends Controller
             $lev3 = str_pad($kode_akun[2], 2, '0', STR_PAD_LEFT);
             $lev4 = str_pad($kode_akun[3], 2, '0', STR_PAD_LEFT);
 
+            $data['id_akun'] = $lev1 . '.' . $lev2 . '.' . $lev3 . '.' . $lev4;
             $nama_akun = preg_replace('/\d/', '', $data['nama_akun']);
             $nama_akun = preg_replace('/[^A-Za-z\s]/', '', $nama_akun);
             $nama_akun = trim($nama_akun);

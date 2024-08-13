@@ -44,13 +44,14 @@
                         var child_lev2 = parseInt(child_kode_akun[1]);
                         var child_lev3 = parseInt(child_kode_akun[2]);
                         var child_lev4 = parseInt(child_kode_akun[3]) + 1;
+                        child_lev4 = child_lev4.padStart(2, '0');
 
                         items.Create = {
                             "separator_before": false,
                             "separator_after": false,
                             "label": "Tambah",
                             "action": function(obj) {
-                                var id = `${child_lev1}.${child_lev2}.0${child_lev3}.0${child_lev4}`
+                                var id = `${child_lev1}.${child_lev2}.0${child_lev3}.${child_lev4}`
                                 $node = tree.create_node($node, {
                                     "id": id,
                                     "text": id + ". Akun Baru",
