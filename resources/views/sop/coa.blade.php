@@ -44,7 +44,7 @@
                         var child_lev2 = parseInt(child_kode_akun[1]);
                         var child_lev3 = parseInt(child_kode_akun[2]);
                         var child_lev4 = parseInt(child_kode_akun[3]) + 1;
-                        child_lev4 = child_lev4.padStart(2, '0');
+                        child_lev4 = child_lev4.toString().padStart(2, '0');
 
                         items.Create = {
                             "separator_before": false,
@@ -59,6 +59,15 @@
                                 tree.edit($node);
                             }
                         }
+
+                        items.Rename = {
+                            "separator_before": false,
+                            "separator_after": false,
+                            "label": "Edit",
+                            "action": function(obj) {
+                                tree.edit($node);
+                            }
+                        };
                     }
 
                     if ((lev1 > 0 && lev2 > 0 && lev3 > 0 && lev4 > 0) || tree.get_node($node).children
@@ -152,7 +161,8 @@
                         }
 
                         if (action == 'update') {
-                            data.instance.set_text(data.node, data.node.old);
+                            data.instance.set_text(data.node, data.old);
+                            console.log(data)
                         }
 
                         Toastr('warning', result.msg)

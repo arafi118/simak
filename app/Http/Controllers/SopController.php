@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminInvoice;
 use App\Models\AkunLevel1;
+use App\Models\AkunLevel2;
+use App\Models\AkunLevel3;
 use App\Models\Rekening;
 use App\Models\TandaTanganLaporan;
 use App\Models\Usaha;
@@ -133,28 +135,51 @@ class SopController extends Controller
         ]);
     }
 
-    public function updateCoa(Request $request, Rekening $rekening)
+    public function updateCoa(Request $request, $kode_akun)
     {
         $data = $request->only([
             'id_akun',
             'nama_akun'
         ]);
 
+
         $nama_akun = preg_replace('/\d/', '', $data['nama_akun']);
         $nama_akun = preg_replace('/[^A-Za-z\s]/', '', $nama_akun);
         $nama_akun = trim($nama_akun);
 
-        if ($rekening->nama_akun != $nama_akun && $rekening->kode_akun == $data['id_akun']) {
-            Rekening::where('kode_akun', $rekening->kode_akun)->update([
-                'nama_akun' => $nama_akun,
-            ]);
+        $lev1 = explode('.', $data['id_akun'])[0];
+        $lev2 = explode('.', $data['id_akun'])[1];
+        $lev3 = explode('.', $data['id_akun'])[2];
+        $lev4 = explode('.', $data['id_akun'])[3];
 
-            return response()->json([
-                'success' => true,
-                'msg' => 'Akun dengan kode ' . $data['id_akun'] . ' berhasil diperbarui',
-                'nama_akun' => $data['id_akun'] . '. ' . $nama_akun,
-                'id' => $data['id_akun'],
-            ]);
+        if ($lev4 > 0) {
+            $rekening = Rekening::where('kode_akun', $kode_akun)->first();
+            if ($rekening->nama_akun != $nama_akun && $rekening->kode_akun == $data['id_akun']) {
+                Rekening::where('kode_akun', $rekening->kode_akun)->update([
+                    'nama_akun' => $nama_akun,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'msg' => 'Akun dengan kode ' . $data['id_akun'] . ' berhasil diperbarui',
+                    'nama_akun' => $data['id_akun'] . '. ' . $nama_akun,
+                    'id' => $data['id_akun'],
+                ]);
+            }
+        } else {
+            $akun_level_3 = AkunLevel3::where('kode_akun', $kode_akun)->first();
+            if ($akun_level_3->nama_akun != $nama_akun && $akun_level_3->kode_akun == $data['id_akun']) {
+                AkunLevel3::where('kode_akun', $akun_level_3->kode_akun)->update([
+                    'nama_akun' => $nama_akun,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'msg' => 'Akun dengan kode ' . $data['id_akun'] . ' berhasil diperbarui',
+                    'nama_akun' => $data['id_akun'] . '. ' . $nama_akun,
+                    'id' => $data['id_akun'],
+                ]);
+            }
         }
 
         return response()->json([

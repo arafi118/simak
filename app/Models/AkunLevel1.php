@@ -10,7 +10,7 @@ class AkunLevel1 extends Model
 {
     use HasFactory;
 
-    protected $table = 'akun_level_1';
+    protected $table = 'master_akun';
     public $timestamps = false;
 
     protected $primaryKey = 'kode_akun';

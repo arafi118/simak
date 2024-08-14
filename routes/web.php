@@ -108,7 +108,7 @@ Route::get('/pengaturan/ttd_spk', [SopController::class, 'ttdSpk'])->middleware(
 
 Route::get('/pengaturan/coa', [SopController::class, 'coa'])->middleware('auth');
 Route::post('/pengaturan/coa', [SopController::class, 'createCoa'])->middleware('auth');
-Route::put('/pengaturan/coa/{rekening}', [SopController::class, 'updateCoa'])->middleware('auth');
+Route::put('/pengaturan/coa/{kode_akun}', [SopController::class, 'updateCoa'])->middleware('auth');
 Route::delete('/pengaturan/coa/{rekening}', [SopController::class, 'deleteCoa'])->middleware('auth');
 
 Route::put('/pengaturan/lembaga/{usaha}', [SopController::class, 'lembaga'])->middleware('auth');

@@ -366,6 +366,7 @@ class AuthController extends Controller
         ]);
 
         $lokasi = Session::get('lokasi');
+        DB::statement("CREATE TABLE akun_$lokasi LIKE akun_1");
         DB::statement("CREATE TABLE ebudgeting_$lokasi LIKE transaksi_1");
         DB::statement("CREATE TABLE inventaris_$lokasi LIKE inventaris_1");
         DB::statement("CREATE TABLE rekening_$lokasi LIKE rekening_1");
@@ -373,6 +374,7 @@ class AuthController extends Controller
         DB::statement("CREATE TABLE saldo_$lokasi LIKE saldo_1");
 
         DB::statement("INSERT rekening_$lokasi SELECT * FROM rekening_1");
+        DB::statement("INSERT akun_$lokasi SELECT * FROM akun_1");
 
         $create = "
             CREATE TRIGGER `create_saldo_debit_$lokasi` AFTER INSERT ON `transaksi_$lokasi`

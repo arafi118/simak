@@ -10,7 +10,7 @@ class AkunLevel2 extends Model
 {
     use HasFactory, Compoships;
 
-    protected $table = 'akun_level_2';
+    protected $table = 'sub_akun';
     public $timestamps = false;
 
     protected $primaryKey = 'kode_akun';
