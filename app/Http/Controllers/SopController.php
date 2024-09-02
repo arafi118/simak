@@ -7,6 +7,7 @@ use App\Models\AkunLevel1;
 use App\Models\AkunLevel2;
 use App\Models\AkunLevel3;
 use App\Models\Rekening;
+use App\Models\Saldo;
 use App\Models\TandaTanganLaporan;
 use App\Models\Usaha;
 use App\Models\User;
@@ -120,6 +121,22 @@ class SopController extends Controller
             ];
 
             $rekening = Rekening::insert($insert);
+            Saldo::where('kode_akun', $data['id_akun'])->delete();
+
+            $insert_saldo = [];
+            $rek = Rekening::with('kom_saldo')->first();
+            foreach ($rek->kom_saldo as $saldo) {
+                $insert_saldo[] = [
+                    'id' => str_replace('.', '', $data['id_akun']) . $saldo->tahun . str_pad($saldo->bulan, 2, '0', STR_PAD_LEFT),
+                    'kode_akun' => $data['id_akun'],
+                    'tahun' => $saldo->tahun,
+                    'bulan' => $saldo->bulan,
+                    'debit' => 0,
+                    'kredit' => 0,
+                ];
+            }
+
+            Saldo::insert($insert_saldo);
 
             return response()->json([
                 'success' => true,
@@ -197,6 +214,7 @@ class SopController extends Controller
 
         if ($rekening->kode_akun == $data['id_akun']) {
             Rekening::where('kode_akun', $rekening->kode_akun)->delete();
+            Saldo::where('kode_akun', $rekening->kode_akun)->delete();
 
             return response()->json([
                 'success' => true,
