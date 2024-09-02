@@ -341,13 +341,17 @@ class DashboardController extends Controller
             $tb = 'tb' . $tahun_tb;
             $tbk = 'tbk' . $tahun_tb;
 
-            $rekening = Rekening::orderBy('kode_akun', 'ASC')->get();
+            $rekening = Rekening::with([
+                'saldo' => function ($query) use ($tahun) {
+                    $query->where('tahun', $tahun)->where('bulan', '0');
+                }
+            ])->orderBy('kode_akun', 'ASC')->get();
             foreach ($rekening as $rek) {
                 $saldo_debit = $rek->$tb;
                 $saldo_kredit = $rek->$tbk;
 
                 $id = str_replace('.', '', $rek->kode_akun) . $tahun . "00";
-                $saldo[] = [
+                $saldo_rek = [
                     'id' => $id,
                     'kode_akun' => $rek->kode_akun,
                     'tahun' => $tahun,
@@ -356,7 +360,11 @@ class DashboardController extends Controller
                     'kredit' => $saldo_kredit
                 ];
 
+                $saldo[] = $saldo_rek;
                 $data_id[] = $id;
+                if (!$rek->saldo) {
+                    Saldo::insert($saldo_rek);
+                }
             }
         } else {
             $date = $tahun . '-' . $bulan . '-01';
