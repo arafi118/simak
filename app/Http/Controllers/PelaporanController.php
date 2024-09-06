@@ -166,8 +166,7 @@ class PelaporanController extends Controller
         $dir = User::where([
             ['lokasi', Session::get('lokasi')],
             ['jabatan', $jabatan],
-            ['level', $level],
-            ['sejak', '<=', date('Y-m-t', strtotime($request->tahun . '-' . $request->bulan . '-01'))]
+            ['level', $level]
         ])->first();
 
         $data['logo'] = $usaha->logo;
