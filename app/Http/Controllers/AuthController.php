@@ -148,9 +148,7 @@ class AuthController extends Controller
 
                     return redirect('/dashboard')->with([
                         'pesan' => 'Selamat Datang ' . $user->namadepan . ' ' . $user->namabelakang,
-                        'invoice' => $inv['invoice'],
-                        'msg' => $inv['msg'],
-                        'hp_dir' => $inv['dir'],
+                        'is_invoice' => $inv,
                     ]);
                 }
             }
@@ -446,27 +444,17 @@ class AuthController extends Controller
 
     private function generateInvoice($usaha)
     {
-        $kec = $usaha->d->kec;
-        $return = [
-            'invoice' => false,
-            'msg' => '',
-            'dir' => ''
-        ];
-
-        $bulan_pakai = date('m-d', strtotime($usaha->tgl_pakai));
-        $tgl_pakai = date('Y') . '-' . $bulan_pakai;
-
-        $tgl_invoice = date('Y-m-d', strtotime('-1 month', strtotime($tgl_pakai)));
-
         $invoice = AdminInvoice::where([
             ['lokasi', $usaha->id],
-            ['jenis_pembayaran', '2']
-        ])->whereBetween('tgl_invoice', [$tgl_invoice, $tgl_pakai]);
+            ['jenis_pembayaran', '2'],
+            ['status', 'UNPAID']
+        ])->whereBetween('tgl_invoice', [$usaha->tgl_pakai, $usaha->masa_aktif]);
 
-        $pesan = "";
-        if ($invoice->count() <= 0 && (date('Y-m-d') <= $tgl_pakai && date('Y-m-d') >= $tgl_invoice)) {
+        $is_invoice = false;
+        $tanggal = date('Y-m-d', strtotime('+14 days', strtotime(date('Y-m-d'))));
+        if ($invoice->count() <= 0 && $tanggal >= $usaha->masa_aktif) {
             $tanggal = date('Y-m-d');
-            $nomor_invoice = date('ymd', strtotime($tanggal));
+            $nomor_invoice = date('ymd');
             $invoice = AdminInvoice::where('tgl_invoice', $tanggal)->count();
             $nomor_urut = str_pad($invoice + 1, '2', '0', STR_PAD_LEFT);
             $nomor_invoice .= $nomor_urut;
@@ -478,32 +466,16 @@ class AuthController extends Controller
                 'tgl_invoice' => date('Y-m-d'),
                 'tgl_lunas' => date('Y-m-d'),
                 'status' => 'UNPAID',
-                'jumlah' => $usaha->biaya,
+                'jumlah' => $usaha->biaya * $usaha->tagihan_invoice,
                 'id_user' => 1
             ]);
 
-            $jenis_pembayaran = AdminJenisPembayaran::where('id', '2')->first();
-            $pesan .= "_#Invoice - " . str_pad($usaha->id, '3', '0', STR_PAD_LEFT) . " " . $usaha->nama_usaha . " - " . $usaha->d->nama_desa . "_\n";
-            $pesan .= $jenis_pembayaran->nama_jp . "\n";
-            $pesan .= "Jumlah           : Rp. " . number_format($usaha->biaya) . "\n";
-            $pesan .= "Jatuh Tempo  : " . Tanggal::tglIndo($tgl_pakai) . "\n\n";
-            $pesan .= "*Detail Invoice*\n";
-            $pesan .= "_https://" . $usaha->domain_alt . "/" . $invoice->id . "_";
-
-            $return['invoice'] = true;
-            $return['msg'] = $pesan;
-
-            $dir = User::where([
-                ['usaha', $usaha->id],
-                ['lokasi', $usaha->id],
-                ['jabatan', '1'],
-                ['level', '1']
-            ])->first();
-
-            $return['dir'] = $dir->hp;
+            $is_invoice = $invoice;
+        } else {
+            $is_invoice = $invoice->first();
         }
 
-        return $return;
+        return $is_invoice;
     }
 
     public function app()

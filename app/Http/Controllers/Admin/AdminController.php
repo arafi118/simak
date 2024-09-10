@@ -13,12 +13,4 @@ class AdminController extends Controller
         $title = 'Admin Page';
         return view('admin.index')->with(compact('title'));
     }
-
-    public function laporan()
-    {
-        $wilayah = Wilayah::WhereRaw('LENGTH(kode)=2')->orderBy('nama', 'ASC')->get();
-
-        $title = 'Laporan Pusat';
-        return view('admin.wilayah')->with(compact('title', 'wilayah'));
-    }
 }

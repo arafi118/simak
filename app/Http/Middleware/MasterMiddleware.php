@@ -21,6 +21,6 @@ class MasterMiddleware
             }
         }
 
-        return redirect('/master');
+        return redirect('/db');
     }
 }

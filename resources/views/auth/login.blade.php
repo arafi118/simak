@@ -3,10 +3,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="description" content="Sistem Informasi Dana Bergulir Masyarakat &mdash; Siap Audit Kapanpun Siapapun">
+    <meta name="description" content="Sistem Informasi Manajemen Keuangan">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="keywords"
-        content="dbm, sidbm, sidbm.net, demo.sidbm.net, app.sidbm.net, asta brata teknologi, abt, dbm, kepmendesa 136, kepmendesa nomor 136 tahun 2022">
+    <meta name="keywords" content="simak, manajemen keuangan, keuangan, aplikasi">
     <meta name="author" content="Enfii">
 
     <link rel="apple-touch-icon" sizes="76x76" href="{{ $logo }}">
@@ -37,37 +36,48 @@
             <div class="content-body">
                 <section id="account-login" class="flexbox-container">
                     <div class="col-12 d-flex align-items-center justify-content-center">
-                        <div class="col-xl-3 col-lg-4 col-md-5 col-sm-5 col-12 p-0">
-                            <div class="card border-grey border-lighten-3 m-0 card-account-right height-400 shadow">
+                        <div class="col-sm-6 col-12 p-0">
+                            <div class="card m-0 card-account-right height-400">
                                 <div class="card-body p-3">
-                                    <p class="text-center h5 text-capitalize">{{ $usaha->nama_usaha }}</p>
-                                    <div class="mb-3 text-center">
-                                        {{ $usaha->d->sebutan_desa->sebutan_desa }} {{ $usaha->d->nama_desa }},
-                                        {{ $usaha->d->kec->nama_kec }}
-                                    </div>
-                                    <form class="form-horizontal form-signin" action="/login" method="post">
-                                        @csrf
+                                    <div class="row">
+                                        <div class="col-lg-6 col-12 p-0 text-center d-none d-lg-block">
+                                            <div class="d-flex justify-content-center align-items-center h-100">
+                                                <img src="{{ $logo }}"
+                                                    class="card-account-img width-200 rounded-circle"
+                                                    alt="card-account-img">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-12 p-0">
+                                            <p class="text-center h5 text-capitalize">{{ $usaha->nama_usaha }}</p>
+                                            <div class="mb-3 text-center">
+                                                {{ $usaha->d->sebutan_desa->sebutan_desa }} {{ $usaha->d->nama_desa }},
+                                                {{ $usaha->d->kec->nama_kec }}
+                                            </div>
+                                            <form class="form-horizontal form-signin" action="/login" method="post">
+                                                @csrf
 
-                                        <div class="form-label-group">
-                                            <input type="text" class="form-control" id="username" name="username"
-                                                placeholder="Your Username" required="">
-                                            <label for="username" class="cursor-text">Username</label>
+                                                <div class="form-label-group">
+                                                    <input type="text" class="form-control" id="username"
+                                                        name="username" placeholder="Your Username" required="">
+                                                    <label for="username" class="cursor-text">Username</label>
+                                                </div>
+                                                <div class="form-label-group">
+                                                    <input type="password" class="form-control" id="password"
+                                                        name="password" placeholder="Enter Password" required="">
+                                                    <label for="password" class="cursor-text">Password</label>
+                                                </div>
+                                                <button type="submit" class="btn-gradient-primary btn-block my-1 mb-2">
+                                                    Log In
+                                                </button>
+                                                <div class="text-center">
+                                                    &copy; {{ date('Y') }} PT. Asta Brata Teknologi
+                                                </div>
+                                                <p class="text-center">
+                                                    {{ str_pad($usaha->id, 4, '0', STR_PAD_LEFT) }}
+                                                </p>
+                                            </form>
                                         </div>
-                                        <div class="form-label-group">
-                                            <input type="password" class="form-control" id="password" name="password"
-                                                placeholder="Enter Password" required="">
-                                            <label for="password" class="cursor-text">Password</label>
-                                        </div>
-                                        <button type="submit" class="btn-gradient-primary btn-block my-1 mb-2">
-                                            Log In
-                                        </button>
-                                        <div class="text-center">
-                                            &copy; {{ date('Y') }} PT. Asta Brata Teknologi
-                                        </div>
-                                        <p class="text-center">
-                                            {{ str_pad($usaha->id, 4, '0', STR_PAD_LEFT) }}
-                                        </p>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>

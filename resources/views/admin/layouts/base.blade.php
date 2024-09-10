@@ -17,7 +17,6 @@
         href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i|Comfortaa:300,400,500,700"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.5/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -27,6 +26,7 @@
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.5/css/dataTables.dataTables.min.css">
 
     <link rel="stylesheet" type="text/css" href="/assets/css/vendors.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/app.css">
@@ -84,8 +84,8 @@
 <body class="vertical-layout vertical-compact-menu 2-columns   menu-expanded fixed-navbar" data-open="click"
     data-menu="vertical-compact-menu" data-col="2-columns">
 
-    @include('layouts.navbar')
-    @include('layouts.sidebar')
+    @include('admin.layouts.navbar')
+    @include('admin.layouts.sidebar')
 
     <div class="app-content content">
         <div class="content-wrapper">
@@ -113,11 +113,12 @@
         </p>
     </footer>
 
-    <form action="/logout" method="post" id="formLogout">
+    <form action="/db/logout" method="post" id="formLogout">
         @csrf
     </form>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
     <script src="/assets/vendors/js/vendors.min.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="/assets/vendors/js/timeline/horizontal-timeline.js" type="text/javascript"></script>
@@ -202,28 +203,6 @@
             tinycomments_author: 'ARAFII'
         });
     </script>
-
-    @php
-        $pesan = '';
-        if (Session::get('is_invoice')) {
-            $inv = Session::get('is_invoice');
-            $pesan = 'Halo! ' . $inv->jp->nama_jp;
-            $pesan .= '<div><b>Rp ' . number_format($inv->jumlah, 2) . '</b> sudah tersedia. ';
-            $pesan .= 'Mohon lakukan pembayaran sebelum ' . Tanggal::tglLatin($inv->usaha->masa_aktif);
-            $pesan .= ' untuk menghindari pemblokiran aplikasi. Terima Kasih.</div>';
-        }
-    @endphp
-
-    @if (Session::get('is_invoice'))
-        <script>
-            Swal.fire({
-                title: 'Invoice #{{ Session::get('is_invoice')->nomor }}',
-                html: '{!! $pesan !!}',
-                confirmButtonText: 'Tutup',
-                icon: 'info'
-            })
-        </script>
-    @endif
 </body>
 
 </html>

@@ -31,7 +31,7 @@
                 <small class="text-danger" id="msg_nama_bumdes"></small>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-4">
             <div class="form-group">
                 <label>NPWP</label>
                 <input type="text" name="npwp" id="npwp" class="form-control form-control-sm"
@@ -45,6 +45,18 @@
                 <input autocomplete="off" type="text" name="tanggal_npwp" id="tanggal_npwp"
                     class="form-control form-control-sm date" value="{{ Tanggal::tglIndo($usaha->tgl_npwp) }}">
                 <small class="text-danger" id="msg_tanggal_npwp"></small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="tagihan_invoice">Tagihan Invoice <sup>(bulan)</sup></label>
+                <select class="form-control select2" name="tagihan_invoice" id="tagihan_invoice">
+                    @for ($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}" {{ $i == $usaha->tagihan_invoice ? 'selected' : '' }}>
+                            {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                    @endfor
+                </select>
+                <small class="text-danger" id="msg_tagihan_invoice"></small>
             </div>
         </div>
         <div class="col-md-4">

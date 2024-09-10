@@ -16,7 +16,7 @@ class isAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() || auth()->guard('master')->check() || auth()->guard('kab')->check()) {
+        if (Auth::check() || auth()->guard('master')->check()) {
             return $next($request);
         }
 

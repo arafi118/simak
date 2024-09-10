@@ -24,13 +24,13 @@ class AdminInvoice extends Model
         return $this->hasMany(AdminTransaksi::class, 'idv', 'idv');
     }
 
-    public function kec()
+    public function usaha()
     {
-        return $this->belongsTo(Kecamatan::class, 'lokasi', 'id');
+        return $this->belongsTo(Usaha::class, 'lokasi', 'id');
     }
 
     public function getRouteKeyName()
     {
-        return 'idv';
+        return 'nomor';
     }
 }

@@ -2325,17 +2325,15 @@ class PelaporanController extends Controller
 
     public function invoice(AdminInvoice $invoice)
     {
-        $root_domain = explode('.', request()->getHost())[0];
-        $allowed = ['master', 'laravel'];
-
-        $kec = Kecamatan::where('web_kec', request()->getHost())->orwhere('web_alternatif', request()->getHost())->first();
-        $data['inv'] = AdminInvoice::where('idv', $invoice->idv)->with('jp', 'trx', 'kec', 'kec.kabupaten')->first();
-
-        if (!in_array($root_domain, $allowed)) {
-            if ($kec->id != $data['inv']->lokasi) {
-                abort(404);
-            }
-        }
+        $data['app_name'] = env('APP_NAME');
+        $data['inv'] = AdminInvoice::where('idv', $invoice->idv)->with([
+            'jp',
+            'trx',
+            'usaha',
+            'usaha.d',
+            'usaha.d.kec',
+            'usaha.d.kec.kabupaten',
+        ])->first();
 
         $view = view('pelaporan.view.invoice', $data)->render();
         $pdf = PDF::loadHTML($view)->setPaper('A4', 'potrait');

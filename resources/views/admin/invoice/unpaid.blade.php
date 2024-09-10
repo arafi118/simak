@@ -1,21 +1,19 @@
-@extends('layouts.base')
+@extends('admin.layouts.base')
 
 @section('content')
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-flush table-hover table-click" width="100%" id="TbInvoice">
+                <table class="table table-striped" id="invoice">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Jenis Pembayaran</th>
-                            <th>tgl Invoice</th>
-                            <th>Tagihan</th>
+                            <th>No</th>
+                            <th>Usaha</th>
+                            <th>Tgl Incoice</th>
+                            <th>Jumlah</th>
                             <th>Saldo</th>
-                            <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -24,7 +22,7 @@
 
 @section('script')
     <script>
-        var table = $('#TbInvoice').DataTable({
+        var table = $('#invoice').DataTable({
             language: {
                 paginate: {
                     previous: "&laquo;",
@@ -33,37 +31,35 @@
             },
             processing: true,
             serverSide: true,
-            ajax: '/pengaturan/invoice',
+            ajax: '/db/unpaid',
             columns: [{
                 data: 'nomor',
                 name: 'nomor'
             }, {
-                data: 'jp.nama_jp',
-                name: 'jp.nama_jp'
+                data: 'usaha.nama_usaha',
+                name: 'usaha.nama_usaha'
             }, {
                 data: 'tgl_invoice',
-                name: 'tgl_invoice'
+                name: 'tgl_invoice',
+                render: function(data, type, row) {
+                    return moment(new Date(data).toString()).format('DD/MM/YYYY');
+                }
             }, {
                 data: 'jumlah',
                 name: 'jumlah'
             }, {
                 data: 'saldo',
-                name: 'saldo',
-                orderable: false,
-                searchable: false
-            }, {
-                data: 'status',
-                name: 'status'
+                name: 'saldo'
             }],
             order: [
                 [0, 'desc']
             ]
         })
 
-        $('#TbInvoice').on('click', 'tbody tr', function(e) {
+        $('#invoice').on('click', 'tbody tr', function(e) {
             var data = table.row(this).data();
 
-            window.location.href = '/pengaturan/' + data.nomor + '/invoice'
+            window.location.href = '/db/invoice/' + data.nomor
         })
     </script>
 @endsection

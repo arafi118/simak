@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'basic' => \App\Http\Middleware\isAuth::class,
         'master' => \App\Http\Middleware\MasterMiddleware::class,
         'kab' => \App\Http\Middleware\KabMiddleware::class,
+        'is_aktif' => \App\Http\Middleware\Aktif::class,
     ];
 }

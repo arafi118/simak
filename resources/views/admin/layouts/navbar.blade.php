@@ -35,12 +35,7 @@
                 <ul class="nav navbar-nav float-right">
                     <li class="dropdown dropdown-user nav-item">
                         <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
-                            <span class="avatar avatar-busy">
-                                @if (Session::get('invoice'))
-                                    <span class="badge badge-pill badge-danger badge-up badge-glow">
-                                        1
-                                    </span>
-                                @endif
+                            <span class="avatar avatar-online">
                                 <img src="{{ asset('/storage/profil/' . Session::get('foto')) }}" alt="avatar">
                             </span>
                             <span class="mr-1">
@@ -50,15 +45,8 @@
                         <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item" href="/profil">
                                 <i class="ft-user"></i>
-                                Profil
+                                Profile
                             </a>
-                            @if (Session::get('invoice'))
-                                <a class="dropdown-item" target="_blank"
-                                    href="/pelaporan/invoice/{{ Session::get('invoice')->nomor }}/">
-                                    <i class="ft-printer"></i>
-                                    Invoice
-                                </a>
-                            @endif
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#" id="logout">
                                 <i class="ft-power"></i>

@@ -27,42 +27,33 @@
         </a>
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class="{{ active('dashboard') }} nav-item">
-                <a href="/dashboard">
+                <a href="/db/dashboard">
                     <i class="icon-grid"></i>
                     <span class="menu-title">Dashboard</span>
                 </a>
             </li>
-            <li class="{{ active('', '/sop', '/coa') }} nav-item">
+            <li class="{{ active('/register') }} nav-item">
+                <a href="/db/register">
+                    <i class="icon-briefcase"></i>
+                    <span class="menu-title">Register App</span>
+                </a>
+            </li>
+            <li class="{{ active('', '/invoice', '/paid', '/unpaid') }} nav-item">
                 <a href="#">
-                    <i class="icon-support"></i>
-                    <span class="menu-title">Pengaturan</span>
+                    <i class="icon-note"></i>
+                    <span class="menu-title">Invoice</span>
                 </a>
                 <ul class="menu-content">
                     <li>
-                        <a class="menu-item" href="/pengaturan/sop">Personalisasi SOP</a>
+                        <a class="menu-item" href="/db/invoice">Tambah</a>
                     </li>
                     <li>
-                        <a class="menu-item" href="/pengaturan/coa">Cart Of Account</a>
+                        <a class="menu-item" href="/db/paid">Paid</a>
                     </li>
                     <li>
-                        <a class="menu-item" href="/pengaturan/ttd_pelaporan">Tanda Tangan</a>
-                    </li>
-                    <li>
-                        <a class="menu-item" href="/pengaturan/invoice">Invoice</a>
+                        <a class="menu-item" href="/db/unpaid">Unpaid</a>
                     </li>
                 </ul>
-            </li>
-            <li class="{{ active('/transaksi') }} nav-item">
-                <a href="/transaksi">
-                    <i class="icon-shuffle"></i>
-                    <span class="menu-title">Jurnal Umum</span>
-                </a>
-            </li>
-            <li class="{{ active('pelaporan') }} nav-item">
-                <a href="/pelaporan">
-                    <i class="icon-layers"></i>
-                    <span class="menu-title">Laporan</span>
-                </a>
             </li>
         </ul>
     </div>

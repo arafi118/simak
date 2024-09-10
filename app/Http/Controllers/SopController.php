@@ -29,7 +29,7 @@ class SopController extends Controller
         $api = env('APP_API', 'https://api-whatsapp.sidbm.net');
 
         $usaha = Usaha::where('id', Session::get('lokasi'))->with('ttd')->first();
-        $token = "DBM-" . str_pad($usaha->id, 4, '0', STR_PAD_LEFT);
+        $token = "SIMAK-" . str_pad($usaha->id, 4, '0', STR_PAD_LEFT);
 
         $title = "Personalisasi SOP";
         return view('sop.index')->with(compact('title', 'usaha', 'api', 'token'));
@@ -239,7 +239,8 @@ class SopController extends Controller
             'alamat',
             'peraturan_desa',
             'npwp',
-            'tanggal_npwp'
+            'tanggal_npwp',
+            'tagihan_invoice'
         ]);
 
         $validate = Validator::make($data, [
@@ -251,13 +252,14 @@ class SopController extends Controller
             'peraturan_desa' => 'required',
             'npwp' => 'required',
             'tanggal_npwp' => 'required',
+            'tagihan_invoice'
         ]);
 
         if ($validate->fails()) {
             return response()->json($validate->errors(), Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $usaha = Usaha::where('id', $usaha->id)->update([
+        $update = [
             'nama_usaha' => ucwords(strtolower($data['nama_bumdes'])),
             'nomor_bh' => $data['nomor_badan_hukum'],
             'telpon' => $data['telpon'],
@@ -266,8 +268,19 @@ class SopController extends Controller
             'npwp' => $data['npwp'],
             'tgl_npwp' => Tanggal::tglNasional($data['tanggal_npwp']),
             'peraturan_desa' => $request->peraturan_desa,
-        ]);
+            'tagihan_invoice' => $request->tagihan_invoice
+        ];
 
+        if ($request->tagihan_invoice != $usaha->tagihan_invoice) {
+            $selisih = '+ ' . ($request->tagihan_invoice - $usaha->tagihan_invoice);
+            if ($request->tagihan_invoice < $usaha->tagihan_invoice) {
+                $selisih = '- ' . ($usaha->tagihan_invoice - $request->tagihan_invoice);
+            }
+
+            $update['masa_aktif'] = date('Y-m-d', strtotime($selisih . ' month', strtotime($usaha->masa_aktif)));
+        }
+
+        $usaha = Usaha::where('id', $usaha->id)->update($update);
         Session::put('nama_usaha', ucwords(strtolower($data['nama_bumdes'])));
 
         return response()->json([
@@ -461,9 +474,8 @@ class SopController extends Controller
         return view('sop.invoice')->with(compact('title'));
     }
 
-    public function detailInvoice($inv)
+    public function detailInvoice(AdminInvoice $inv)
     {
-        $inv = AdminInvoice::where('idv', $inv)->with('jp')->first();
 
         $title = 'Invoice #' . $inv->nomor . ' - ' . $inv->jp->nama_jp;
         return view('sop.detail_invoice')->with(compact('title', 'inv'));

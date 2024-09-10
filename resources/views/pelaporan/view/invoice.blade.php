@@ -1,29 +1,32 @@
 @php
     use App\Utils\Tanggal;
 
-    $dari = Tanggal::tahun($inv->tgl_invoice) . '-' . Tanggal::bulan($inv->kec->tgl_pakai) . '-' . Tanggal::hari($inv->kec->tgl_pakai);
-    $sampai = date('Y-m-d', strtotime('+1 years', strtotime($dari)));
+    $masa_aktif = $inv->usaha->masa_aktif;
+    $dari = date('Y-m-d', strtotime('-' . $inv->usaha->tagihan_invoice . ' months', strtotime($masa_aktif)));
 
     if ($inv->status == 'UNPAID') {
-        $tanggal = $dari;
+        $tanggal = $masa_aktif;
         $keterangan_tanggal = 'Jatuh Tempo';
         $status = 'U N P A I D';
-        $keterangan = 'Masa Pakai Sejak Tanggal ' . Tanggal::tglIndo($inv->kec->tgl_pakai);
+        $keterangan = 'Masa Pakai Sejak Tanggal ' . Tanggal::tglIndo($inv->usaha->tgl_pakai);
     } elseif ($inv->status == 'PAID') {
         $tanggal = $inv->tgl_lunas;
         $keterangan_tanggal = 'Tanggal Lunas';
         $status = 'P A I D';
-        $keterangan = 'Masa Aktif Tanggal ' . Tanggal::tglIndo($dari) . ' - ' . Tanggal::tglIndo($sampai);
+        $keterangan = 'Masa Aktif Tanggal ' . Tanggal::tglIndo($dari) . ' - ' . Tanggal::tglIndo($masa_aktif);
     }
 
     $batas_waktu = $tanggal;
     $total = 0;
 
-    $kecamatan = $inv->kec->sebutan_kec . ' ' . $inv->kec->nama_kec;
-    if (Keuangan::startWith($inv->kec->kabupaten->nama_kab, 'KOTA') || Keuangan::startWith($inv->kec->kabupaten->nama_kab, 'KAB')) {
-        $kecamatan .= ' ' . ucwords(strtolower($inv->kec->kabupaten->nama_kab));
+    $kecamatan = $inv->usaha->d->kec->sebutan_kec . ' ' . $inv->usaha->d->kec->nama_kec;
+    if (
+        Keuangan::startWith($inv->usaha->d->kec->kabupaten->nama_kab, 'KOTA') ||
+        Keuangan::startWith($inv->usaha->d->kec->kabupaten->nama_kab, 'KAB')
+    ) {
+        $kecamatan .= ' ' . ucwords(strtolower($inv->usaha->d->kec->kabupaten->nama_kab));
     } else {
-        $kecamatan .= ' Kabupaten ' . ucwords(strtolower($inv->kec->kabupaten->nama_kab));
+        $kecamatan .= ' Kabupaten ' . ucwords(strtolower($inv->usaha->d->kec->kabupaten->nama_kab));
     }
 @endphp
 
@@ -153,15 +156,15 @@
                 <td colspan="2">
                     <div style="font-weight: bold;">Dikirim Kepada :</div>
                     <div style="font-weight: bold; margin-top: 8px;">
-                        {{ strtoupper($inv->kec->nama_lembaga_sort) }}
+                        {{ strtoupper($inv->usaha->nama_usaha) }}
                     </div>
                     <div style="font-weight: bold;">
                         {{ strtoupper($kecamatan) }}
                     </div>
                     <div>
-                        {{ ucwords(strtolower($inv->kec->alamat_kec)) }}
+                        {{ ucwords(strtolower($inv->usaha->alamat)) }}
                     </div>
-                    <div>Telp. {{ $inv->kec->telpon_kec }}</div>
+                    <div>Telp. {{ $inv->usaha->telpon }}</div>
                 </td>
             </tr>
             <tr class="top">
@@ -174,7 +177,8 @@
             <tr style="background: rgb(232, 232, 232)">
                 <td height="70" align="center" style="font-size: 11px;">
                     <div>
-                        {{ $inv->jp->nama_jp }} SI DBM {{ $inv->kec->sebutan_kec }} {{ $inv->kec->nama_kec }}
+                        {{ $inv->jp->nama_jp }} {{ strtoupper($app_name) }} {{ $inv->usaha->d->kec->sebutan_kec }}
+                        {{ $inv->usaha->d->kec->nama_kec }}
                     </div>
                     <div>{{ $keterangan }}</div>
                 </td>
@@ -233,7 +237,7 @@
                         }
                     @endphp
                     <tr>
-                        <td align="center">{{ $trx->idt }}/SI-DBM</td>
+                        <td align="center">{{ $trx->idt }}/{{ str_replace(' ', '-', strtoupper($app_name)) }}</td>
                         <td align="center">{{ Tanggal::tglIndo($trx->tgl_transaksi) }}</td>
                         <td align="center">{{ $trx->keterangan_transaksi }} {{ $keterangan }}</td>
                         <td align="right">{{ number_format($trx->jumlah, 2) }}</td>
@@ -307,7 +311,7 @@
     </main>
 
     <footer>
-        <div>www.sidbm.net</div>
+        <div>{{ $inv->usaha->domain }}</div>
         <div>&copy; {{ date('Y') }}</div>
     </footer>
 </body>
