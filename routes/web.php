@@ -184,6 +184,6 @@ Route::get('/generate/kelompok', [GenerateController::class, 'kelompok']);
 Route::post('/generate/save/{offset?}', [GenerateController::class, 'generate']);
 
 Route::get('/unpaid', [DashboardController::class, 'unpaid'])->middleware(['auth', 'is_aktif']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth', 'is_aktif']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth']);
 
 Route::get('/{invoice}', [PelaporanController::class, 'invoice']);
