@@ -471,7 +471,7 @@ class AuthController extends Controller
 
             $is_invoice = $invoice;
         } else {
-            $is_invoice = $invoice->first();
+            $is_invoice = $invoice->where('status', 'UNPAID')->first();
         }
 
         return $is_invoice;
