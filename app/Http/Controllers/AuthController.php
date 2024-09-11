@@ -447,7 +447,7 @@ class AuthController extends Controller
         $invoice = AdminInvoice::where([
             ['lokasi', $usaha->id],
             ['jenis_pembayaran', '2']
-        ])->whereBetween('tgl_invoice', [$usaha->tgl_pakai, $usaha->masa_aktif]);
+        ])->whereBetween('tgl_invoice', [$usaha->tgl_pakai, date('Y-m-d')]);
 
         $is_invoice = false;
         $tanggal = date('Y-m-d', strtotime('+14 days', strtotime(date('Y-m-d'))));
