@@ -177,7 +177,8 @@
             <tr style="background: rgb(232, 232, 232)">
                 <td height="70" align="center" style="font-size: 11px;">
                     <div>
-                        {{ $inv->jp->nama_jp }} {{ strtoupper($app_name) }} {{ $inv->usaha->d->kec->sebutan_kec }}
+                        {{ $inv->jp->nama_jp }} {{ strtoupper($app_name) }} {{ $inv->usaha->nama_usaha }}
+                        {{ $inv->usaha->d->kec->sebutan_kec }}
                         {{ $inv->usaha->d->kec->nama_kec }}
                     </div>
                     <div>{{ $keterangan }}</div>
