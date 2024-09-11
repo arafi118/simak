@@ -470,6 +470,8 @@ class AuthController extends Controller
             ]);
 
             $is_invoice = $invoice;
+        } else {
+            $is_invoice = $invoice->first();
         }
 
         return $is_invoice;
