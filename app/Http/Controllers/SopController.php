@@ -240,7 +240,6 @@ class SopController extends Controller
             'peraturan_desa',
             'npwp',
             'tanggal_npwp',
-            'tagihan_invoice'
         ]);
 
         $validate = Validator::make($data, [
@@ -252,7 +251,6 @@ class SopController extends Controller
             'peraturan_desa' => 'required',
             'npwp' => 'required',
             'tanggal_npwp' => 'required',
-            'tagihan_invoice'
         ]);
 
         if ($validate->fails()) {
@@ -268,17 +266,7 @@ class SopController extends Controller
             'npwp' => $data['npwp'],
             'tgl_npwp' => Tanggal::tglNasional($data['tanggal_npwp']),
             'peraturan_desa' => $request->peraturan_desa,
-            'tagihan_invoice' => $request->tagihan_invoice
         ];
-
-        if ($request->tagihan_invoice != $usaha->tagihan_invoice) {
-            $selisih = '+ ' . ($request->tagihan_invoice - $usaha->tagihan_invoice);
-            if ($request->tagihan_invoice < $usaha->tagihan_invoice) {
-                $selisih = '- ' . ($usaha->tagihan_invoice - $request->tagihan_invoice);
-            }
-
-            $update['masa_aktif'] = date('Y-m-d', strtotime($selisih . ' month', strtotime($usaha->masa_aktif)));
-        }
 
         $usaha = Usaha::where('id', $usaha->id)->update($update);
         Session::put('nama_usaha', ucwords(strtolower($data['nama_bumdes'])));
