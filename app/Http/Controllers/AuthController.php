@@ -8,6 +8,7 @@ use App\Models\Desa;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
 use App\Models\Menu;
+use App\Models\MenuTombol;
 use App\Models\Usaha;
 use App\Models\User;
 use App\Models\Wilayah;
@@ -130,6 +131,9 @@ class AuthController extends Controller
         ])->first();
 
         if ($user) {
+            $AksesMenu = Menu::whereNotIn('id', explode('#', $user->akses_menu))->where('parent_id', '0')->with('child')->get();
+            $AksesTombol = MenuTombol::whereNotIn('id', explode('#', $user->akses_tombol))->pluck('akses')->toArray();
+
             if ($password === $user->pass) {
                 if (Auth::loginUsingId($user->id)) {
                     $inv = $this->generateInvoice($usaha);
@@ -144,6 +148,8 @@ class AuthController extends Controller
                         'usaha' => $user->usaha,
                         'lokasi_user' => $user->lokasi,
                         'icon' => $icon,
+                        'menu' => $AksesMenu,
+                        'tombol' => $AksesTombol
                     ]);
 
                     return redirect('/dashboard')->with([
@@ -316,7 +322,6 @@ class AuthController extends Controller
             "status" => "1",
             "uname" => "Direktur",
             "pass" => "Direktur",
-            "hak_akses" => "",
         ]);
 
         User::create([
@@ -338,7 +343,6 @@ class AuthController extends Controller
             "status" => "1",
             "uname" => "Sekretaris",
             "pass" => "Sekretaris",
-            "hak_akses" => "",
         ]);
 
         User::create([
@@ -360,7 +364,6 @@ class AuthController extends Controller
             "status" => "1",
             "uname" => "Bendahara",
             "pass" => "Bendahara",
-            "hak_akses" => "",
         ]);
 
         $lokasi = Session::get('lokasi');

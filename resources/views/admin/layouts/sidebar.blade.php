@@ -32,10 +32,16 @@
                     <span class="menu-title">Dashboard</span>
                 </a>
             </li>
-            <li class="{{ active('/register') }} nav-item">
-                <a href="/db/register">
+            <li class="{{ active('/user') }} nav-item">
+                <a href="/db/user">
+                    <i class="icon-users"></i>
+                    <span class="menu-title">User</span>
+                </a>
+            </li>
+            <li class="{{ active('/app') }} nav-item">
+                <a href="/db/app">
                     <i class="icon-briefcase"></i>
-                    <span class="menu-title">Register App</span>
+                    <span class="menu-title">App</span>
                 </a>
             </li>
             <li class="{{ active('', '/invoice', '/paid', '/unpaid') }} nav-item">

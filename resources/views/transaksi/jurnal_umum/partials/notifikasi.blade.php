@@ -111,13 +111,15 @@
 
                 <div class="d-flex justify-content-end" style="gap: 1rem">
                     <div class="d-flex justify-content-end" style="gap: 1rem">
-                        @if ($kuitansi)
+                        @if ($kuitansi && in_array('jurnal_umum.cetak_kuitansi', Session::get('tombol')))
                             <button type="button" data-action="/transaksi/dokumen/kuitansi/{{ $trx->idt }}"
                                 class="btn btn-sm btn-info btn-link">Kuitansi</button>
                         @endif
-                        <button type="button"
-                            data-action="/transaksi/dokumen/{{ $files }}/{{ $trx->idt }}"
-                            class="btn btn-sm btn-info btn-link">{{ $files }}</button>
+                        @if (in_array('jurnal_umum.cetak_voucher', Session::get('tombol')))
+                            <button type="button"
+                                data-action="/transaksi/dokumen/{{ $files }}/{{ $trx->idt }}"
+                                class="btn btn-sm btn-info btn-link">{{ $files }}</button>
+                        @endif
                     </div>
                 </div>
             </div>

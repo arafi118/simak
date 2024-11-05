@@ -21,7 +21,7 @@ class RedirectIfAuthenticated
 
         if (auth()->guard('master')->check()) {
             if (auth()->guard('master')->user()->akses == 'master') {
-                return redirect('/master/dashboard');
+                return redirect('/db/dashboard');
             }
         }
 

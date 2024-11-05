@@ -30,6 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="/assets/css/vendors.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/app.css">
+    <link rel="stylesheet" type="text/css" href="/assets/vendors/css/forms/toggle/switchery.min.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/core/menu/menu-types/vertical-compact-menu.css">
     <link rel="stylesheet" type="text/css" href="/assets/vendors/css/cryptocoins/cryptocoins.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/pages/timeline.css">
@@ -122,6 +123,7 @@
     <script src="/assets/vendors/js/vendors.min.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="/assets/vendors/js/timeline/horizontal-timeline.js" type="text/javascript"></script>
+    <script src="/assets/vendors/js/forms/toggle/switchery.min.js" type="text/javascript"></script>
     <script src="/assets/js/core/app-menu.js" type="text/javascript"></script>
     <script src="/assets/js/core/app.js" type="text/javascript"></script>
 
@@ -139,6 +141,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.5/js/dataTables.min.js"></script>
 
+    <script src="/assets/js/scripts/forms/account-profile.js" type="text/javascript"></script>
     @yield('script')
     <script>
         function open_window(link) {

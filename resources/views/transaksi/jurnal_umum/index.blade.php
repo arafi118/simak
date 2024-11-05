@@ -77,11 +77,13 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end">
-                        <button type="button" id="BtndetailTransaksi" class="btn btn-sm btn-info">
-                            Detail Transaksi
-                        </button>
-                    </div>
+                    @if (in_array('jurnal_umum.detail_transaksi', Session::get('tombol')))
+                        <div class="d-flex justify-content-end">
+                            <button type="button" id="BtndetailTransaksi" class="btn btn-sm btn-info">
+                                Detail Transaksi
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -101,9 +103,11 @@
                     <div id="LayoutdetailTransaksi"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="BtnCetakBuktiTransaksi" class="btn btn-sm btn-info">
-                        Cetak Bukti Transaksi
-                    </button>
+                    @if (in_array('jurnal_umum.cetak_bukti_transaksi', Session::get('tombol')))
+                        <button type="button" id="BtnCetakBuktiTransaksi" class="btn btn-sm btn-info">
+                            Cetak Bukti Transaksi
+                        </button>
+                    @endif
                     <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Tutup</button>
                 </div>
             </div>

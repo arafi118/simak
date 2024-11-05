@@ -95,9 +95,15 @@
             </form>
 
             <div class="d-flex justify-content-end">
-                <button type="button" id="SimpanSaldo" class="btn btn-sm btn-danger mr-1">Simpan Saldo</button>
-                <button type="button" id="Excel" class="btn btn-sm btn-success mr-1">Excel</button>
-                <button type="button" id="Preview" class="btn btn-sm btn-info">Preview</button>
+                @if (in_array('laporan.simpan_saldo', Session::get('tombol')))
+                    <button type="button" id="SimpanSaldo" class="btn btn-sm btn-danger mr-1">Simpan Saldo</button>
+                @endif
+                @if (in_array('laporan.download_excel', Session::get('tombol')))
+                    <button type="button" id="Excel" class="btn btn-sm btn-success mr-1">Excel</button>
+                @endif
+                @if (in_array('laporan.preview_pdf', Session::get('tombol')))
+                    <button type="button" id="Preview" class="btn btn-sm btn-info">Preview</button>
+                @endif
             </div>
         </div>
     </div>

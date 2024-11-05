@@ -26,44 +26,37 @@
             </div>
         </a>
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class="{{ active('dashboard') }} nav-item">
-                <a href="/dashboard">
-                    <i class="icon-grid"></i>
-                    <span class="menu-title">Dashboard</span>
-                </a>
-            </li>
-            <li class="{{ active('', '/sop', '/coa') }} nav-item">
-                <a href="#">
-                    <i class="icon-support"></i>
-                    <span class="menu-title">Pengaturan</span>
-                </a>
-                <ul class="menu-content">
-                    <li>
-                        <a class="menu-item" href="/pengaturan/sop">Personalisasi SOP</a>
-                    </li>
-                    <li>
-                        <a class="menu-item" href="/pengaturan/coa">Cart Of Account</a>
-                    </li>
-                    <li>
-                        <a class="menu-item" href="/pengaturan/ttd_pelaporan">Tanda Tangan</a>
-                    </li>
-                    <li>
-                        <a class="menu-item" href="/pengaturan/invoice">Invoice</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="{{ active('/transaksi') }} nav-item">
-                <a href="/transaksi">
-                    <i class="icon-shuffle"></i>
-                    <span class="menu-title">Jurnal Umum</span>
-                </a>
-            </li>
-            <li class="{{ active('pelaporan') }} nav-item">
-                <a href="/pelaporan">
-                    <i class="icon-layers"></i>
-                    <span class="menu-title">Laporan</span>
-                </a>
-            </li>
+            @foreach (Session::get('menu') as $menu)
+                @php
+                    $active = active('', $menu->link);
+                    if (count($menu->child) > 0) {
+                        foreach ($menu->child as $child) {
+                            $child_link = explode('/', $child->link);
+                            $active = active('', '/' . end($child_link));
+
+                            if ($active == 'active') {
+                                break;
+                            }
+                        }
+                    }
+                @endphp
+                <li class="{{ $active }} nav-item">
+                    <a href="{{ $menu->link }}">
+                        <i class="{{ $menu->ikon }}"></i>
+                        <span class="menu-title">{{ $menu->title }}</span>
+                    </a>
+
+                    @if (count($menu->child) > 0)
+                        <ul class="menu-content">
+                            @foreach ($menu->child as $child)
+                                <li>
+                                    <a class="menu-item" href="{{ $child->link }}">{{ $child->title }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </li>
+            @endforeach
         </ul>
     </div>
 </div>

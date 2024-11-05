@@ -1,8 +1,35 @@
+@php
+    $edit_level_3 = '0';
+    $tambah_level_4 = '0';
+    $edit_level_4 = '0';
+    $hapus_level_4 = '0';
+
+    if (in_array('cart_of_account.edit_akun_level_3', Session::get('tombol'))) {
+        $edit_level_3 = '1';
+    }
+
+    if (in_array('cart_of_account.tambah_akun_level_4', Session::get('tombol'))) {
+        $tambah_level_4 = '1';
+    }
+
+    if (in_array('cart_of_account.edit_akun_level_4', Session::get('tombol'))) {
+        $edit_level_4 = '1';
+    }
+
+    if (in_array('cart_of_account.hapus_akun_level_4', Session::get('tombol'))) {
+        $hapus_level_4 = '1';
+    }
+@endphp
+
 @extends('layouts.base')
 
 @section('content')
     <div class="card">
         <div class="card-body">
+            <input type="hidden" name="edit_level_3" id="edit_level_3" value="{{ $edit_level_3 }}">
+            <input type="hidden" name="tambah_level_4" id="tambah_level_4" value="{{ $tambah_level_4 }}">
+            <input type="hidden" name="edit_level_4" id="edit_level_4" value="{{ $edit_level_4 }}">
+            <input type="hidden" name="hapus_level_4" id="hapus_level_4" value="{{ $hapus_level_4 }}">
             <div id="akun"></div>
         </div>
     </div>
@@ -46,59 +73,68 @@
                         var child_lev4 = parseInt(child_kode_akun[3]) + 1;
                         child_lev4 = child_lev4.toString().padStart(2, '0');
 
-                        items.Create = {
-                            "separator_before": false,
-                            "separator_after": false,
-                            "label": "Tambah",
-                            "action": function(obj) {
-                                var id = `${child_lev1}.${child_lev2}.0${child_lev3}.${child_lev4}`
-                                $node = tree.create_node($node, {
-                                    "id": id,
-                                    "text": id + ". Akun Baru",
-                                });
-                                tree.edit($node);
+                        if ($('#tambah_level_4').val() > '0') {
+                            items.Create = {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Tambah",
+                                "action": function(obj) {
+                                    var id = `${child_lev1}.${child_lev2}.0${child_lev3}.${child_lev4}`
+                                    $node = tree.create_node($node, {
+                                        "id": id,
+                                        "text": id + ". Akun Baru",
+                                    });
+                                    tree.edit($node);
+                                }
                             }
                         }
 
-                        items.Rename = {
-                            "separator_before": false,
-                            "separator_after": false,
-                            "label": "Edit",
-                            "action": function(obj) {
-                                tree.edit($node);
-                            }
-                        };
+                        if ($('#edit_level_3').val() > '0') {
+                            items.Rename = {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Edit",
+                                "action": function(obj) {
+                                    tree.edit($node);
+                                }
+                            };
+                        }
                     }
 
                     if ((lev1 > 0 && lev2 > 0 && lev3 > 0 && lev4 > 0) || tree.get_node($node).children
                         .length === 0) {
-                        items.Rename = {
-                            "separator_before": false,
-                            "separator_after": false,
-                            "label": "Edit",
-                            "action": function(obj) {
-                                tree.edit($node);
-                            }
-                        };
-                        items.Remove = {
-                            "separator_before": false,
-                            "separator_after": false,
-                            "label": "Hapus",
-                            "action": function(obj) {
-                                Swal.fire({
-                                    title: 'Peringatan',
-                                    text: 'Hapus akun ' + tree.get_node($node).text,
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Hapus Kode Akun',
-                                    cancelButtonText: 'Batal',
-                                    icon: 'warning'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        tree.delete_node($node);
-                                    }
-                                })
-                            }
-                        };
+                        if ($('#edit_level_4').val() > '0') {
+                            items.Rename = {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Edit",
+                                "action": function(obj) {
+                                    tree.edit($node);
+                                }
+                            };
+                        }
+
+                        if ($('#hapus_level_4').val() > '0') {
+                            items.Remove = {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Hapus",
+                                "action": function(obj) {
+                                    Swal.fire({
+                                        title: 'Peringatan',
+                                        text: 'Hapus akun ' + tree.get_node($node).text,
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Hapus Kode Akun',
+                                        cancelButtonText: 'Batal',
+                                        icon: 'warning'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            tree.delete_node($node);
+                                        }
+                                    })
+                                }
+                            };
+                        }
                     }
                     return items;
                 }

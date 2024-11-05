@@ -59,11 +59,15 @@
                 [0, 'desc']
             ]
         })
-
-        $('#TbInvoice').on('click', 'tbody tr', function(e) {
-            var data = table.row(this).data();
-
-            window.location.href = '/pengaturan/' + data.nomor + '/invoice'
-        })
     </script>
+
+    @if (in_array('invoice.cetak_invoice', Session::get('tombol')))
+        <script>
+            $('#TbInvoice').on('click', 'tbody tr', function(e) {
+                var data = table.row(this).data();
+
+                window.location.href = '/pengaturan/' + data.nomor + '/invoice'
+            })
+        </script>
+    @endif
 @endsection

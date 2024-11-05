@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AppController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DesaController;
@@ -31,6 +33,20 @@ Route::prefix('db')->group(function () {
     Route::post('/auth', [AdminAuthController::class, 'login'])->middleware('guest');
 
     Route::get('/dashboard', [AdminController::class, 'index'])->middleware('master');
+
+    Route::get('/app', [AppController::class, 'index'])->middleware('master');
+    Route::get('/app/register', [AppController::class, 'register'])->middleware('master');
+    Route::get('/app/{usaha}', [AppController::class, 'show'])->middleware('master');
+    Route::get('/app/desa/{kode}', [AppController::class, 'desa'])->middleware('master');
+    Route::get('/app/kecamatan/{kode}', [AppController::class, 'kecamatan'])->middleware('master');
+    Route::get('/app/kabupaten/{kode}', [AppController::class, 'kabupaten'])->middleware('master');
+    Route::get('/app/provinsi/{kode}', [AppController::class, 'provinsi'])->middleware('master');
+    Route::post('/app/{usaha}/edit', [AppController::class, 'update'])->middleware('master');
+
+    Route::get('/user/lokasi/{lokasi}', [AdminUserController::class, 'userLokasi'])->middleware('master');
+    Route::post('/user/{user}/akses_tombol', [AdminUserController::class, 'aksesTombol'])->middleware('master');
+    Route::post('/user/{user}/hak_akses', [AdminUserController::class, 'hakAkses'])->middleware('master');
+    Route::resource('/user', AdminUserController::class)->middleware('master');
 
     Route::get('/invoice', [InvoiceController::class, 'index'])->middleware('master');
     Route::post('/invoice', [InvoiceController::class, 'store'])->middleware('master');

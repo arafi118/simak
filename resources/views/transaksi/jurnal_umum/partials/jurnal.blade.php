@@ -189,7 +189,7 @@
                             <i class="fas fa-info"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="{{ $trx->id }}">
-                            @if ($kuitansi)
+                            @if ($kuitansi && in_array('jurnal_umum.cetak_kuitansi', Session::get('tombol')))
                                 <a class="dropdown-item" target="_blank"
                                     href="/transaksi/dokumen/kuitansi/{{ $trx->idt }}">
                                     Kuitansi
@@ -199,30 +199,45 @@
                                     Kuitansi Thermal
                                 </a>
                             @endif
-                            <a class="dropdown-item btn-link" target="_blank"
-                                data-action="/transaksi/dokumen/{{ $files }}/{{ $trx->idt }}"
-                                href="#">
-                                @if ($files == 'bkm')
-                                    Bukti Kas Masuk
-                                @elseif ($files == 'bkk')
-                                    Bukti Kas Keluar
-                                @else
-                                    Bukti Memorial
-                                @endif
-                            </a>
-                            @if ($is_dir)
+
+                            @if (in_array('jurnal_umum.cetak_voucher', Session::get('tombol')))
+                                <a class="dropdown-item btn-link" target="_blank"
+                                    data-action="/transaksi/dokumen/{{ $files }}/{{ $trx->idt }}"
+                                    href="#">
+                                    @if ($files == 'bkm')
+                                        Bukti Kas Masuk
+                                    @elseif ($files == 'bkk')
+                                        Bukti Kas Keluar
+                                    @else
+                                        Bukti Memorial
+                                    @endif
+                                </a>
+                            @endif
+
+                            @if (in_array('jurnal_umum.transaksi_reversal', Session::get('tombol')) ||
+                                    in_array('jurnal_umum.edit_transaksi', Session::get('tombol')) ||
+                                    in_array('jurnal_umum.hapus_transaksi', Session::get('tombol')))
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item btn-reversal" data-idt="{{ $trx->idt }}" href="#">
-                                    Reversal
-                                </a>
-                                <a class="dropdown-item text-warning btn-edit" data-idt="{{ $trx->idt }}"
-                                    href="#">
-                                    Edit Transaksi
-                                </a>
-                                <a class="dropdown-item text-danger btn-delete" data-idt="{{ $trx->idt }}"
-                                    href="#">
-                                    Hapus Transaksi
-                                </a>
+                                @if (in_array('jurnal_umum.transaksi_reversal', Session::get('tombol')))
+                                    <a class="dropdown-item btn-reversal" data-idt="{{ $trx->idt }}"
+                                        href="#">
+                                        Reversal
+                                    </a>
+                                @endif
+
+                                @if (in_array('jurnal_umum.edit_transaksi', Session::get('tombol')))
+                                    <a class="dropdown-item text-warning btn-edit" data-idt="{{ $trx->idt }}"
+                                        href="#">
+                                        Edit Transaksi
+                                    </a>
+                                @endif
+
+                                @if (in_array('jurnal_umum.hapus_transaksi', Session::get('tombol')))
+                                    <a class="dropdown-item text-danger btn-delete" data-idt="{{ $trx->idt }}"
+                                        href="#">
+                                        Hapus Transaksi
+                                    </a>
+                                @endif
                             @endif
                         </div>
                     </div>

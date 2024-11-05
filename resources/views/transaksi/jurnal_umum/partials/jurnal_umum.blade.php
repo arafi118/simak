@@ -66,9 +66,11 @@
         </div>
     </form>
 
-    <div class="d-flex justify-content-end">
-        <button type="button" id="SimpanTransaksi" class="btn btn-sm btn-warning">Simpan Transaksi</button>
-    </div>
+    @if (in_array('jurnal_umum.simpan_transaksi', Session::get('tombol')))
+        <div class="d-flex justify-content-end">
+            <button type="button" id="SimpanTransaksi" class="btn btn-sm btn-warning">Simpan Transaksi</button>
+        </div>
+    @endif
 </div>
 
 <script>
