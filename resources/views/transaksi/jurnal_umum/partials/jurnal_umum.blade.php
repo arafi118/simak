@@ -66,12 +66,18 @@
         </div>
     </form>
 
-    @if (in_array('jurnal_umum.simpan_transaksi', Session::get('tombol')))
+    @if (in_array('jurnal_umum.tutup_buku', Session::get('tombol')) ||
+            in_array('jurnal_umum.simpan_transaksi', Session::get('tombol')))
         <div class="d-flex justify-content-end">
-            <button type="button" id="TutupBuku" class="btn btn-sm btn-info mr-2">Tutup Buku</button>
-            <button type="button" id="SimpanTransaksi" class="btn btn-sm btn-warning">Simpan Transaksi</button>
+            @if (in_array('jurnal_umum.tutup_buku', Session::get('tombol')))
+                <button type="button" id="TutupBuku" class="btn btn-sm btn-info mr-2">Tutup Buku</button>
+            @endif
+            @if (in_array('jurnal_umum.simpan_transaksi', Session::get('tombol')))
+                <button type="button" id="SimpanTransaksi" class="btn btn-sm btn-warning">Simpan Transaksi</button>
+            @endif
         </div>
     @endif
+
 </div>
 
 <script>
