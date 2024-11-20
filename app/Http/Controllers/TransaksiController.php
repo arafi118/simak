@@ -174,7 +174,7 @@ class TransaksiController extends Controller
     {
         $keuangan = new Keuangan;
         $tgl_pakai = $request->tgl_pakai ?: date('Y-m-d');
-        $tahun = $request->tahun;
+        $tahun = $request->tahun_tutup_buku;
         $tahun_lalu = $tahun - 1;
         $tahun_pakai = Tanggal::tahun($tgl_pakai);
         $bulan = date('m');
@@ -217,16 +217,10 @@ class TransaksiController extends Controller
         $tgl_kondisi = $tahun . '-' . $bulan . '-' . date('t', strtotime($tahun . '-' . $bulan . '-01'));
         $surplus = $keuangan->laba_rugi($tgl_kondisi);
 
-        $success = false;
-        $migrasi_saldo = false;
-        if ($request->pembagian_laba == 'false') {
-            $jumlah_riwayat = $request->jumlah_riwayat;
-            $total_riwayat = $request->total_riwayat;
+        $jumlah_riwayat = $request->jumlah_riwayat;
+        $total_riwayat = $request->total_riwayat;
 
-            if ($jumlah_riwayat < $total_riwayat) {
-                $migrasi_saldo = true;
-            }
-
+        try {
             $tahun_tb = $tahun + 1;
             $kode_rekening = Rekening::with([
                 'kom_saldo' => function ($query) use ($tahun, $bulan) {
@@ -314,28 +308,17 @@ class TransaksiController extends Controller
             Saldo::whereIn('id', $data_id)->delete();
             Saldo::insert($saldo_tutup_buku);
 
-            $success = true;
-
-            return redirect('/transaksi/tutup_buku')->with('success', 'Tutup Buku Tahun ' . $tahun . ' berhasil.');
+            return response()->json([
+                'success' => true,
+                'msg' => 'Tutup Buku ' . $tahun . ' Berhasil.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Tutup Buku Gagal',
+                'error' => $e
+            ]);
         }
-
-        $surplus = $keuangan->laba_rugi($tahun . '-13-00');
-
-        $kec = Kecamatan::where('id', Session::get('lokasi'))->with([
-            'saldo' => function ($query) use ($tahun, $bulan) {
-                $query->where('tahun', $tahun);
-            },
-        ])->first();
-        $rekening = Rekening::where('kode_akun', 'like', '2.1.04%')->get();
-        $desa = Desa::where('kd_kec', $kec->kd_kec)->with([
-            'saldo' => function ($query) use ($tahun, $bulan) {
-                $query->where('tahun', $tahun);
-            },
-            'sebutan_desa'
-        ])->orderBy('kd_desa', 'ASC')->get();
-
-        $title = 'Pembagian Laba';
-        return view('transaksi.tutup_buku.tutup_buku')->with(compact('title', 'kec', 'surplus', 'rekening', 'desa', 'tgl_kondisi', 'tahun', 'migrasi_saldo', 'success'));
     }
 
     public function simpanAlokasiLaba(Request $request)

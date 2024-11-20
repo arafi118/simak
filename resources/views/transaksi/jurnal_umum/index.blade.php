@@ -136,6 +136,67 @@
         </div>
     </div>
 
+    <div class="modal fade" id="DetailTutupBuku" tabindex="-1" aria-labelledby="DetailTutupBukuLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="DetailTutupBukuLabel">
+                        Tutup Buku
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <form action="/transaksi/tutup_buku/saldo" method="post" id="FormTutupBuku">
+                        @csrf
+
+                        <input type="hidden" name="tgl_pakai" id="tgl_pakai" value="{{ $usaha->tgl_pakai }}">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="tahun_tutup_buku">Tahun</label>
+                                    <select class="form-control select2" name="tahun_tutup_buku" id="tahun_tutup_buku"
+                                        style="width: 100% !important">
+                                        @for ($i = explode('-', $usaha->tgl_pakai)[0] - 1; $i <= date('Y'); $i++)
+                                            <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>
+                                                {{ $i }}
+                                            </option>
+                                        @endfor
+                                    </select>
+                                    <small class="text-danger" id="msg_tahun_tutup_buku"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="BtnMulaiTutupBuku" class="btn btn-sm btn-info">
+                        Mulai
+                    </button>
+                    <button type="button" id="BtnClose" class="btn btn-danger btn-sm btn-close-modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="DetailSaldo" tabindex="-1" aria-labelledby="DetailSaldoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="DetailSaldoLabel"></h1>
+                </div>
+                <div class="modal-body">
+                    <div id="LayoutTutupBuku"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="BtnSimpanTutupBuku" class="btn btn-sm btn-info">
+                        Lanjutkan
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm btn-close-modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form action="/transaksi/reversal" method="post" id="formReversal">
         @csrf
 
@@ -460,6 +521,62 @@
             $('#CetakBuktiTransaksi').modal('toggle')
         })
 
+        $(document).on('click', '#TutupBuku, #BtnClose', function(e) {
+            e.preventDefault();
+
+            $('#DetailTutupBuku').modal('toggle')
+        })
+
+        $(document).on('click', '#BtnMulaiTutupBuku', function(e) {
+            e.preventDefault();
+
+            var form = $('#FormTutupBuku')
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        $('#LayoutTutupBuku').html(result.view)
+
+                        var tahun = $('#FormTutupBuku #tahun_tutup_buku').val()
+                        $('#DetailSaldoLabel').html('Tutup Buku ' + tahun)
+
+                        // $('#DetailTutupBuku').modal('hide')
+                        $('#DetailSaldo').modal('toggle')
+                    }
+                }
+            })
+        })
+
+        $(document).on('click', '#BtnSimpanTutupBuku', function(e) {
+            e.preventDefault();
+
+            var form = $('#FormSimpanTutupBuku')
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(result) {
+                    if (result.success) {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success'
+                        }).then(() => {
+                            $('.modal').modal('hide');
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.msg,
+                            icon: 'error'
+                        })
+                    }
+                }
+            })
+        })
+
         $(document).on('click', '.btn-struk', function(e) {
             e.preventDefault()
 
@@ -588,6 +705,12 @@
                     }
                 })
             })
+        })
+
+        $(document).on('click', '.btn-close-modal', function(e) {
+            e.preventDefault();
+
+            $('.modal').modal('hide');
         })
 
         $(document).on('click', '#BtnCetak', function(e) {

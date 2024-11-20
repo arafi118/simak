@@ -35,6 +35,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/pages/timeline.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/pages/dashboard-ico.css">
 
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <style>
         .select2-container .select2-selection--single {
             padding: 0.5rem 0.75rem !important;
@@ -117,7 +118,6 @@
         @csrf
     </form>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="/assets/vendors/js/vendors.min.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="/assets/vendors/js/timeline/horizontal-timeline.js" type="text/javascript"></script>

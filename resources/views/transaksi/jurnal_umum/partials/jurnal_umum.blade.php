@@ -68,21 +68,24 @@
 
     @if (in_array('jurnal_umum.simpan_transaksi', Session::get('tombol')))
         <div class="d-flex justify-content-end">
+            <button type="button" id="TutupBuku" class="btn btn-sm btn-info mr-2">Tutup Buku</button>
             <button type="button" id="SimpanTransaksi" class="btn btn-sm btn-warning">Simpan Transaksi</button>
         </div>
     @endif
 </div>
 
 <script>
-    $(".date").flatpickr({
-        dateFormat: "d/m/Y"
-    })
+    $(document).ready(function() {
+        $(".date").flatpickr({
+            dateFormat: "d/m/Y"
+        })
 
-    $("#nominal").maskMoney({
-        allowNegative: true
-    });
+        $("#nominal").maskMoney({
+            allowNegative: true
+        });
 
-    $('.select2').select2({
-        theme: 'bootstrap-5'
+        $('.select2').select2({
+            theme: 'bootstrap-5'
+        })
     })
 </script>
