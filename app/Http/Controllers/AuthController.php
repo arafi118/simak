@@ -135,8 +135,8 @@ class AuthController extends Controller
             $AksesTombol = MenuTombol::whereNotIn('id', explode('#', $user->akses_tombol))->pluck('akses')->toArray();
 
             if ($password === $user->pass) {
+                $inv = $this->generateInvoice($usaha);
                 if (Auth::loginUsingId($user->id)) {
-                    $inv = $this->generateInvoice($usaha);
                     $request->session()->regenerate();
 
                     session([
