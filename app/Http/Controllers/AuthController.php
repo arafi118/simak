@@ -447,7 +447,7 @@ class AuthController extends Controller
 
     private function generateInvoice($usaha)
     {
-        $tgl_pembuatan_invoice = date('Y-m-d', strtotime('-14 days', strtotime($usha->masa_aktif)));
+        $tgl_pembuatan_invoice = date('Y-m-d', strtotime('-14 days', strtotime($usaha->masa_aktif)));
         $invoice = AdminInvoice::where([
             ['lokasi', $usaha->id],
             ['jenis_pembayaran', '2']
