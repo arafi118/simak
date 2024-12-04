@@ -441,7 +441,7 @@ class SopController extends Controller
                 $query->where([
                     ['lokasi', Session::get('lokasi')],
                     ['status', 'UNPAID'],
-                    ['tgl_invoice', '>=', $tgl_pembuatan_invoice]
+                    ['tgl_invoice', '<=', date('Y-m-d')]
                 ]);
             })->with('jp')->withSum('trx', 'jumlah')->get();
 
