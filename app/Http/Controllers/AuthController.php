@@ -472,7 +472,7 @@ class AuthController extends Controller
                 'id_user' => 1
             ]);
 
-            if (date('Y-m-d') <= $tgl_pembuatan_invoice) {
+            if (date('Y-m-d') >= $tgl_pembuatan_invoice) {
                 $is_invoice = $invoice;
             }
         } else {
