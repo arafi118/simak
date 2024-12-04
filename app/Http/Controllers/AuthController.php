@@ -455,7 +455,7 @@ class AuthController extends Controller
 
         $is_invoice = false;
         if ($invoice->count() <= 0) {
-            $tanggal = date('Y-m-d');
+            $tanggal = $tgl_pembuatan_invoice;
             $nomor_invoice = date('ymd');
             $invoice = AdminInvoice::where('tgl_invoice', $tanggal)->count();
             $nomor_urut = str_pad($invoice + 1, '2', '0', STR_PAD_LEFT);
@@ -465,8 +465,8 @@ class AuthController extends Controller
                 'lokasi' => $usaha->id,
                 'nomor' => $nomor_invoice,
                 'jenis_pembayaran' => 2,
-                'tgl_invoice' => date('Y-m-d'),
-                'tgl_lunas' => date('Y-m-d'),
+                'tgl_invoice' =>  $tgl_pembuatan_invoice,
+                'tgl_lunas' =>  $tgl_pembuatan_invoice,
                 'status' => 'UNPAID',
                 'jumlah' => $usaha->biaya * $usaha->tagihan_invoice,
                 'id_user' => 1
