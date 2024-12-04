@@ -476,7 +476,9 @@ class AuthController extends Controller
                 $is_invoice = $invoice;
             }
         } else {
-            $is_invoice = $invoice->where('status', 'UNPAID')->first();
+            if (date('Y-m-d') >= $tgl_pembuatan_invoice) {
+                $is_invoice = $invoice->where('status', 'UNPAID')->first();
+            }
         }
 
         return $is_invoice;
