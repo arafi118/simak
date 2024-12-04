@@ -431,7 +431,19 @@ class SopController extends Controller
     public function invoice()
     {
         if (request()->ajax()) {
-            $invoice = AdminInvoice::where('lokasi', Session::get('lokasi'))->with('jp')->withSum('trx', 'jumlah')->get();
+            $usaha = Usaha::where('id', Session::get('lokasi'))->first();
+            $tgl_pembuatan_invoice = date('Y-m-d', strtotime('-14 days', strtotime($usaha->masa_aktif)));
+
+            $invoice = AdminInvoice::where([
+                ['lokasi', Session::get('lokasi')],
+                ['status', 'PAID']
+            ])->orwhere(function ($query) use ($tgl_pembuatan_invoice) {
+                $query->where([
+                    ['lokasi', Session::get('lokasi')],
+                    ['status', 'UNPAID'],
+                    ['tgl_invoice', '>=', $tgl_pembuatan_invoice]
+                ]);
+            })->with('jp')->withSum('trx', 'jumlah')->get();
 
             return DataTables::of($invoice)
                 ->editColumn('tgl_invoice', function ($row) {
