@@ -1,4 +1,4 @@
-<div>Kecamatan {{ $kec->nama_kec }} [{{ $kec->id }}], {{ $kec->kabupaten->nama_kab }}</div>
+<div>Kecamatan {{ $usaha->nama_usaha }} [{{ $usaha->id }}]</div>
 <table border="1" cellspacing="0" cellpadding="0" width="100%">
     <tr>
         <th>Nama</th>
@@ -18,5 +18,5 @@
     @endforeach
 </table>
 <div style="text-align: right;">
-    <a href="/" target="_blank">{{ $kec->web_kec }}</a>
+    <a href="/" target="_blank">{{ $usaha->domain }}</a>
 </div>

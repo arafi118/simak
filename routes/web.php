@@ -14,6 +14,7 @@ use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Models\Kecamatan;
+use App\Models\Usaha;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -185,10 +186,10 @@ Route::get('/link', function () {
 });
 
 Route::get('/user', function () {
-    $kec = Kecamatan::where('web_kec', request()->getHost())->orwhere('web_alternatif', request()->getHost())->with('kabupaten')->first();
-    $users = User::where('lokasi', $kec->id)->with('l', 'j')->orderBy('level', 'ASC')->orderBy('jabatan', 'ASC')->get();
+    $usaha = Usaha::where('domain', request()->getHost())->orwhere('domain_alt', request()->getHost())->first();
+    $users = User::where('lokasi', $usaha->id)->with('l', 'j')->orderBy('level', 'ASC')->orderBy('jabatan', 'ASC')->get();
 
-    return view('welcome', ['users' => $users, 'kec' => $kec]);
+    return view('welcome', ['users' => $users, 'usaha' => $usaha]);
 });
 
 Route::get('/download/{file}', function ($file) {
