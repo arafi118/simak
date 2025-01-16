@@ -156,8 +156,8 @@
                                     <label class="form-label" for="tahun_tutup_buku">Tahun</label>
                                     <select class="form-control select2" name="tahun_tutup_buku" id="tahun_tutup_buku"
                                         style="width: 100% !important">
-                                        @for ($i = explode('-', $usaha->tgl_pakai)[0] - 1; $i <= date('Y'); $i++)
-                                            <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>
+                                        @for ($i = date('Y'); $i >= explode('-', $usaha->tgl_pakai)[0] - 1; $i--)
+                                            <option {{ $i == date('Y') ? 'selected' : '' }} value="{{ $i }}">
                                                 {{ $i }}
                                             </option>
                                         @endfor
@@ -280,6 +280,7 @@
             setSaldo(sumber_dana, tgl_transaksi)
         })
 
+        var value_disimpan_ke = ''
         $(document).on('change', '#sumber_dana,#disimpan_ke', function(e) {
             e.preventDefault()
 
@@ -287,6 +288,17 @@
             var jenis_transaksi = $('#jenis_transaksi').val()
             var sumber_dana = $('#sumber_dana').val()
             var disimpan_ke = $('#disimpan_ke').val()
+
+            if (sumber_dana == disimpan_ke) {
+                $('#SimpanTransaksi').attr('disabled', true)
+                $('#disimpan_ke').val(value_disimpan_ke).change()
+
+                Toastr('warning', 'Kode Akun tidak boleh sama')
+                return false
+            } else {
+                $('#SimpanTransaksi').attr('disabled', false)
+                value_disimpan_ke = disimpan_ke
+            }
 
             $.get('/transaksi/form_nominal/', {
                 jenis_transaksi,
