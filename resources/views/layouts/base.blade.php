@@ -79,6 +79,16 @@
             left: 100%;
             margin-top: -1px;
         }
+
+        .swal2-container,
+        .swal2-html-container {
+            z-index: 9999999 !important;
+            overflow: unset !important;
+        }
+
+        .flatpickr-wrapper {
+            width: 100%;
+        }
     </style>
 </head>
 

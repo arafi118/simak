@@ -136,48 +136,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="DetailTutupBuku" tabindex="-1" aria-labelledby="DetailTutupBukuLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="DetailTutupBukuLabel">
-                        Tutup Buku
-                    </h1>
-                </div>
-                <div class="modal-body">
-                    <form action="/transaksi/tutup_buku/saldo" method="post" id="FormTutupBuku">
-                        @csrf
-
-                        <input type="hidden" name="tgl_pakai" id="tgl_pakai" value="{{ $usaha->tgl_pakai }}">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label" for="tahun_tutup_buku">Tahun</label>
-                                    <select class="form-control select2" name="tahun_tutup_buku" id="tahun_tutup_buku"
-                                        style="width: 100% !important">
-                                        @for ($i = date('Y'); $i >= explode('-', $usaha->tgl_pakai)[0] - 1; $i--)
-                                            <option {{ $i == date('Y') ? 'selected' : '' }} value="{{ $i }}">
-                                                {{ $i }}
-                                            </option>
-                                        @endfor
-                                    </select>
-                                    <small class="text-danger" id="msg_tahun_tutup_buku"></small>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="BtnMulaiTutupBuku" class="btn btn-sm btn-info">
-                        Mulai
-                    </button>
-                    <button type="button" id="BtnClose" class="btn btn-danger btn-sm btn-close-modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="DetailSaldo" tabindex="-1" aria-labelledby="DetailSaldoLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
             <div class="modal-content">

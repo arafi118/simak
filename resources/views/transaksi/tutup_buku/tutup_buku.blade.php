@@ -2,28 +2,16 @@
     use App\Utils\Tanggal;
 
     $title_form = [
-        1 => 'Kegiatan sosial kemasyarakatan dan bantuan RTM',
-        2 => 'Pengembangan kapasitas kelompok SPP/UEP',
-        3 => 'Pelatihan masyarakat, dan kelompok pemanfaat umum',
-        4 => 'Penambahan Modal DBM',
-        5 => 'Penambahan Investasi Usaha',
-        6 => 'Pendirian Unit Usaha',
+        1 => 'Kelembagaan',
+        2 => 'Dana Sosial',
+        3 => 'Bonus UPK',
+        4 => 'Lain-lain',
     ];
 @endphp
 
 @extends('layouts.base')
 
 @section('content')
-    <style>
-        .swal2-popup.swal2-modal.swal2-show {
-            margin-bottom: 62px;
-        }
-
-        .swal2-actions {
-            z-index: 0 !important;
-        }
-    </style>
-
     <div class="card">
         <div class="card-body">
             @if ($success)
@@ -44,166 +32,152 @@
                     </button>
                 </div>
             @endif
-            <h4 class="font-weight-normal mt-3">
+            <h4 class="font-weight-normal mt-2">
                 <div class="row">
-                    <span class="col-sm-6">Laba/Rugi Tahun {{ Tanggal::tahun($tgl_kondisi) }}</span>
-                    <span class="col-sm-6 text-end">Rp. {{ number_format($surplus, 2) }}</span>
+                    <span class="col-sm-6"> &nbsp; Surplus/Devisit Tahun {{ Tanggal::tahun($tgl_kondisi) }}</span>
+                    <span class="col-sm-6 text-right">Rp. {{ number_format($surplus, 2) }}</span>
                 </div>
             </h4>
 
             <form action="/transaksi/simpan_laba" method="post" id="SimpanAlokasiLaba">
                 @csrf
-
                 <input type="hidden" name="tgl_kondisi" id="tgl_kondisi" value="{{ $tgl_kondisi }}">
                 <input type="hidden" name="tgl_mad" id="tgl_mad">
                 <div class="row">
-                    <input type="hidden" name="surplus" id="surplus" value="{{ $surplus }}">
-                    <div class="card">
-                        <div class="card-body p-3">
-                            <h4 class="font-weight-normal">
-                                Alokasi Laba Usaha
-                            </h4>
-
-                            @foreach ($rekening as $rek)
-                                <div class="table-responsive mb-3">
-                                    <table class="table table-striped midle">
+                    <div class="col-12">
+                        <input type="hidden" name="surplus" id="surplus" value="{{ $surplus }}">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped midle w-100">
                                         <thead class="bg-dark text-white">
                                             <tr>
                                                 <th width="50%">
-                                                    <span class="text-sm">
-                                                        {{ str_replace('Utang', '', $rek->nama_akun) }}
-                                                    </span>
+                                                    <span class="text-sm">Cadangan Resiko</span>
                                                 </th>
                                                 <th width="50%">
                                                     <div class="d-flex justify-content-between">
                                                         <span class="text-sm">Jumlah</span>
                                                         <span class="text-sm">
-                                                            Rp. <span
-                                                                data-id="total{{ str_replace(' ', '_', str_replace('utang', '', strtolower($rek->nama_akun))) }}">0,00</span>
+                                                            Rp. <span data-id="total_cadangan_resiko">
+                                                                {{ number_format($surplus, 2) }}
+                                                            </span>
                                                         </span>
                                                     </div>
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if ($rek->kode_akun == '2.1.04.01')
-                                                @foreach ($kec->saldo as $saldo)
-                                                    @if (substr($saldo->id, -1) <= 3)
-                                                        <tr>
-                                                            <td>{{ $title_form[substr($saldo->id, -1)] }}</td>
-                                                            <td>
-                                                                <div class="input-group input-group-outline my-0">
-                                                                    <input type="text"
-                                                                        name="masyarakat[{{ substr($saldo->id, -1) }}]"
-                                                                        id="{{ substr($saldo->id, -1) }}"
-                                                                        class="form-control nominal bagian-masyarakat form-control-sm text-end">
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-
-                                            @if ($rek->kode_akun == '2.1.04.02')
-                                                @foreach ($desa as $d)
-                                                    <tr>
-                                                        <td>
-                                                            Bagian {{ $d->sebutan_desa->sebutan_desa }}
-                                                            {{ $d->nama_desa }}
-                                                        </td>
-                                                        <td>
-                                                            <div class="input-group input-group-outline my-0">
-                                                                <input type="text" name="desa[{{ $d->kd_desa }}]"
-                                                                    id="{{ $d->kd_desa }}"
-                                                                    class="form-control form-control-sm bagian-desa nominal text-end">
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
-
-                                            @if ($rek->kode_akun == '2.1.04.03')
+                                            <input type="hidden" name="total_cadangan_resiko" id="total_cadangan_resiko"
+                                                class="form-control total form-control-sm text-end" value="0">
+                                            @forelse ($cadangan_resiko as $cr)
                                                 <tr>
-                                                    <td>
-                                                        {{ str_replace('Utang', '', $rek->nama_akun) }}
-                                                    </td>
+                                                    <td>{{ $cr->nama_akun }}</td>
                                                     <td>
                                                         <div class="input-group input-group-outline my-0">
                                                             <input type="text"
-                                                                name="total{{ str_replace(' ', '_', str_replace('utang', '', strtolower($rek->nama_akun))) }}"
-                                                                id="total{{ str_replace(' ', '_', str_replace('utang', '', strtolower($rek->nama_akun))) }}"
-                                                                class="form-control form-control-sm total nominal text-end">
+                                                                name="cadangan_resiko[{{ $cr->kode_akun }}]"
+                                                                id="{{ $cr->kode_akun }}"
+                                                                class="form-control nominal cadangan_resiko form-control-sm text-end"
+                                                                value="0.00">
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            @else
-                                                <input type="hidden" class="total"
-                                                    name="total{{ str_replace(' ', '_', str_replace('utang', '', strtolower($rek->nama_akun))) }}"
-                                                    id="total{{ str_replace(' ', '_', str_replace('utang', '', strtolower($rek->nama_akun))) }}">
-                                            @endif
+                                            @empty
+                                                <input type="hiden" name="cadangan_resiko[0]" id="0"
+                                                    class="form-control nominal cadangan_resiko form-control-sm text-end"
+                                                    value="0.00">
+                                            @endforelse
                                         </tbody>
                                     </table>
                                 </div>
-                            @endforeach
+                                <h4 class="font-weight-normal">
+                                    Alokasi Surplus Bersih
+                                </h4>
 
-                            <div class="table-responsive mb-3">
-                                <table class="table table-striped midle">
-                                    <thead class="bg-dark text-white">
-                                        <tr>
-                                            <th width="50%">
-                                                <span class="text-sm">Laba Ditahan</span>
-                                            </th>
-                                            <th width="50%">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="text-sm">Jumlah</span>
+                                <div class="table-responsive">
+                                    <table class="table table-striped midle">
+                                        <thead class="bg-dark text-white">
+                                            <tr>
+                                                <th width="50%">
                                                     <span class="text-sm">
-                                                        Rp. <span data-id="total_laba_ditahan">
-                                                            {{ number_format($surplus, 2) }}
-                                                        </span>
+                                                        Alokasi Surplus Bersih
                                                     </span>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <input type="hidden" name="laba_ditahan" id="laba_ditahan"
-                                            class="form-control form-control-sm text-end" value="{{ $surplus }}">
-                                        @foreach ($kec->saldo as $saldo)
-                                            @if (substr($saldo->id, -1) > 3)
-                                                @php
-                                                    $value = 0;
-                                                    $readonly = false;
-                                                    if (substr($saldo->id, -1) == 4) {
-                                                        $value = $surplus;
-                                                        $readonly = true;
-                                                    }
-                                                @endphp
+                                                </th>
+                                                <th width="50%">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="text-sm">Jumlah</span>
+                                                        <span class="text-sm">
+                                                            Rp. <span data-id="total_surplus_bersih">0,00</span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($pembagian_surplus as $saldo)
                                                 <tr>
-                                                    <td>{{ $title_form[substr($saldo->id, -1)] }}</td>
+                                                    <td>{{ $saldo->nama_akun }}</td>
                                                     <td>
                                                         <div class="input-group input-group-outline my-0">
                                                             <input type="text"
-                                                                name="laba_ditahan[{{ substr($saldo->id, -1) }}]"
-                                                                id="{{ substr($saldo->id, -1) }}"
-                                                                class="form-control {{ $readonly ? '' : 'nominal' }} laba_ditahan form-control-sm text-end"
-                                                                value="{{ number_format($value, 2) }}"
-                                                                {{ $readonly ? 'readonly' : '' }}>
+                                                                name="surplus_bersih[{{ $saldo->kode_akun }}]"
+                                                                id="surplus_bersih_{{ $saldo->kode_akun }}"
+                                                                class="form-control nominal surplus_bersih form-control-sm text-end"
+                                                                value="0.00">
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            @endif
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                            @endforeach
 
-                            <div class="d-flex justify-content-end">
-                                <a href="/transaksi/tutup_buku" class="btn btn-warning btn-sm">
-                                    Batal
-                                </a>
-                                <button type="button" id="btnSimpanLaba" class="btn btn-github btn-sm ms-2">
-                                    Simpan Alokasi Laba
-                                </button>
+                                            <input type="hidden" class="total" name="total_surplus_bersih"
+                                                id="total_surplus_bersih">
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-striped midle">
+                                        <thead class="bg-dark text-white">
+                                            <tr>
+                                                <th width="50%">
+                                                    <span class="text-sm">Laba Ditahan</span>
+                                                </th>
+                                                <th width="50%">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="text-sm">Jumlah</span>
+                                                        <span class="text-sm">
+                                                            Rp. <span data-id="total_laba_ditahan">
+                                                                {{ number_format($surplus, 2) }}
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <input type="hidden" name="total_laba_ditahan" id="total_laba_ditahan"
+                                                class="form-control form-control-sm text-end" value="{{ $surplus }}">
+                                            <tr>
+                                                <td>Pemupukan modal</td>
+                                                <td>
+                                                    <div class="input-group input-group-outline my-0">
+                                                        <input type="text" name="laba_ditahan[3.2.01.01]"
+                                                            id="laba_ditahan"
+                                                            class="form-control laba_ditahan form-control-sm text-end"
+                                                            value="{{ number_format($surplus, 2) }}" readonly>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" id="btnSimpanLaba" class="btn btn-info btn-sm">
+                                        Simpan Alokasi Laba
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -224,9 +198,9 @@
             maximumFractionDigits: 2,
         })
 
-        $(document).on('change', '.bagian-masyarakat', function(e) {
+        $(document).on('change', '.cadangan_resiko', function(e) {
             var total = 0;
-            $('.bagian-masyarakat').map(function() {
+            $('.cadangan_resiko').map(function() {
                 var value = $(this).val()
                 if (value == '') {
                     value = 0
@@ -240,13 +214,13 @@
                 total += value
             })
 
-            $('#total_laba_bagian_masyarakat').val(formatter.format(total)).trigger('change')
-            $('[data-id=total_laba_bagian_masyarakat]').html(formatter.format(total))
+            $('#total_cadangan_resiko').val(formatter.format(total)).trigger('change')
+            $('[data-id=total_cadangan_resiko]').html(formatter.format(total))
         })
 
-        $(document).on('change', '.bagian-desa', function(e) {
+        $(document).on('change', '.surplus_bersih', function(e) {
             var total = 0;
-            $('.bagian-desa').map(function() {
+            $('.surplus_bersih').map(function() {
                 var value = $(this).val()
                 if (value == '') {
                     value = 0
@@ -260,8 +234,8 @@
                 total += value
             })
 
-            $('#total_laba_bagian_desa').val(formatter.format(total)).trigger('change')
-            $('[data-id=total_laba_bagian_desa]').html(formatter.format(total))
+            $('#total_surplus_bersih').val(formatter.format(total)).trigger('change')
+            $('[data-id=total_surplus_bersih]').html(formatter.format(total))
         })
 
         $(document).on('change', '.total', function(e) {
@@ -280,37 +254,15 @@
                 total += value
             })
 
-            var laba_penyerta_modal = '0,00'
-            if ($('#total_laba_bagian_penyerta_modal').val()) {
-                laba_penyerta_modal = $('#total_laba_bagian_penyerta_modal').val()
-            }
-
             var surplus = $('#surplus').val()
-            $('#laba_ditahan').val(surplus - total)
-            $('[data-id=total_laba_ditahan]').html(formatter.format(surplus - total))
-            $('[data-id=total_laba_bagian_penyerta_modal]').html(laba_penyerta_modal)
-            $('#4').val(formatter.format(surplus - total))
-        })
+            surplus = surplus.split(',').join('')
+            surplus = surplus.split('.00').join('')
 
-        $(document).on('change', '.laba_ditahan:not(#4)', function() {
-            var total = 0;
-            $('.laba_ditahan').map(function() {
-                if ($(this).attr('id') > 4) {
-                    var value = $(this).val()
-                    if (value == '') {
-                        value = 0
-                    } else {
-                        value = value.split(',').join('')
-                        value = value.split('.00').join('')
-                    }
+            var sisa_surplus = surplus - total
 
-                    value = parseFloat(value)
-                    total += value
-                }
-            })
-
-            var laba_ditahan = $('#laba_ditahan').val()
-            $('#4').val(formatter.format(laba_ditahan - total))
+            $('#total_laba_ditahan').val(formatter.format(sisa_surplus))
+            $('#laba_ditahan').val(formatter.format(sisa_surplus))
+            $('[data-id=total_laba_ditahan]').html(formatter.format(sisa_surplus))
         })
 
         $(document).on('click', '#btnSimpanLaba', function(e) {
@@ -343,8 +295,6 @@
                         url: form.attr('action'),
                         data: form.serialize(),
                         success: function(result) {
-                            loading.close()
-
                             if (result.success) {
                                 Swal.fire('Selamat', result.msg, 'success').then(() => {
                                     window.location.href = '/transaksi/tutup_buku'

@@ -15,7 +15,6 @@
             return 'active';
         }
     }
-
 @endphp
 
 <div class="main-menu menu-fixed menu-dark menu-bg-default rounded menu-accordion menu-shadow">

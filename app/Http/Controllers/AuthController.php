@@ -131,7 +131,7 @@ class AuthController extends Controller
         ])->first();
 
         if ($user) {
-            $AksesMenu = Menu::whereNotIn('id', explode('#', $user->akses_menu))->where('parent_id', '0')->with('child')->get();
+            $AksesMenu = Menu::whereNotIn('id', explode('#', $user->akses_menu))->where('parent_id', '0')->with('child')->orderBy('sort', 'ASC')->get();
             $AksesTombol = MenuTombol::whereNotIn('id', explode('#', $user->akses_tombol))->pluck('akses')->toArray();
 
             if ($password === $user->pass) {

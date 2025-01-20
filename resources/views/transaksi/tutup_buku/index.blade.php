@@ -1,18 +1,18 @@
 @extends('layouts.base')
 
 @section('content')
-    <div class="card mb-3">
+    <div class="card mb-2">
         <div class="card-body">
             <form action="" method="post" id="FormTahunTutupBuku">
                 @csrf
 
-                <input type="hidden" name="tgl_pakai" id="tgl_pakai" value="{{ $kec->tgl_pakai }}">
-                <div class="col-12">
+                <input type="hidden" name="tgl_pakai" id="tgl_pakai" value="{{ $usaha->tgl_pakai }}">
+                <div class="w-100">
                     <div class="my-2">
                         <label class="form-label" for="tahun">Tahun</label>
-                        <select class="form-control" name="tahun" id="tahun">
+                        <select class="form-control select2" name="tahun" id="tahun">
                             @php
-                                $tgl_pakai = $kec->tgl_pakai;
+                                $tgl_pakai = $usaha->tgl_pakai;
                                 $th_pakai = explode('-', $tgl_pakai)[0];
                             @endphp
                             @for ($i = date('Y'); $i >= $th_pakai; $i--)
@@ -30,8 +30,8 @@
 
             <div class="d-flex justify-content-end">
                 <button type="button" id="TutupBuku" {{ date('m') <= 10 ? 'disabled' : '' }}
-                    class="btn btn-sm btn-github mb-0 ms-3">1. Tutup Buku</button>
-                <button type="button" id="PembagianLaba" class="btn btn-sm btn-instagram mb-0 ms-3">
+                    class="btn btn-sm btn-primary mb-0 ml-2">1. Tutup Buku</button>
+                <button type="button" id="PembagianLaba" class="btn btn-sm btn-info mb-0 ml-2">
                     2. Simpan Alokasi Laba
                 </button>
             </div>
@@ -51,14 +51,6 @@
     <script>
         var tahun = "{{ date('Y') }}"
         var bulan = "{{ date('m') }}"
-
-        new Choices($('select#tahun')[0], {
-            shouldSort: false,
-            fuseOptions: {
-                threshold: 0.1,
-                distance: 1000
-            }
-        })
 
         $(document).on('change', 'select#tahun', function(e) {
             e.preventDefault()
