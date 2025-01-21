@@ -9,8 +9,8 @@
                 <input type="hidden" name="tgl_pakai" id="tgl_pakai" value="{{ $usaha->tgl_pakai }}">
                 <div class="w-100">
                     <div class="my-2">
-                        <label class="form-label" for="tahun">Tahun</label>
-                        <select class="form-control select2" name="tahun" id="tahun">
+                        <label class="form-label" for="tahun_tutup_buku">Tahun</label>
+                        <select class="form-control select2" name="tahun_tutup_buku" id="tahun_tutup_buku">
                             @php
                                 $tgl_pakai = $usaha->tgl_pakai;
                                 $th_pakai = explode('-', $tgl_pakai)[0];
@@ -21,7 +21,7 @@
                                 </option>
                             @endfor
                         </select>
-                        <small class="text-danger" id="msg_tahun"></small>
+                        <small class="text-danger" id="msg_tahun_tutup_buku"></small>
                     </div>
 
                     <input type="hidden" name="pembagian_laba" id="pembagian_laba" value="true">
@@ -52,7 +52,7 @@
         var tahun = "{{ date('Y') }}"
         var bulan = "{{ date('m') }}"
 
-        $(document).on('change', 'select#tahun', function(e) {
+        $(document).on('change', 'select#tahun_tutup_buku', function(e) {
             e.preventDefault()
 
             var tahun_val = $(this).val()
