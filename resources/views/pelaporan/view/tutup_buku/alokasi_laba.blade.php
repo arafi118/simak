@@ -51,7 +51,7 @@
                 @php
                     $saldo = 0;
                     if ($rek->saldo) {
-                        $saldo = $rek->saldo->kredit - $rek->saldo->debit;
+                        $saldo = $rek->saldo->kredit;
                     }
                     $jumlah += floatval($saldo);
                     $total += floatval($saldo);
