@@ -209,7 +209,7 @@ class TransaksiController extends Controller
     {
         $keuangan = new Keuangan;
 
-        $tahun = $request->tahun;
+        $tahun = $request->tahun_tutup_buku;
         $bulan = date('m');
         if ($tahun < date('Y')) {
             $bulan = 12;
@@ -329,6 +329,7 @@ class TransaksiController extends Controller
         $pembagian_surplus = Rekening::where('kode_akun', 'like', '2.1.%')->where([
             ['nama_akun', 'NOT LIKE', '%pajak%'],
             ['nama_akun', 'NOT LIKE', '%operasional%'],
+            ['nama_akun', 'NOT LIKE', '%jangka%'],
             ['nama_akun', 'NOT LIKE', '%bank%'],
             ['nama_akun', 'NOT LIKE', '%ke-3%'],
         ])->get();
@@ -420,6 +421,7 @@ class TransaksiController extends Controller
 
             // Cadangan Kerugian Piutang
             if (Keuangan::startWith($rek->kode_akun, '1.1.04')) {
+                $id = str_replace('.', '', $rek->kode_akun) . $tahun . '13';
                 $jumlah = floatval(str_replace(',', '', str_replace('.00', '', $cadangan_resiko[$rek->kode_akun])));
                 $keterangan = $rek->nama_akun . ' tahun ' . $tahun;
                 if ($jumlah != 0) {
@@ -437,6 +439,15 @@ class TransaksiController extends Controller
                         'id_user' => auth()->user()->id
                     ];
 
+                    $saldo_tutup_buku[] = [
+                        'id' => $id,
+                        'kode_akun' => $rek->kode_akun,
+                        'tahun' => $tahun,
+                        'bulan' => 13,
+                        'debit' => (string) $saldo_kredit,
+                        'kredit' => (string) $jumlah
+                    ];
+
                     $alokasi_laba['3.2.01.01'] += $jumlah;
                 }
                 $trx['delete'][] = $keterangan;
@@ -444,8 +455,9 @@ class TransaksiController extends Controller
 
             // Alokasi Surplus Bersih
             else if (Keuangan::startWith($rek->kode_akun, '2.1.01')) {
+                $id = str_replace('.', '', $rek->kode_akun) . $tahun . '13';
                 $jumlah = str_replace(',', '', str_replace('.00', '', $surplus_bersih[$rek->kode_akun]));
-                $keterangan = str_replace('Utang', '', $rek->nama_akun) . ' tahun ' . $tahun;
+                $keterangan = trim(str_replace('Utang', '', $rek->nama_akun) . ' tahun ' . $tahun);
                 if ($jumlah != 0) {
                     $trx['insert'][] = [
                         'tgl_transaksi' => $data['tgl_mad'],
@@ -454,11 +466,20 @@ class TransaksiController extends Controller
                         'idtp' => '0',
                         'id_pinj' => '0',
                         'id_pinj_i' => '0',
-                        'keterangan_transaksi' => trim($keterangan),
+                        'keterangan_transaksi' => $keterangan,
                         'relasi' => '-',
                         'jumlah' => $jumlah,
                         'urutan' => '0',
                         'id_user' => auth()->user()->id
+                    ];
+
+                    $saldo_tutup_buku[] = [
+                        'id' => $id,
+                        'kode_akun' => $rek->kode_akun,
+                        'tahun' => $tahun,
+                        'bulan' => 13,
+                        'debit' => (string) $saldo_kredit,
+                        'kredit' => (string) $jumlah
                     ];
 
                     $alokasi_laba['3.2.01.01'] += floatval($jumlah);
@@ -473,9 +494,9 @@ class TransaksiController extends Controller
                     'debit' => (string) $saldo_debit,
                     'kredit' => (string) $saldo_kredit
                 ];
-
-                $data_id[] = $id;
             }
+
+            $data_id[] = $id;
         }
 
         Saldo::whereIn('id', $data_id)->delete();

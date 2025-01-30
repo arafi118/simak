@@ -1986,7 +1986,7 @@ class PelaporanController extends Controller
         $tgl = $thn . '-' . $bln . '-' . $hari;
         $trx_pembagian_laba = Transaksi::where([
             ['rekening_debit', '3.2.01.01'],
-            ['keterangan_transaksi', 'LIKE', '%tahun 2023%']
+            ['keterangan_transaksi', 'LIKE', '%tahun ' . ($thn - 1) . '%']
         ])->first();
 
         $tgl_kondisi = $tgl;
@@ -2000,25 +2000,16 @@ class PelaporanController extends Controller
 
         $data['tahun_tb'] = $thn;
         $data['surplus'] = $keuangan->laba_rugi(($data['tahun'] - 1) . '-13-00');
-        $data['akun3'] = AkunLevel3::where('kode_akun', 'LIKE', '2.1.01.%')->with([
-            'rek',
-            'rek.saldo' => function ($query) use ($data) {
-                $query->where([
-                    ['tahun', $data['tahun_tb']],
-                    ['bulan', '0']
-                ]);
-            }
-        ])->get();
-        $data['desa'] = Desa::where('kd_kec', $data['kec']->kd_kec)->with([
-            'saldo' => function ($query) use ($data) {
-                $query->where('tahun', $data['tahun_tb']);
-            },
-            'sebutan_desa'
-        ])->get();
-        $data['saldo_calk'] = Saldo::where([
-            ['kode_akun', $data['kec']->kd_kec],
-            ['tahun', $data['tahun_tb']]
-        ])->get();
+        $data['akun3'] = AkunLevel3::where('kode_akun', 'LIKE', '2.1.01.%')
+            ->orwhere('kode_akun', 'LIKE', '1.1.04.%')->with([
+                'rek',
+                'rek.saldo' => function ($query) use ($data) {
+                    $query->where([
+                        ['tahun', $data['tahun_tb'] - 1],
+                        ['bulan', '13']
+                    ]);
+                }
+            ])->get();
 
         $data['tgl_transaksi'] = $thn . '-12-31';
         $data['laporan'] = 'Alokasi Laba';

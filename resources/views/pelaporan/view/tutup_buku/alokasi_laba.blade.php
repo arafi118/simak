@@ -6,7 +6,6 @@
     ];
 
     $jumlah_laba_ditahan = $surplus;
-    $jumlah = 0;
     $total = 0;
 @endphp
 
@@ -45,6 +44,9 @@
                 <td colspan="2">{{ $akn3->nama_akun }}</td>
             </tr>
 
+            @php
+                $jumlah = 0;
+            @endphp
             @foreach ($akn3->rek as $rek)
                 @php
                     $saldo = 0;
@@ -52,6 +54,7 @@
                         $saldo = $rek->saldo->kredit - $rek->saldo->debit;
                     }
                     $jumlah += floatval($saldo);
+                    $total += floatval($saldo);
 
                     $bg = 'rgb(230, 230, 230)';
                     if ($loop->iteration % 2 == 0) {
@@ -65,35 +68,36 @@
                     </td>
                 </tr>
             @endforeach
-        @endforeach
-
-        <tr style="background: rgb(150, 150, 150); font-weight: bold;">
-            <td colspan="2">LABA DITAHAN</td>
-        </tr>
-
-        @foreach ($saldo_calk as $saldo)
-            @php
-                $jumlah += floatval($saldo->kredit);
-                $total += floatval($saldo->kredit);
-                $bg = 'rgb(230, 230, 230)';
-                if ($loop->iteration % 2 == 0) {
-                    $bg = 'rgb(255, 255, 255)';
-                }
-            @endphp
-            <tr style="background: {{ $bg }}">
-                <td>{{ $title_form[substr($saldo->id, -1)] }}</td>
+            <tr style="background: rgb(150, 150, 150); font-weight: bold;">
+                <td height="15">
+                    <b>Jumlah</b>
+                </td>
                 <td align="right">
-                    Rp. {{ number_format(floatval($saldo->kredit), 2) }}
+                    <b>Rp. {{ number_format($jumlah, 2) }}</b>
                 </td>
             </tr>
         @endforeach
+
+        <tr style="background: rgb(167, 167, 167); font-weight: bold;">
+            <td colspan="2">LABA DITAHAN</td>
+        </tr>
+
+        @php
+            $laba_ditahan = $surplus - $total;
+        @endphp
+        <tr style="background: rgb(230, 230, 230)">
+            <td>Pemupukan Modal</td>
+            <td align="right">
+                Rp. {{ number_format($laba_ditahan, 2) }}
+            </td>
+        </tr>
 
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
             <td height="15">
                 <b>Jumlah</b>
             </td>
             <td align="right">
-                <b>Rp. {{ number_format($jumlah, 2) }}</b>
+                <b>Rp. {{ number_format($laba_ditahan, 2) }}</b>
             </td>
         </tr>
 
@@ -107,7 +111,7 @@
                             <b>Total Alokasi Laba Usaha</b>
                         </td>
                         <td align="right">
-                            <b>Rp. {{ number_format($total, 2) }}</b>
+                            <b>Rp. {{ number_format($total + $laba_ditahan, 2) }}</b>
                         </td>
                     </tr>
                 </table>
