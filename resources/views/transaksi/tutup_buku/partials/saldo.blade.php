@@ -104,7 +104,7 @@
 <form action="/transaksi/tutup_buku" method="post" id="FormSimpanTutupBuku">
     @csrf
 
-    <input type="hidden" name="tahun" id="tahun" value="{{ $tahun }}">
+    <input type="hidden" name="tahun_tutup_buku" id="tahun_tutup_buku" value="{{ $tahun }}">
     <input type="hidden" name="jumlah_riwayat" id="jumlah_riwayat" value="{{ $jumlah_riwayat }}">
     <input type="hidden" name="total_riwayat" id="total_riwayat" value="{{ $total_riwayat }}">
     <input type="hidden" name="pembagian_laba" id="pembagian_laba" value="false">
