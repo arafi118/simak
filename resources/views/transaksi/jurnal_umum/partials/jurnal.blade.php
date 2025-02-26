@@ -14,6 +14,8 @@
 
     $total_debit = 0;
     $total_kredit = 0;
+
+    $isDirektur = auth()->user()->level == '1' && auth()->user()->jabatan == '1' ? true : false;
 @endphp
 
 <table border="0" width="100%" cellspacing="0" cellpadding="0" class="table table-striped midle">
@@ -232,7 +234,7 @@
                                     </a>
                                 @endif
 
-                                @if (in_array('jurnal_umum.hapus_transaksi', Session::get('tombol')))
+                                @if (in_array('jurnal_umum.hapus_transaksi', Session::get('tombol')) || $isDirektur)
                                     <a class="dropdown-item text-danger btn-delete" data-idt="{{ $trx->idt }}"
                                         href="#">
                                         Hapus Transaksi
