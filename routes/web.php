@@ -63,17 +63,17 @@ Route::middleware('maintenance')->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'logout'])->middleware('master');
     });
 
-    Route::get('/', [AuthController::class, 'index'])->middleware('guest')->name('/');
-    Route::get('/register', [AuthController::class, 'register'])->middleware('guest');
-    Route::get('/register/user', [AuthController::class, 'user'])->middleware('guest');
+    Route::get('/', [AuthController::class, 'index'])->middleware(['guest', 'is_aktif'])->name('/');
+    Route::get('/register', [AuthController::class, 'register'])->middleware(['guest', 'is_aktif']);
+    Route::get('/register/user', [AuthController::class, 'user'])->middleware(['guest', 'is_aktif']);
 
-    Route::get('/ambil_prov', [AuthController::class, 'provinsi'])->middleware('guest');
-    Route::get('/ambil_kab/{kode}', [AuthController::class, 'kabupaten'])->middleware('guest');
-    Route::get('/ambil_kec/{kode}', [AuthController::class, 'kecamatan'])->middleware('guest');
-    Route::get('/ambil_des/{kode}', [AuthController::class, 'desa'])->middleware('guest');
+    Route::get('/ambil_prov', [AuthController::class, 'provinsi'])->middleware(['guest', 'is_aktif']);
+    Route::get('/ambil_kab/{kode}', [AuthController::class, 'kabupaten'])->middleware(['guest', 'is_aktif']);
+    Route::get('/ambil_kec/{kode}', [AuthController::class, 'kecamatan'])->middleware(['guest', 'is_aktif']);
+    Route::get('/ambil_des/{kode}', [AuthController::class, 'desa'])->middleware(['guest', 'is_aktif']);
 
-    Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
-    Route::post('/register', [AuthController::class, 'store'])->middleware('guest');
+    Route::post('/login', [AuthController::class, 'login'])->middleware(['guest', 'is_aktif']);
+    Route::post('/register', [AuthController::class, 'store'])->middleware(['guest', 'is_aktif']);
     Route::post('/app', [AuthController::class, 'app']);
 
     Route::get('/pelaporan', [PelaporanController::class, 'index'])->middleware(['basic', 'is_aktif']);

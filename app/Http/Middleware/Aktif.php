@@ -18,19 +18,31 @@ class Aktif
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $invoice = AdminInvoice::where([
-            ['status', 'UNPAID'],
-            ['lokasi', Session::get('lokasi')]
-        ])->first();
-        Session::put('invoice', $invoice);
+        $url = $request->getHost();
+        if (str_contains($url, 'siupk.net')) {
+            $domain = explode('.', $url)[0];
+            if ($domain == 'simak-apps') {
+                $domain = 'demo';
+            }
 
-        $usaha = Usaha::where('id', Session::get('lokasi'))->first();
-        if ($request->is('dashboard')) {
-            return $next($request);
-        }
+            return redirect('https://' . $domain . '.akubumdes.com');
+        } else {
+            if (Session::get('lokasi')) {
+                $invoice = AdminInvoice::where([
+                    ['status', 'UNPAID'],
+                    ['lokasi', Session::get('lokasi')]
+                ])->first();
+                Session::put('invoice', $invoice);
 
-        if ($usaha->masa_aktif <= date('Y-m-d')) {
-            return redirect('/dashboard');
+                $usaha = Usaha::where('id', Session::get('lokasi'))->first();
+                if ($request->is('dashboard')) {
+                    return $next($request);
+                }
+
+                if ($usaha->masa_aktif <= date('Y-m-d')) {
+                    return redirect('/dashboard');
+                }
+            }
         }
 
         return $next($request);
