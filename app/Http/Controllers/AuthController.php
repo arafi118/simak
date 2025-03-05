@@ -19,7 +19,6 @@ use Cookie;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Validator;
 use Session;
 
@@ -437,7 +436,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = auth()->user()->namadepan . ' ' . auth()->user()->namabelakang;
-        FacadesAuth::guard('web')->logout();
+        Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
