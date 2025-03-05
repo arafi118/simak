@@ -180,8 +180,8 @@ Route::resource('/profil', UserController::class);
 
 Route::get('/sync/{lokasi}', [DashboardController::class, 'sync'])->middleware(['auth', 'is_aktif']);
 Route::get('/link', function () {
-    $target = '/home/siupk/public_html/simak_apps/storage/app/public';
-    $shortcut = '/home/siupk/public_html/simak_apps/public/storage';
+    $target = '/home/akubumdes/public_html/apps/storage/app/public';
+    $shortcut = '/home/akubumdes/public_html/apps/public/storage';
     symlink($target, $shortcut);
 });
 
