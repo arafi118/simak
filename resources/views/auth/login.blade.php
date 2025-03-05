@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ $logo }}">
     <link rel="icon" type="image/png" href="{{ $logo }}">
     <title>
-        SIMAK &mdash; {{ $usaha->nama_usaha }}
+        AKUBUMDES &mdash; {{ $usaha->nama_usaha }}
     </title>
     <link rel="apple-touch-icon" href="{{ $logo }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ $logo }}">
