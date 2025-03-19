@@ -48,7 +48,7 @@
                         <input type="hidden" name="surplus" id="surplus" value="{{ $surplus }}">
                         <div class="card">
                             <div class="card-body">
-                                <div class="table-responsive">
+                                <div class="table-responsive d-none">
                                     <table class="table table-striped midle w-100">
                                         <thead class="bg-dark text-white">
                                             <tr>
