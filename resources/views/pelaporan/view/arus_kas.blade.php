@@ -109,6 +109,9 @@
                         }
 
                         $jumlah = 0;
+                        $nama_akun = $akun3->nama_akun;
+                        $nama_akun = str_replace('Akumulasi Penyusutan', 'Penjualan', $nama_akun);
+                        $nama_akun = str_replace('Akumulasi Amortisasi', 'Penjualan', $nama_akun);
                     @endphp
                     @foreach ($akun3->rek as $rek)
                         @php
@@ -126,7 +129,7 @@
 
                     <tr style="background: rgb({{ $bg }})">
                         <td>&nbsp;</td>
-                        <td>{{ $akun3->nama_akun }}</td>
+                        <td>{{ $nama_akun }}</td>
                         <td align="right">{{ number_format($jumlah, 2) }}</td>
                     </tr>
 
