@@ -32,9 +32,9 @@
                                 @if ($user->level == '1' && $user->jabatan == '1')
                                     {{ $usaha->kepala_lembaga }}
                                 @elseif ($user->level == '1' && $user->jabatan == '2')
-                                    {{ $kec->kabag_administrasi }}
+                                    {{ $usaha->kabag_administrasi }}
                                 @elseif ($user->level == '1' && $user->jabatan == '3')
-                                    {{ $kec->kabag_keuangan }}
+                                    {{ $usaha->kabag_keuangan }}
                                 @else
                                     {{ $user->j ? $user->j->nama_jabatan : '' }}
                                 @endif
