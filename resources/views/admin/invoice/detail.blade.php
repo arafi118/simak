@@ -59,8 +59,9 @@
 
                     <div class="d-flex justify-content-end">
                         <a href="/db/unpaid" class="btn btn-sm btn-warning mr-2">Kembali</a>
-                        <button type="submit" id="SimpanPembayaran" class="btn btn-sm btn-primary">Simpan
-                            Pembayaran</button>
+                        <button type="submit" id="SimpanPembayaran" class="btn btn-sm btn-primary">
+                            Simpan Pembayaran
+                        </button>
                     </div>
                 </form>
             </div>

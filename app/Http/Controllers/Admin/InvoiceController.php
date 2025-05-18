@@ -161,16 +161,13 @@ class InvoiceController extends Controller
         }
 
         $nominal = str_replace(',', '', str_replace('.00', '', $request->nominal));
-        $invoice = AdminInvoice::where('idv', $invoice->idv)->withSum('trx', 'jumlah')->first();
-
+        $invoice = AdminInvoice::where('idv', $invoice->idv)->with(['usaha', 'jp'])->withSum('trx', 'jumlah')->first();
         $rek = AdminRekening::where('kd_rekening', $request->metode_pembayaran)->first();
         $rek_debit = $rek->kd_rekening;
         $rek_kredit = $rek->pasangan;
 
-        $saldo = $invoice->jumlah - ($invoice->trx_sum_jumlah + $nominal);
-        $persen = round($nominal / $invoice->jumlah * 100);
-
         $lunas = false;
+        $keterangan = $request->keterangan;
         if (($invoice->trx_sum_jumlah + $nominal) >= $invoice->jumlah) {
             $lunas = true;
             $inv = AdminInvoice::where('idv', $invoice->idv)->update([
@@ -178,17 +175,25 @@ class InvoiceController extends Controller
                 'status' => 'PAID'
             ]);
 
-            $usaha = Usaha::where('id', $invoice->lokasi)->update([
-                'masa_aktif' => date('Y-m-d', strtotime('+' . $invoice->usaha->tagihan_invoice . ' months', strtotime(Tanggal::tglNasional($request->tgl_bayar))))
-            ]);
+            if ($invoice->jp->id == '2') {
+                $biayaPerbulan = $invoice->jumlah / $invoice->usaha->tagihan_invoice;
+                $jumlahPerpanjangan = $nominal / $biayaPerbulan;
+                $usaha = Usaha::where('id', $invoice->lokasi)->update([
+                    'masa_aktif' => date('Y-m-d', strtotime('+' . $jumlahPerpanjangan . ' months', strtotime(Tanggal::tglNasional($request->tgl_bayar))))
+                ]);
+
+                $keterangan .= ' (Perpanjangan ' . $jumlahPerpanjangan . ' bulan)';
+            }
         }
 
+        $persen = round(($invoice->trx_sum_jumlah + $nominal) / $invoice->jumlah * 100);
+        $persen = ($persen > 100) ? 100 : $persen;
         $trx = AdminTransaksi::create([
             'tgl_transaksi' => Tanggal::tglNasional($request->tgl_bayar),
             'rekening_debit' => $rek_debit,
             'rekening_kredit' => $rek_kredit,
             'idv' => $invoice->idv,
-            'keterangan_transaksi' => $request->keterangan . ' (' . $persen . '%)',
+            'keterangan_transaksi' => $keterangan . ' (' . $persen . '%)',
             'jumlah' => $nominal,
             'urutan' => '0',
             'id_user' => auth()->guard('master')->user()->id
