@@ -66,7 +66,20 @@
                             <small class="text-danger" id="msg_jenis_pembayaran"></small>
                         </div>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2" id="colPerpanjangan" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label" for="perpanjangan">Perpanjangan</label>
+                            <select class="form-control select2 w-100" name="perpanjangan" id="perpanjangan">
+                                @for ($i = 1; $i <= 24; $i++)
+                                    <option value="{{ $i }}">
+                                        {{ str_pad($i, 2, '0', STR_PAD_LEFT) }} Bulan
+                                    </option>
+                                @endfor
+                            </select>
+                            <small class="text-danger" id="msg_perpanjangan"></small>
+                        </div>
+                    </div>
+                    <div class="col-sm-3" id="colTglPakai">
                         <div class="form-group">
                             <label for="tgl_pakai">Tgl Pakai</label>
                             <input autocomplete="off" type="text" name="tgl_pakai" id="tgl_pakai"
@@ -74,7 +87,7 @@
                             <small class="text-danger" id="msg_tgl_pakai"></small>
                         </div>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" id="colNominal">
                         <div class="form-group">
                             <label for="nominal">Nominal</label>
                             <input autocomplete="off" type="text" name="nominal" id="nominal"
@@ -120,6 +133,7 @@
 
         $(document).on('change', '#nama_usaha, #jenis_pembayaran', function() {
             var nama_usaha = $('#nama_usaha').val();
+            var perpanjangan = $('#perpanjangan').val();
             var jenis_pembayaran = $('#jenis_pembayaran').val();
 
             if (nama_usaha != '') {
@@ -128,11 +142,31 @@
                 }
 
                 nama_usaha = JSON.parse(nama_usaha)
-                biaya[2] = nama_usaha.biaya * nama_usaha.tagihan_invoice
+                biaya[2] = nama_usaha.biaya * perpanjangan
 
                 $('#tgl_pakai').val(nama_usaha.tgl_pakai)
                 $('#nominal').val(formatter.format(biaya[jenis_pembayaran]))
+
+                if (jenis_pembayaran == '2') {
+                    $('#colTglPakai, #colNominal').attr('class', 'col-sm-2')
+                    $('#colPerpanjangan').show()
+                } else {
+                    $('#colTglPakai, #colNominal').attr('class', 'col-sm-3')
+                    $('#colPerpanjangan').hide()
+                }
+
+                $('.select2-container').css('width', '100%')
             }
+        })
+
+        $(document).on('change', '#perpanjangan', function() {
+            var perpanjangan = $(this).val()
+            var nama_usaha = $('#nama_usaha').val();
+            var jenis_pembayaran = $('#jenis_pembayaran').val();
+
+            nama_usaha = JSON.parse(nama_usaha)
+            biaya[2] = nama_usaha.biaya * perpanjangan
+            $('#nominal').val(formatter.format(biaya[jenis_pembayaran]))
         })
 
         $(document).on('change', '#tgl_invoice', function(e) {
