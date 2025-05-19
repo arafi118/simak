@@ -9,6 +9,7 @@ use App\Models\AdminJenisPembayaran;
 use App\Models\AdminRekening;
 use App\Models\AdminTransaksi;
 use App\Models\Usaha;
+use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -124,12 +125,18 @@ class InvoiceController extends Controller
 
     public function InvoiceNo($tgl = null)
     {
+        $keuangan = new Keuangan;
+        $lokasi = request()->get('lokasi');
         $tanggal = ($tgl == null) ? Tanggal::tglNasional(request()->get('tgl_invoice')) : $tgl;
 
-        $nomor_invoice = date('ymd', strtotime($tanggal));
-        $invoice = AdminInvoice::where('tgl_invoice', $tanggal)->count();
+        $tahun = date('y', strtotime($tanggal));
+        $bulan = $keuangan->romawi(date('m', strtotime($tanggal)));
+
+        $tgl_invoice = $bulan . '/' . $tahun;
+        $invoice = AdminInvoice::where('tgl_invoice', 'LIKE', date('Y-m', strtotime($tanggal)) . '%')->count();
         $nomor_urut = str_pad($invoice + 1, '2', '0', STR_PAD_LEFT);
-        $nomor_invoice .= $nomor_urut;
+
+        $nomor_invoice = $nomor_urut . '/INV-' . str_pad($lokasi, '2', '0', STR_PAD_LEFT) . '/' . $tgl_invoice;
 
         $batas_waktu = date('Y-m-d', strtotime('+1 month', strtotime($tanggal)));
         return response()->json([

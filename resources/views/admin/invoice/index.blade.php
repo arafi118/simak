@@ -156,6 +156,7 @@
                 }
 
                 $('.select2-container').css('width', '100%')
+                setNoInvoice()
             }
         })
 
@@ -170,13 +171,7 @@
         })
 
         $(document).on('change', '#tgl_invoice', function(e) {
-            var tgl = $(this).val()
-
-            $.get('/db/nomor_invoice', {
-                'tgl_invoice': tgl
-            }, function(result) {
-                $('#nomor_invoice').val(result.nomor)
-            })
+            setNoInvoice()
         })
 
         $(document).on('click', '#SimpanInvoice', function(e) {
@@ -220,5 +215,20 @@
                 }
             })
         })
+
+        function setNoInvoice() {
+            var tgl = $('#tgl_invoice').val()
+            var nama_usaha = $('#nama_usaha').val();
+
+            nama_usaha = JSON.parse(nama_usaha)
+            var lokasi = nama_usaha.id
+
+            $.get('/db/nomor_invoice', {
+                'tgl_invoice': tgl,
+                'lokasi': lokasi
+            }, function(result) {
+                $('#nomor_invoice').val(result.nomor)
+            })
+        }
     </script>
 @endsection
