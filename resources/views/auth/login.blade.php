@@ -58,12 +58,14 @@
 
                                                 <div class="form-label-group">
                                                     <input type="text" class="form-control" id="username"
-                                                        name="username" placeholder="Your Username" required="">
+                                                        name="username" placeholder="Your Username" required=""
+                                                        value="{{ $usaha->id == '1' ? 'demo' : '' }}">
                                                     <label for="username" class="cursor-text">Username</label>
                                                 </div>
                                                 <div class="form-label-group">
                                                     <input type="password" class="form-control" id="password"
-                                                        name="password" placeholder="Enter Password" required="">
+                                                        name="password" placeholder="Enter Password" required=""
+                                                        value="{{ $usaha->id == '1' ? 'demo123' : '' }}">
                                                     <label for="password" class="cursor-text">Password</label>
                                                 </div>
                                                 <button type="submit" class="btn-gradient-primary btn-block my-1 mb-2">
