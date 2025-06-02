@@ -375,14 +375,9 @@ class PelaporanController extends Controller
             $jenis = 'Bulanan';
         }
 
-        $pph = $keuangan->pph($data['tgl_kondisi'], $jenis);
+
         $laba_rugi = $keuangan->laporan_laba_rugi($data['tgl_kondisi'], $jenis);
-
-        $data['pph'] = [
-            'bulan_lalu' => $pph['bulan_lalu'],
-            'sekarang' => $pph['bulan_ini']
-        ];
-
+        $data['pph'] = $keuangan->beban_pajak($data['tgl_kondisi'], $jenis);
         $data['pendapatan'] = $laba_rugi['pendapatan'];
         $data['beban'] = $laba_rugi['beban'];
         $data['pendapatanNOP'] = $laba_rugi['pendapatan_non_ops'];
@@ -2186,14 +2181,8 @@ class PelaporanController extends Controller
             $jenis = 'Bulanan';
         }
 
-        $pph = $keuangan->pph($tgl, $jenis);
         $laba_rugi = $keuangan->laporan_laba_rugi($tgl, $jenis);
-
-        $data['pph'] = [
-            'bulan_lalu' => $pph['bulan_lalu'],
-            'sekarang' => $pph['bulan_ini']
-        ];
-
+        $data['pph'] = $keuangan->beban_pajak($tgl, $jenis);
         $data['pendapatan'] = $laba_rugi['pendapatan'];
         $data['beban'] = $laba_rugi['beban'];
         $data['pendapatanNOP'] = $laba_rugi['pendapatan_non_ops'];

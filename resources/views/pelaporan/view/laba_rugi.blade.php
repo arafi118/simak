@@ -243,12 +243,25 @@
         <tr style="background: rgb(150, 150, 150); font-weight: bold;">
             <td colspan="4" height="14">5.4 Beban Pajak</td>
         </tr>
-        <tr style="background: rgb(230, 230, 230)">
-            <td align="left">5.4.01.01. Taksiran PPh (0.5%) </td>
-            <td align="right">{{ number_format($pph['bulan_lalu'], 2) }}</td>
-            <td align="right">{{ number_format($pph['sekarang'] - $pph['bulan_lalu'], 2) }}</td>
-            <td align="right">{{ number_format($pph['sekarang'], 2) }}</td>
-        </tr>
+
+        @php
+            $pajak_bulan_lalu = 0;
+            $pajak_bulan_ini = 0;
+        @endphp
+        @foreach ($pph as $pajak)
+            <tr style="background: rgb(230, 230, 230)">
+                @php
+                    $pajak_bulan_lalu += $pajak['saldo_bln_lalu'];
+                    $pajak_bulan_ini += $pajak['saldo'];
+                @endphp
+                <td align="left">
+                    {{ $pajak['kode_akun'] }}. {{ $pajak['nama_akun'] }}
+                </td>
+                <td align="right">{{ number_format($pajak['saldo_bln_lalu'], 2) }}</td>
+                <td align="right">{{ number_format($pajak['saldo'] - $pajak['saldo_bln_lalu'], 2) }}</td>
+                <td align="right">{{ number_format($pajak['saldo'], 2) }}</td>
+            </tr>
+        @endforeach
 
         <tr>
             <td colspan="4" height="2"></td>
@@ -261,11 +274,11 @@
                     <tr style="background: rgb(200, 200, 200); font-weight: bold;">
                         <td width="55%" align="left">C. Laba Rugi Setelah Taksiran Pajak (A + B) </td>
                         <td width="15%" align="right">
-                            {{ number_format($saldo_bln_lalu1 + $saldo_bln_lalu2 - $pph['bulan_lalu'], 2) }}</td>
+                            {{ number_format($saldo_bln_lalu1 + $saldo_bln_lalu2 - $pajak_bulan_lalu, 2) }}</td>
                         <td width="15%" align="right">
-                            {{ number_format($saldo1 - $saldo_bln_lalu1 + ($saldo2 - $saldo_bln_lalu2) - ($pph['sekarang'] - $pph['bulan_lalu']), 2) }}
+                            {{ number_format($saldo1 - $saldo_bln_lalu1 + ($saldo2 - $saldo_bln_lalu2) - ($pajak_bulan_ini - $pajak_bulan_lalu), 2) }}
                         </td>
-                        <td width="15%" align="right">{{ number_format($saldo1 + $saldo2 - $pph['sekarang'], 2) }}
+                        <td width="15%" align="right">{{ number_format($saldo1 + $saldo2 - $pajak_bulan_ini, 2) }}
                         </td>
                     </tr>
                 </table>

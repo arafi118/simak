@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Models\AkunLevel2;
+use App\Models\AkunLevel3;
 use App\Models\Kecamatan;
 use App\Models\PinjamanKelompok;
 use App\Models\Rekening;
@@ -818,6 +819,83 @@ class Keuangan
             'bulan_lalu' => $saldo_bulan_lalu,
             'bulan_ini' => $saldo_bulan_ini
         ];
+    }
+
+    public function beban_pajak($tgl_kondisi, $jenis = 'Bulanan')
+    {
+        $tanggal = explode('-', $tgl_kondisi);
+        $tahun = $tanggal[0];
+        $bulan = $tanggal[1];
+        $hari = $tanggal[2];
+
+        $bulan_lalu = $bulan - 1;
+        $tgl_lalu = date('Y-m-d', strtotime('-1 month', strtotime($tgl_kondisi)));
+
+        $akun3 = AkunLevel3::where('kode_akun', 'like', '5.4.%')->with([
+            'rek',
+            'rek.kom_saldo' => function ($query) use ($tahun, $bulan, $bulan_lalu, $hari) {
+                if ($bulan == '1' && $hari == '1') {
+                    $query->where([
+                        ['tahun', $tahun],
+                        ['bulan', '0']
+                    ]);
+                } else {
+                    $query->where('tahun', $tahun)->where(function ($query) use ($bulan, $bulan_lalu) {
+                        $query->where('bulan', $bulan_lalu)->orwhere('bulan', $bulan);
+                    });
+                }
+            },
+            'rek.saldo' => function ($query) use ($tahun) {
+                $query->where([
+                    ['tahun', $tahun],
+                    ['bulan', '0']
+                ]);
+            }
+        ])->orderBy('kode_akun', 'ASC')->get();
+
+        $beban_pajak = [];
+        foreach ($akun3 as $akun) {
+            foreach ($akun->rek as $rek) {
+                $debit_bulan_ini = 0;
+                $kredit_bulan_ini = 0;
+                $debit_bulan_lalu = 0;
+                $kredit_bulan_lalu = 0;
+                foreach ($rek->kom_saldo as $kom_saldo) {
+                    if ($kom_saldo->bulan == $bulan) {
+                        $debit_bulan_ini += floatval($kom_saldo->debit);
+                        $kredit_bulan_ini += floatval($kom_saldo->kredit);
+                    } else {
+                        if ($bulan == 1 || $jenis != 'Bulanan') {
+                            $debit_bulan_lalu += 0;
+                            $kredit_bulan_lalu += 0;
+                        } else {
+                            $debit_bulan_lalu += floatval($kom_saldo->debit);
+                            $kredit_bulan_lalu += floatval($kom_saldo->kredit);
+                        }
+                    }
+                }
+
+                $debit_awal = 0;
+                $kredit_awal = 0;
+                if ($rek->saldo) {
+                    $debit_awal = $rek->saldo->debit;
+                    $kredit_awal = $rek->saldo->kredit;
+                }
+
+                $saldo_awal = $debit_awal - $kredit_awal;
+                $saldo_bulan_ini = $saldo_awal + ($debit_bulan_ini - $kredit_bulan_ini);
+                $saldo_bulan_lalu = $saldo_awal + ($debit_bulan_lalu - $kredit_bulan_lalu);
+
+                $beban_pajak[] = [
+                    'kode_akun' => $rek->kode_akun,
+                    'nama_akun' => $rek->nama_akun,
+                    'saldo' => $saldo_bulan_ini,
+                    'saldo_bln_lalu' => $saldo_bulan_lalu
+                ];
+            }
+        }
+
+        return $beban_pajak;
     }
 
     public function laporan_laba_rugi($tgl_kondisi, $jenis = 'Bulanan')
