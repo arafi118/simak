@@ -64,8 +64,8 @@ Route::middleware('maintenance')->group(function () {
     });
 
     Route::get('/', [AuthController::class, 'index'])->middleware(['guest', 'is_aktif'])->name('/');
-    Route::get('/register', [AuthController::class, 'register'])->middleware(['guest', 'is_aktif']);
-    Route::get('/register/user', [AuthController::class, 'user'])->middleware(['guest', 'is_aktif']);
+    Route::get('/register', [AuthController::class, 'register']);
+    Route::get('/register/user', [AuthController::class, 'user']);
 
     Route::get('/ambil_prov', [AuthController::class, 'provinsi'])->middleware(['guest', 'is_aktif']);
     Route::get('/ambil_kab/{kode}', [AuthController::class, 'kabupaten'])->middleware(['guest', 'is_aktif']);
@@ -73,7 +73,7 @@ Route::middleware('maintenance')->group(function () {
     Route::get('/ambil_des/{kode}', [AuthController::class, 'desa'])->middleware(['guest', 'is_aktif']);
 
     Route::post('/login', [AuthController::class, 'login'])->middleware(['guest', 'is_aktif']);
-    Route::post('/register', [AuthController::class, 'store'])->middleware(['guest', 'is_aktif']);
+    Route::post('/register', [AuthController::class, 'store']);
     Route::post('/app', [AuthController::class, 'app']);
 
     Route::get('/pelaporan', [PelaporanController::class, 'index'])->middleware(['basic', 'is_aktif']);
