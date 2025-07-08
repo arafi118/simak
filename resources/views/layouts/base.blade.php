@@ -1,18 +1,20 @@
 @php
-    function active($path, ...$paths)
-    {
-        $page = explode('/', Request::path());
-        $page = '/' . end($page);
-        if ($page == $path) {
-            return 'active';
-        }
+    if (!function_exists('active')) {
+        function active($path, ...$paths)
+        {
+            $page = explode('/', Request::path());
+            $page = '/' . end($page);
+            if ($page == $path) {
+                return 'active';
+            }
 
-        if (in_array($page, $paths)) {
-            return 'active';
-        }
+            if (in_array($page, $paths)) {
+                return 'active';
+            }
 
-        if (str_contains(Request::path(), $path) && $path != '') {
-            return 'active';
+            if (str_contains(Request::path(), $path) && $path != '') {
+                return 'active';
+            }
         }
     }
 @endphp
