@@ -10,6 +10,7 @@ class Kabupaten extends Authenticatable
     use HasFactory;
     protected $table = 'kabupaten';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public function wilayah()
     {
