@@ -11,6 +11,7 @@ class Kecamatan extends Model
 
     protected $table = 'kecamatan';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public function kabupaten()
     {
