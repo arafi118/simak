@@ -1,22 +1,3 @@
-@php
-    function active($path, ...$paths)
-    {
-        $page = explode('/', Request::path());
-        $page = '/' . end($page);
-        if ($page == $path) {
-            return 'active';
-        }
-
-        if (in_array($page, $paths)) {
-            return 'active';
-        }
-
-        if (str_contains(Request::path(), $path) && $path != '') {
-            return 'active';
-        }
-    }
-@endphp
-
 <div class="main-menu menu-fixed menu-dark menu-bg-default rounded menu-accordion menu-shadow">
     <div class="main-menu-content">
         <a class="navigation-brand d-none d-md-flex d-lg-flex d-xl-flex justify-content-center" href="/dashboard">

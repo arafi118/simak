@@ -1,3 +1,22 @@
+@php
+    function active($path, ...$paths)
+    {
+        $page = explode('/', Request::path());
+        $page = '/' . end($page);
+        if ($page == $path) {
+            return 'active';
+        }
+
+        if (in_array($page, $paths)) {
+            return 'active';
+        }
+
+        if (str_contains(Request::path(), $path) && $path != '') {
+            return 'active';
+        }
+    }
+@endphp
+
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">
 
