@@ -54,7 +54,7 @@
                             </a>
                             @if (Session::get('invoice'))
                                 <a class="dropdown-item" target="_blank"
-                                    href="/pelaporan/invoice/{{ Session::get('invoice')->nomor }}/">
+                                    href="/pelaporan/invoice/{{ Session::get('invoice')->idv }}/">
                                     <i class="ft-printer"></i>
                                     Invoice
                                 </a>

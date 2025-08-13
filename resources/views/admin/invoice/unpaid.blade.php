@@ -59,7 +59,7 @@
         $('#invoice').on('click', 'tbody tr', function(e) {
             var data = table.row(this).data();
 
-            window.location.href = '/db/invoice/' + data.nomor
+            window.location.href = '/db/invoice/' + data.idv
         })
     </script>
 @endsection

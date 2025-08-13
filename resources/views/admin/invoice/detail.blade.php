@@ -11,7 +11,7 @@
     @if ($invoice->status == 'UNPAID')
         <div class="card" id="FormPembayaran">
             <div class="card-body">
-                <form action="/db/invoice/{{ $invoice->nomor }}/edit" method="post" id="FormPembayaranInvoice">
+                <form action="/db/invoice/{{ $invoice->idv }}/edit" method="post" id="FormPembayaranInvoice">
                     @method('PUT')
                     @csrf
 
@@ -70,7 +70,7 @@
 
     <div class="card">
         <div class="card-body">
-            <embed src="/pelaporan/invoice/{{ $invoice->nomor }}" type="application/pdf" width="100%" height="600px"
+            <embed src="/pelaporan/invoice/{{ $invoice->idv }}" type="application/pdf" width="100%" height="600px"
                 id="Invoice" />
 
             <div class="d-flex justify-content-end" {!! $invoice->status == 'PAID' ? '' : 'style="display: none"' !!} id="BtnKembali">

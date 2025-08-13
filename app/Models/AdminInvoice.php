@@ -31,6 +31,6 @@ class AdminInvoice extends Model
 
     public function getRouteKeyName()
     {
-        return 'nomor';
+        return 'idv';
     }
 }
