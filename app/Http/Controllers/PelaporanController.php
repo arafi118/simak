@@ -170,7 +170,7 @@ class PelaporanController extends Controller
         ])->first();
 
         $data['logo'] = $usaha->logo;
-        $data['nama_usaha'] = $usaha->nama_usaha . ' ' . $usaha->d->nama_desa;
+        $data['nama_usaha'] = $usaha->nama_usaha;
         $data['nama_kecamatan'] = $usaha->d->kec->sebutan_kec . ' ' . $usaha->d->kec->nama_kec;
 
         if (Keuangan::startWith($kab->nama_kab, 'KOTA') || Keuangan::startWith($kab->nama_kab, 'KAB')) {
