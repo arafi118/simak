@@ -43,7 +43,7 @@ class PelaporanController extends Controller
     public function subLaporan($file)
     {
         if ($file == 3) {
-            $rekening = Rekening::orderBy('kode_akun', 'ASC')->get();
+            $rekening = Rekening::where('kode_akun', '!=', '3.2.02.01')->orderBy('kode_akun', 'ASC')->get();
             return view('pelaporan.partials.sub_laporan')->with(compact('file', 'rekening'));
         }
 
