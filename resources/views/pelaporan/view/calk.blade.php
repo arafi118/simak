@@ -76,7 +76,7 @@
             <div style="text-transform: uppercase;">Gambaran Umum</div>
             <div style="text-align: justify">
                 {{ $usaha->nama_usaha }} adalah Badan Usaha yang didirikan oleh Desa-desa
-                se-{{ $usaha->d->kec->sebutan_kec }} {{ $usaha->d->kec->nama_kec }} sebagai tindak lanjut dari amanat
+                se-Kecamatan {{ $usaha->d->kec->nama_kec }} sebagai tindak lanjut dari amanat
                 Pemerintahan Republik Indonesia yang antara lain tertuang dalam UU nomer 6 Tahun 2014 Tentang Desa.,
                 Peraturan Menteri Desa Pembangunan Daerah Tertinggal dan Transmigrasi Nomor 4 Tahun 2015 tentang Pendirian,
                 Pengurusan dan Pengelolaan, dan Pembubaran Badan Usaha Milik Desa., Peraturan Menteri Dalam Negeri Nomor 1
