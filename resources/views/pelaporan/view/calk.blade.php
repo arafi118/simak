@@ -75,12 +75,13 @@
         <li>
             <div style="text-transform: uppercase;">Gambaran Umum</div>
             <div style="text-align: justify">
-                {{ $usaha->nama_usaha }} adalah Badan Usaha yang didirikan oleh {{ $usaha->d->sebutan_desa->sebutan_desa }}
-                {{ $usaha->d->nama_desa }} sebagai tindak lanjut dari amanat Pemerintahan Republik Indonesia yang antara
-                lain tertuang dalam UU nomer 6 Tahun 2014 Tentang Desa., Peraturan Menteri Desa Pembangunan Daerah
-                Tertinggal dan Transmigrasi Nomor 4 Tahun 2015 tentang Pendirian, Pengurusan dan Pengelolaan, dan Pembubaran
-                Badan Usaha Milik Desa., Peraturan Menteri Dalam Negeri Nomor 1 Tahun 2016 tentang Pengelolaan Aset Desa.,
-                PP No.72 Tahun 2005 tentang Desa Peraturan Pemerintah Nomor 11 Tahun 2011 Tentang Bumdes.
+                {{ $usaha->nama_usaha }} adalah Badan Usaha yang didirikan oleh Desa-desa
+                se-{{ $usaha->d->kec->sebutan_kec }} {{ $usaha->d->kec->nama_kec }} sebagai tindak lanjut dari amanat
+                Pemerintahan Republik Indonesia yang antara lain tertuang dalam UU nomer 6 Tahun 2014 Tentang Desa.,
+                Peraturan Menteri Desa Pembangunan Daerah Tertinggal dan Transmigrasi Nomor 4 Tahun 2015 tentang Pendirian,
+                Pengurusan dan Pengelolaan, dan Pembubaran Badan Usaha Milik Desa., Peraturan Menteri Dalam Negeri Nomor 1
+                Tahun 2016 tentang Pengelolaan Aset Desa., PP No.72 Tahun 2005 tentang Desa Peraturan Pemerintah Nomor 11
+                Tahun 2011 Tentang Bumdes.
             </div>
             <p style="text-align: justify">
                 Sesuai amanat regulasi maka setiap desa bisa berivestasi kepada Bumdes melalu penetapan APBDes sebagai modal
@@ -351,8 +352,8 @@
                 Ketentuan Pembagian Laba Usaha
             </div>
             <div style="text-align: justify">
-                Pembagian laba {{ $usaha->nama_usaha }} ditentukan dalam rapat pertanggungjawaban pengurus dan RUPS.
-                Adapun hasil keputusan pembagian laba tahun buku {{ $tahun }} adalah sebagai berikut:
+                Pembagian laba {{ $usaha->nama_usaha }} ditentukan dalam rapat pertanggungjawaban Musyawarah Antar Desa
+                (MAD). Adapun hasil keputusan pembagian laba tahun buku {{ $tahun }} adalah sebagai berikut:
             </div>
             <ol>
                 <li>
@@ -390,7 +391,8 @@
                             Kementerian
                             Desa Nomor 136/2022 Tentang Panduan Penyusunan Pelaporan Bumdes. Catatan atas Laporan Keuangan
                             (CaLK) ini merupakan bagian tidak terpisahkan dari Laporan Keuangan Badan Usaha Milik Desa
-                            (Bumdes) Maju Jaya untuk Laporan Operasi Bulan {{ $nama_bulan }} Tahun {{ $tahun }}.
+                            (Bumdes) {{ $usaha->nama_usaha }} untuk Laporan Operasi Bulan {{ $nama_bulan }} Tahun
+                            {{ $tahun }}.
                             Selanjutnya Catatan atas Laporan Keuangan ini diharapkan untuk dapat berguna bagi pihak-pihak
                             yang berkepentingan (stakeholders) serta memenuhi prinsip-prinsip transparansi, akuntabilitas,
                             pertanggungjawaban, independensi, dan fairness dalam pengelolaan keuangan

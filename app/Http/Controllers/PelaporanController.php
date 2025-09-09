@@ -151,7 +151,6 @@ class PelaporanController extends Controller
             ]);
         }
 
-        $request->hari = ($request->hari) ?: 31;
         $usaha = Usaha::where('id', Session::get('lokasi'))->with([
             'd',
             'd.sebutan_desa',
