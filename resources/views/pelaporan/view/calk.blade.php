@@ -84,17 +84,17 @@
                 Tahun 2011 Tentang Bumdes.
             </div>
             <p style="text-align: justify">
-                Sesuai amanat regulasi maka setiap desa bisa berivestasi kepada Bumdes melalu penetapan APBDes sebagai modal
-                mayoritas dan bisa menerima investasi masyarakat sebagai tambahan modal Bumdes. Modal tersebut digunakan
-                untuk meningkatkan produktifitas ekonomi masyarakat dan keuangan desa dengan mengembangkan fungsi dan
-                manfaat potensi sumber daya alam dan sumber daya manusia di wilayah desa setempat, disamping mencari sumber
-                dukungan pengembangan dari pihak swasta dan pemerintah baik dilingkungan desa sendiri maupun luar desa.
+                Sesuai amanat regulasi maka setiap desa bisa berinvestasi kepada Bumdesma {{ $usaha->nama_usaha }} melalui
+                penetapan APBDes sebagai modal tambahan dan bisa menerima investasi masyarakat jika diperlukan. Modal
+                tersebut digunakan untuk meningkatkan produktifitas ekonomi masyarakat dan keuangan desa dengan
+                mengembangkan fungsi dan manfaat potensi sumber daya alam dan sumber daya manusia di wilayah Kecamatan
+                {{ $usaha->d->kec->nama_kec }}, disamping mencari sumber dukungan dana pengembangan dari pihak pemerintah
             </p>
             <p style="text-align: justify">
-                {{ $usaha->nama_usaha }} didirikan di {{ $usaha->d->sebutan_desa->sebutan_desa }} {{ $usaha->d->nama_desa }}
-                berdasarkan PERATURAN KEPALA DESA NOMOR {{ $usaha->peraturan_desa }} dan mendapatkan Sertifikat Badan Hukum
-                dari Menteri Hukum dan Hak Asasi Manusia No. {{ $usaha->nomor_bh }}. Dalam perjalanan pengelolaan
-                manajeman dan bisnis {{ $usaha->nama_usaha }} memiliki struktur kepengurusan pusat sebagai berikut :
+                {{ $usaha->nama_usaha }} didirikan berdasarkan Keputusan Musyawarah Antar Desa.
+                Bumdesma {{ $usaha->nama_usaha }} telah mendapatkan Sertifikat Badan Hukum dari Menteri Hukum dan Hak Asasi
+                Manusia No. {{ $usaha->nomor_bh }}. Dalam perjalanan pengelolaan manajeman dan
+                bisnis{{ $usaha->nama_usaha }} memiliki struktur kepengurusan pusat sebagai berikut :
             </p>
             <table style="margin-top: -10px; margin-left: 15px;">
                 <tr>
