@@ -309,9 +309,11 @@ class DashboardController extends Controller
 
     public function unpaid()
     {
+        $today = date('Y-m-d');
         $invoice = AdminInvoice::where([
             ['lokasi', Session::get('lokasi')],
-            ['status', 'UNPAID']
+            ['status', 'UNPAID'],
+            ['tgl_invoice', '<=', date('Y-m-d', strtotime('-14 days', strtotime($today)))]
         ])->orderBy('tgl_invoice', 'DESC');
 
         $jumlah = 0;
