@@ -36,11 +36,6 @@
                     <li class="dropdown dropdown-user nav-item">
                         <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
                             <span class="avatar avatar-busy">
-                                @if (Session::get('invoice'))
-                                    <span class="badge badge-pill badge-danger badge-up badge-glow">
-                                        1
-                                    </span>
-                                @endif
                                 <img src="{{ asset('/storage/profil/' . Session::get('foto')) }}" alt="avatar">
                             </span>
                             <span class="mr-1">
