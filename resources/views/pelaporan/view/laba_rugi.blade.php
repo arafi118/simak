@@ -1,5 +1,6 @@
 @extends('pelaporan.layout.base')
 
+
 @section('content')
     @php
         $saldo1 = 0;
