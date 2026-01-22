@@ -3,8 +3,10 @@
 namespace App\Utils;
 
 use App\Models\AkunLevel2;
+use App\Models\AkunLevel2s;
 use App\Models\AkunLevel3;
 use App\Models\Kecamatan;
+use App\Models\Accounts;
 use App\Models\PinjamanKelompok;
 use App\Models\Rekening;
 use App\Models\Saldo;
@@ -1025,4 +1027,104 @@ class Keuangan
             'beban_non_ops' => $beban_non_ops
         ];
     }
+    
+    public function laba_rugiv2(int $tahun, int $bulan): array
+    {
+        $accounts = Accounts::with([
+            'saldo' => fn ($q) => $q->where('tahun', $tahun)->where('bulan', 0),
+            'kom_saldo' => fn ($q) => $q->where('tahun', $tahun)
+                ->whereIn('bulan', [$bulan - 1, $bulan]),
+        ])->orderBy('kode_akun')->get();
+
+        $data = [
+            'sections' => [
+                'penjualan'            => [],
+                'pembelian'            => [],
+                'pendapatan_lain'      => [],
+                'beban_operasional'    => [],
+                'pendapatan_non_usaha' => [],
+                'beban_non_usaha'      => [],
+                'beban_pajak'          => [],
+            ],
+            'persediaan_awal'  => 0,
+            'persediaan_akhir' => 0,
+        ];
+
+        foreach ($accounts as $acc) {
+
+            //saldo awal
+            $debit_awal  = $acc->saldo->debit  ?? 0;
+            $kredit_awal = $acc->saldo->kredit ?? 0;
+
+            //mutasi
+            $debit_mutasi  = 0;
+            $kredit_mutasi = 0;
+
+            foreach ($acc->kom_saldo as $m) {
+                $debit_mutasi  += $m->debit;
+                $kredit_mutasi += $m->kredit;
+            }
+
+            //hitung saldo
+            if (
+                str_starts_with($acc->kode_akun, '4') ||
+                str_starts_with($acc->kode_akun, '7')
+            ) {
+                $saldo = ($kredit_awal - $debit_awal)
+                       + ($kredit_mutasi - $debit_mutasi);
+            } else {
+                $saldo = ($debit_awal - $kredit_awal)
+                       + ($debit_mutasi - $kredit_mutasi);
+            }
+
+            $row = [
+                'kode_akun' => $acc->kode_akun,
+                'nama'      => $acc->nama,
+                'saldo'     => $saldo,
+            ];
+
+            //persediaan
+            if ($acc->kode_akun === '1.1.03.01') {
+                $data['persediaan_awal']  = $debit_awal - $kredit_awal;
+                $data['persediaan_akhir'] = $saldo;
+
+                $data['sections']['pembelian'][] = $row;
+                continue;
+            }
+
+            //akun yang tidak ditampilkan
+            if (in_array($acc->kode_akun, ['4.1.01.04', '5.1.01.01'])) {
+                continue;
+            }
+
+            //MAPPING
+            if ($acc->kode_akun === '4.1.01.05') {
+                $data['sections']['pendapatan_lain'][] = $row;
+
+            } elseif (str_starts_with($acc->kode_akun, '4.1')) {
+                $data['sections']['penjualan'][] = $row;
+
+            } elseif (str_starts_with($acc->kode_akun, '5.1')) {
+                $data['sections']['pembelian'][] = $row;
+
+            } elseif (str_starts_with($acc->kode_akun, '6.')) {
+                $data['sections']['beban_operasional'][] = $row;
+
+            } elseif (
+                str_starts_with($acc->kode_akun, '7.1') ||
+                str_starts_with($acc->kode_akun, '7.2')
+            ) {
+                $data['sections']['pendapatan_non_usaha'][] = $row;
+
+            } elseif (str_starts_with($acc->kode_akun, '7.3')) {
+                $data['sections']['beban_non_usaha'][] = $row;
+
+            } elseif (str_starts_with($acc->kode_akun, '7.4')) {
+                $data['sections']['beban_pajak'][] = $row;
+            }
+        }
+
+        return $data;
+    }
+
 }

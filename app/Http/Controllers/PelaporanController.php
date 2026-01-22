@@ -7,7 +7,9 @@ use App\Models\AkunLevel1;
 use App\Models\AkunLevel2;
 use App\Models\AkunLevel3;
 use App\Models\ArusKas;
+use App\Models\Accounts;
 use App\Models\Calk;
+use App\Models\AkunLevel1s;
 use App\Models\Desa;
 use App\Models\JenisLaporan;
 use App\Models\JenisLaporanPinjaman;
@@ -390,6 +392,41 @@ class PelaporanController extends Controller
         } else {
             return $view;
         }
+    }
+    public function labarugiv2(array $data)
+    {
+        $tahun = (int) $data['tahun'];
+        $bulan = (int) $data['bulan'];
+        $hari  = str_pad($data['hari'], 2, '0', STR_PAD_LEFT);
+
+        $data['type'] = $data['type'] ?? 'html';
+        $data['awal_tahun'] = $tahun . '-01-01';
+        $data['tgl_kondisi'] = "{$tahun}-{$bulan}-{$hari}"; 
+
+        if ($bulan === 1 && $hari === '01') {
+            return $this->laba_rugi_tutup_buku($data);
+        }
+
+        $keuangan = new Keuangan();
+        $hasil = $keuangan->laba_rugiv2($tahun, $bulan);
+
+        $data = array_merge($data, $hasil);
+
+        if (!empty($data['bulanan']) && $data['bulanan']) {
+            $data['sub_judul'] = 'Periode ' . Tanggal::tglLatin($data['awal_tahun']) . ' S.D ' . Tanggal::tglLatin($data['tgl_kondisi']);
+            $data['tgl'] = Tanggal::namaBulan($data['tgl_kondisi']) . ' ' . Tanggal::tahun($data['tgl_kondisi']);
+        } else {
+            $data['sub_judul'] = 'Periode ' . Tanggal::tglLatin($data['awal_tahun']) . ' S.D ' . Tanggal::tglLatin($data['tgl_kondisi']);
+            $data['tgl'] = Tanggal::tahun($data['tgl_kondisi']);
+            
+        }
+        $data['title'] = 'Laba RugiV2 (' . Tanggal::namaBulan($data['tgl_kondisi']) . ' ' . $tahun . ')';
+        
+        $view = view('pelaporan.view.laba_rugiv2', $data)->render();
+
+        return $data['type'] === 'pdf'
+            ? PDF::loadHTML($view)->stream()
+            : $view;
     }
 
     private function arus_kas(array $data)
