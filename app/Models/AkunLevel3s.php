@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AkunLevel3s extends Model
 {
-    protected $table = 'akun_level3s';
+    protected $table = 'akun_level_3s';
     public $timestamps = false;
 
     
