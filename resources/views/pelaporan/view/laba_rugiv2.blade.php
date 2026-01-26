@@ -23,6 +23,15 @@
             font-weight: bold
         }
     </style>
+    @php
+        function formatKurung($angka)
+        {
+            if ($angka < 0) {
+                return '(' . number_format(abs($angka), 2, ',', '.') . ')';
+            }
+            return number_format($angka, 2, ',', '.');
+        }
+    @endphp
 
     <table width="100%" style="font-size:11px;">
         <tr>
@@ -63,7 +72,7 @@
                 <td class="l b" width="10%">{{ $acc['kode_akun'] }}</td>
                 <td class="l b r" width="70%">{{ $acc['nama'] }}</td>
                 <td class="b r" width="20%" align="right">
-                    {{ number_format($acc['saldo'], 2, ',', '.') }}
+                    {{ formatKurung($acc['saldo'], 2, ',', '.') }}
                 </td>
             </tr>
         @endforeach
@@ -71,13 +80,13 @@
         <tr>
             <td class="l b"></td>
             <td class="l b r"><b>Penjualan Bersih</b></td>
-            <td class="b r" align="right"><b>{{ number_format($total_penjualan, 2, ',', '.') }}</b></td>
+            <td class="b r" align="right"><b>{{ formatKurung($total_penjualan, 2, ',', '.') }}</b></td>
         </tr>
 
         <tr>
             <td class="l b"></td>
             <td class="l b r">Persediaan Awal</td>
-            <td class="b r" align="right">{{ number_format($persediaan_awal, 2, ',', '.') }}</td>
+            <td class="b r" align="right">{{ formatKurung($persediaan_awal, 2, ',', '.') }}</td>
         </tr>
 
         {{-- PEMBELIAN --}}
@@ -85,32 +94,32 @@
             <tr>
                 <td class="l b">{{ $acc['kode_akun'] }}</td>
                 <td class="l b r">{{ $acc['nama'] }}</td>
-                <td class="b r" align="right">{{ number_format($acc['saldo'], 2, ',', '.') }}</td>
+                <td class="b r" align="right">{{ formatKurung($acc['saldo'], 2, ',', '.') }}</td>
             </tr>
         @endforeach
 
         <tr>
             <td class="l b"></td>
             <td class="l b r"><b>Total Pembelian</b></td>
-            <td class="b r" align="right"><b>{{ number_format($total_pembelian, 2, ',', '.') }}</b></td>
+            <td class="b r" align="right"><b>{{ formatKurung($total_pembelian, 2, ',', '.') }}</b></td>
         </tr>
 
         <tr>
             <td class="l b"></td>
             <td class="l b r">Persediaan Akhir</td>
-            <td class="b r" align="right">{{ number_format($persediaan_akhir, 2, ',', '.') }}</td>
+            <td class="b r" align="right">{{ formatKurung($persediaan_akhir, 2, ',', '.') }}</td>
         </tr>
 
         <tr>
             <td class="l b"></td>
             <td class="l b r"><b>Harga Pokok Penjualan</b></td>
-            <td class="b r" align="right"><b>{{ number_format($hpp, 2, ',', '.') }}</b></td>
+            <td class="b r" align="right"><b>{{ formatKurung($hpp, 2, ',', '.') }}</b></td>
         </tr>
 
         <tr>
             <td class="l b"></td>
             <td class="l b r"><b>Laba Kotor</b></td>
-            <td class="b r" align="right"><b>{{ number_format($laba_kotor, 2, ',', '.') }}</b></td>
+            <td class="b r" align="right"><b>{{ formatKurung($laba_kotor, 2, ',', '.') }}</b></td>
         </tr>
 
         {{-- SECTION LAIN --}}
@@ -133,14 +142,14 @@
                 <tr>
                     <td class="l b">{{ $acc['kode_akun'] }}</td>
                     <td class="l b r">{{ $acc['nama'] }}</td>
-                    <td class="b r" align="right">{{ number_format($acc['saldo'], 2, ',', '.') }}</td>
+                    <td class="b r" align="right">{{ formatKurung($acc['saldo'], 2, ',', '.') }}</td>
                 </tr>
             @endforeach
 
             <tr>
                 <td class="l b"></td>
                 <td class="l b r"><b>Jumlah {{ $label }}</b></td>
-                <td class="b r" align="right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
+                <td class="b r" align="right"><b>{{ formatKurung($total, 2, ',', '.') }}</b></td>
             </tr>
         @endforeach
     </table>
