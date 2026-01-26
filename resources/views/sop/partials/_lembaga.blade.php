@@ -102,6 +102,32 @@
                 <small class="text-danger" id="msg_peraturan_desa"></small>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="form-group mb-1">
+                <label class="form-label fw-bold mb-0">Jenis Pengelola Keuangan</label>
+
+                <div class="d-flex mt-1" style="column-gap: 3rem;">
+                    <div class="form-check d-flex align-items-center mb-0">
+                        <input class="form-check-input mt-0" type="radio" name="jenis_akun" id="jenis_akun_umum"
+                            value="5" {{ $usaha->jenis_akun == 5 ? 'checked' : '' }}>
+                        <label class="form-check-label ms-1 lh-1" for="jenis_akun_umum">
+                            A. Umum
+                        </label>
+                    </div>
+
+                    <div class="form-check d-flex align-items-center mb-0">
+                        <input class="form-check-input mt-0" type="radio" name="jenis_akun" id="jenis_akun_dagang"
+                            value="7" {{ $usaha->jenis_akun == 7 ? 'checked' : '' }}>
+                        <label class="form-check-label ms-1 lh-1" for="jenis_akun_dagang">
+                            B. Perdagangan
+                        </label>
+                    </div>
+                </div>
+
+                <div class="text-muted mt-1" style="font-size: 13px;">
+                    Pilih A / B untuk menentukan jenis pengelolaan keuangan usaha </div>
+            </div>
+        </div>
     </div>
 </form>
 

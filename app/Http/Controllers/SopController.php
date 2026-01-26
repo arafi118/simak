@@ -266,6 +266,8 @@ class SopController extends Controller
             'npwp' => $data['npwp'],
             'tgl_npwp' => Tanggal::tglNasional($data['tanggal_npwp']),
             'peraturan_desa' => $request->peraturan_desa,
+            'jenis_akun' => $request->jenis_akun ?? 5,
+
         ];
 
         $usaha = Usaha::where('id', $usaha->id)->update($update);
