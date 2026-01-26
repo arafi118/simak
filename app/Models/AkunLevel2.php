@@ -5,7 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use \Awobaz\Compoships\Compoships;
-
+use Session;
+use App\Models\Usaha;
 class AkunLevel2 extends Model
 {
     use HasFactory, Compoships;
@@ -16,6 +17,35 @@ class AkunLevel2 extends Model
     protected $primaryKey = 'kode_akun';
     protected $keyType = 'string';
 
+     public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->table = 'akun_level_2';
+
+        if (Session::has('jenis_akun')) {
+            if (Session::get('jenis_akun') == 7) {
+                $this->table = 'akun_level_2s';
+            }
+        }
+
+        if (Session::has('lokasi')) {
+            $usaha = Usaha::find(Session::get('lokasi'));
+
+            if ($usaha && $usaha->jenis_akun == 7) {
+                $this->table = 'akun_level_2s';
+                Session::put('jenis_akun', 7);
+            }
+
+            // dd([
+   
+            //     'lokasi'     => Session::get('lokasi'),
+            //     'usaha_id'   => $usaha->id ?? null,
+            //     'usaha_jenis'=> $usaha->jenis_akun ?? null,
+            //     'table'      => $this->table,
+            // ]);
+        }
+    }
     public function akun3()
     {
         return $this->hasMany(AkunLevel3::class, 'parent_id', 'id')->orderBy('kode_akun', 'ASC');

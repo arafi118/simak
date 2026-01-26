@@ -17,6 +17,7 @@ use App\Models\RencanaAngsuran;
 use App\Models\Saldo;
 use App\Models\Transaksi;
 use App\Models\Usaha;
+use App\Models\Accounts;
 use App\Models\User;
 use App\Utils\Inventaris as UtilsInventaris;
 use App\Utils\Keuangan;
@@ -1566,31 +1567,50 @@ class TransaksiController extends Controller
         $jenis_transaksi = JenisTransaksi::where('id', $id)->firstOrFail();
         $label1 = 'Pilih Sumber Dana';
 
+        // 🔑 penentu rekening / accounts
+        $akunModel = Session::get('jenis_akun') == 7
+            ? Accounts::class
+            : Rekening::class;
+
         if ($id == 1) {
-            $rek1 = Rekening::where(function ($query) {
-                $query->where('lev1', '2')->orwhere('lev1', '3')->orwhere('lev1', '4');
+
+            $rek1 = $akunModel::where(function ($query) {
+                $query->where('lev1', '2')
+                    ->orWhere('lev1', '3')
+                    ->orWhere('lev1', '4');
             })->orderBy('kode_akun', 'ASC')->get();
 
-            $rek2 = Rekening::where('lev1', '1')->orderBy('kode_akun', 'ASC')->get();
+            $rek2 = $akunModel::where('lev1', '1')
+                ->orderBy('kode_akun', 'ASC')
+                ->get();
 
             $label2 = 'Disimpan Ke';
+
         } elseif ($id == 2) {
-            $rek1 = Rekening::where(function ($query) {
-                $query->where('lev1', '1')->orwhere('lev1', '2');
+
+            $rek1 = $akunModel::where(function ($query) {
+                $query->where('lev1', '1')
+                    ->orWhere('lev1', '2');
             })->orderBy('kode_akun', 'ASC')->get();
 
-            $rek2 = Rekening::where('lev1', '2')->orwhere('lev1', '3')->orwhere('lev1', '5')->orderBy('kode_akun', 'ASC')->get();
+            $rek2 = $akunModel::where(function ($query) {
+                $query->where('lev1', '2')
+                    ->orWhere('lev1', '3')
+                    ->orWhere('lev1', '5');
+            })->orderBy('kode_akun', 'ASC')->get();
 
             $label2 = 'Keperluan';
-        } elseif ($id == 3) {
-            $rek1 = Rekening::all();
 
-            $rek2 = Rekening::all();
+        } elseif ($id == 3) {
+
+            $rek1 = $akunModel::orderBy('kode_akun', 'ASC')->get();
+            $rek2 = $akunModel::orderBy('kode_akun', 'ASC')->get();
 
             $label2 = 'Disimpan Ke';
         }
 
-        return view('transaksi.jurnal_umum.partials.rekening')->with(compact('rek1', 'rek2', 'label1', 'label2'));
+        return view('transaksi.jurnal_umum.partials.rekening')
+            ->with(compact('rek1', 'rek2', 'label1', 'label2'));
     }
 
     public function form()

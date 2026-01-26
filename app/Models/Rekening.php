@@ -15,10 +15,21 @@ class Rekening extends Model
 
     protected $guarded = ['id'];
 
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
-        $this->table = 'rekening_' . Session::get('lokasi');
+        parent::__construct($attributes);
+
+        if (Session::get('jenis_akun') == 7) {
+            $this->table = 'accounts';
+        } else {
+            $this->table = 'rekening_' . Session::get('lokasi');
+        }
     }
+
+    // public function __construct()
+    // {
+    //     $this->table = 'rekening_' . Session::get('lokasi');
+    // }
 
     public function trx_debit()
     {

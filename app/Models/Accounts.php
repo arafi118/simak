@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Session;
 
 class Accounts extends Model
 {
     use HasFactory;
-     protected $table = 'accounts';
-
+    protected $table = 'accounts';
    
     public function trx_debit()
     {
