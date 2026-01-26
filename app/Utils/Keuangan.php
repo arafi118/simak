@@ -1079,7 +1079,7 @@ class Keuangan
 
             $row = [
                 'kode_akun' => $acc->kode_akun,
-                'nama'      => $acc->nama,
+                'nama'      => $acc->nama_akun,
                 'saldo'     => $saldo,
             ];
 
