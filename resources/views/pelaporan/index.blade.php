@@ -73,7 +73,12 @@
                                 @foreach ($laporan as $lap)
                                     <option value="{{ $lap->file }}">
                                         {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}.
-                                        {{ $lap->nama_laporan }}
+
+                                        @if ($lap->file == 'laba_rugi' && Session::get('jenis_akun') == '5k')
+                                            Perhitungan Hasil Usaha
+                                        @else
+                                            {{ $lap->nama_laporan }}
+                                        @endif
                                     </option>
                                 @endforeach
                             </select>

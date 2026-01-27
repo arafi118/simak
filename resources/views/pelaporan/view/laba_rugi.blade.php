@@ -14,7 +14,13 @@
         <tr>
             <td colspan="4" align="center">
                 <div style="font-size: 18px;">
-                    <b>LAPORAN LABA RUGI</b>
+                    <b>
+                        @if (Session::get('jenis_akun') == '5k')
+                            Perhitungan Hasil Usaha
+                        @else
+                            LAPORAN LABA RUGI
+                        @endif
+                    </b>
                 </div>
                 <div style="font-size: 16px;">
                     <b>{{ strtoupper($sub_judul) }}</b>
