@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdminInvoice;
-use App\Models\AdminJenisPembayaran;
 use App\Models\Desa;
 use App\Models\Kabupaten;
 use App\Models\Kecamatan;
@@ -15,7 +14,6 @@ use App\Models\Wilayah;
 use App\Utils\Keuangan;
 use App\Utils\Tanggal;
 use Auth;
-use Cookie;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -34,12 +32,12 @@ class AuthController extends Controller
         $usaha = Usaha::where('domain', explode('//', request()->url(''))[1])->orwhere('domain_alt', explode('//', request()->url(''))[1])->with([
             'd',
             'd.sebutan_desa',
-            'd.kec'
+            'd.kec',
         ])->first();
 
         $logo = '/assets/img/icon/favicon.png';
         if ($usaha->logo) {
-            $logo = '/storage/logo/' . $usaha->logo;
+            $logo = '/storage/logo/'.$usaha->logo;
         }
 
         return view('auth.login')->with(compact('usaha', 'logo'));
@@ -50,7 +48,7 @@ class AuthController extends Controller
         $usaha = Usaha::where('domain', request()->getHost())->orwhere('domain_alt', request()->getHost())->with([
             'd',
             'd.sebutan_desa',
-            'd.kec'
+            'd.kec',
         ])->first();
 
         if ($usaha->id != '1') {
@@ -59,7 +57,7 @@ class AuthController extends Controller
 
         $logo = '/assets/img/icon/favicon.png';
         if ($usaha->logo) {
-            $logo = '/storage/logo/' . $usaha->logo;
+            $logo = '/storage/logo/'.$usaha->logo;
         }
 
         return view('auth.register')->with(compact('usaha', 'logo'));
@@ -67,37 +65,41 @@ class AuthController extends Controller
 
     public function provinsi()
     {
-        $wilayah = Wilayah::whereRaw("LENGTH(kode)=2")->orderBy('nama', 'ASC')->get();
+        $wilayah = Wilayah::whereRaw('LENGTH(kode)=2')->orderBy('nama', 'ASC')->get();
+
         return response()->json([
             'success' => true,
-            'data' => $wilayah
+            'data' => $wilayah,
         ]);
     }
 
     public function kabupaten($kode)
     {
-        $wilayah = Wilayah::whereRaw("LENGTH(kode)=5")->where('kode', 'LIKE', $kode . '%')->orderBy('nama', 'ASC')->get();
+        $wilayah = Wilayah::whereRaw('LENGTH(kode)=5')->where('kode', 'LIKE', $kode.'%')->orderBy('nama', 'ASC')->get();
+
         return response()->json([
             'success' => true,
-            'data' => $wilayah
+            'data' => $wilayah,
         ]);
     }
 
     public function kecamatan($kode)
     {
-        $wilayah = Wilayah::whereRaw("LENGTH(kode)=8")->where('kode', 'LIKE', $kode . '%')->orderBy('nama', 'ASC')->get();
+        $wilayah = Wilayah::whereRaw('LENGTH(kode)=8')->where('kode', 'LIKE', $kode.'%')->orderBy('nama', 'ASC')->get();
+
         return response()->json([
             'success' => true,
-            'data' => $wilayah
+            'data' => $wilayah,
         ]);
     }
 
     public function desa($kode)
     {
-        $wilayah = Wilayah::whereRaw("LENGTH(kode)=13")->where('kode', 'LIKE', $kode . '%')->orderBy('nama', 'ASC')->get();
+        $wilayah = Wilayah::whereRaw('LENGTH(kode)=13')->where('kode', 'LIKE', $kode.'%')->orderBy('nama', 'ASC')->get();
+
         return response()->json([
             'success' => true,
-            'data' => $wilayah
+            'data' => $wilayah,
         ]);
     }
 
@@ -109,11 +111,11 @@ class AuthController extends Controller
 
         $validate = $this->validate($request, [
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $usaha = Usaha::where('domain', $url)->orwhere('domain_alt', $url)->with([
-            'd.kec.kabupaten'
+            'd.kec.kabupaten',
         ])->first();
 
         $kec = $usaha->d->kec;
@@ -121,12 +123,12 @@ class AuthController extends Controller
 
         $icon = '/assets/img/icon/favicon.png';
         if ($usaha->logo) {
-            $icon = '/storage/logo/' . $usaha->logo;
+            $icon = '/storage/logo/'.$usaha->logo;
         }
 
         $user = User::where([
             ['uname', $username],
-            ['lokasi', $lokasi]
+            ['lokasi', $lokasi],
         ])->first();
 
         if ($user) {
@@ -140,7 +142,7 @@ class AuthController extends Controller
 
                     session([
                         'nama_usaha' => $usaha->nama_usaha,
-                        'nama' => $user->namadepan . ' ' . $user->namabelakang,
+                        'nama' => $user->namadepan.' '.$user->namabelakang,
                         'foto' => $user->foto,
                         'logo' => $usaha->logo,
                         'lokasi' => $usaha->id,
@@ -148,11 +150,12 @@ class AuthController extends Controller
                         'lokasi_user' => $user->lokasi,
                         'icon' => $icon,
                         'menu' => $AksesMenu,
-                        'tombol' => $AksesTombol
+                        'tombol' => $AksesTombol,
+                        'jenis_akun' => $usaha->jenis_akun,
                     ]);
 
                     return redirect('/dashboard')->with([
-                        'pesan' => 'Selamat Datang ' . $user->namadepan . ' ' . $user->namabelakang,
+                        'pesan' => 'Selamat Datang '.$user->namadepan.' '.$user->namabelakang,
                         'is_invoice' => $inv,
                     ]);
                 }
@@ -165,27 +168,27 @@ class AuthController extends Controller
     public function store(Request $request)
     {
         $data = $request->only([
-            "provinsi",
-            "kabupaten",
-            "kecamatan",
-            "desa",
-            "nama_usaha",
-            "tgl_register",
-            "alamat",
-            "email",
-            "telpon",
+            'provinsi',
+            'kabupaten',
+            'kecamatan',
+            'desa',
+            'nama_usaha',
+            'tgl_register',
+            'alamat',
+            'email',
+            'telpon',
         ]);
 
         $validate = Validator::make($data, [
-            "provinsi" => 'required',
-            "kabupaten" => 'required',
-            "kecamatan" => 'required',
-            "desa" => 'required',
-            "nama_usaha" => 'required',
-            "tgl_register" => 'required',
-            "alamat" => 'required',
-            "email" => 'required',
-            "telpon" => 'required',
+            'provinsi' => 'required',
+            'kabupaten' => 'required',
+            'kecamatan' => 'required',
+            'desa' => 'required',
+            'nama_usaha' => 'required',
+            'tgl_register' => 'required',
+            'alamat' => 'required',
+            'email' => 'required',
+            'telpon' => 'required',
         ]);
 
         if ($validate->fails()) {
@@ -194,47 +197,47 @@ class AuthController extends Controller
 
         $kab = Kabupaten::where([
             ['kd_kab', $data['kabupaten']],
-            ['kd_prov', $data['provinsi']]
+            ['kd_prov', $data['provinsi']],
         ])->first();
-        if (!$kab) {
+        if (! $kab) {
             $kabupaten = Wilayah::where('kode', $data['kabupaten'])->first();
 
             $nama_kab = $kabupaten->nama;
             $nama_kab = ucwords(strtolower(str_replace('KAB. ', '', $nama_kab)));
             Kabupaten::create([
-                "kd_prov" => $data['provinsi'],
-                "kd_kab" => $data['kabupaten'],
-                "nama_kab" => $nama_kab,
-                "nama_lembaga" => $nama_kab,
-                "alamat_kab" => "-",
-                "telpon_kab" => "0",
-                "email_kab" => "-",
-                "web_kab" => "-",
-                "web_kab_alternatif" => "-",
-                "uname" => "-",
-                "pass" => "-",
+                'kd_prov' => $data['provinsi'],
+                'kd_kab' => $data['kabupaten'],
+                'nama_kab' => $nama_kab,
+                'nama_lembaga' => $nama_kab,
+                'alamat_kab' => '-',
+                'telpon_kab' => '0',
+                'email_kab' => '-',
+                'web_kab' => '-',
+                'web_kab_alternatif' => '-',
+                'uname' => '-',
+                'pass' => '-',
             ]);
         }
 
         $kec = Kecamatan::where([
             ['kd_kec', $data['kecamatan']],
-            ['kd_kab', $data['kabupaten']]
+            ['kd_kab', $data['kabupaten']],
         ])->first();
-        if (!$kec) {
+        if (! $kec) {
             $kecamatan = Wilayah::where('kode', $data['kecamatan'])->first();
 
             $kec = Kecamatan::create([
-                "kd_kab" => $data['kabupaten'],
-                "kd_kec" => $data['kecamatan'],
-                "nama_kec" => $kecamatan->nama,
-                "alamat_kec" => "-",
-                "telpon_kec" => "0",
-                "email_kec" => "-",
-                "web_kec" => "-",
-                "web_alternatif" => "-",
-                "logo" => "-",
-                "uname" => "-",
-                "pass" => "-",
+                'kd_kab' => $data['kabupaten'],
+                'kd_kec' => $data['kecamatan'],
+                'nama_kec' => $kecamatan->nama,
+                'alamat_kec' => '-',
+                'telpon_kec' => '0',
+                'email_kec' => '-',
+                'web_kec' => '-',
+                'web_alternatif' => '-',
+                'logo' => '-',
+                'uname' => '-',
+                'pass' => '-',
             ]);
         }
 
@@ -242,29 +245,29 @@ class AuthController extends Controller
             ['kd_desa', $data['desa']],
             ['kd_kec', $data['kecamatan']],
         ])->first();
-        if (!$desa) {
+        if (! $desa) {
             $desa = Wilayah::where('kode', $data['desa'])->first();
 
             Desa::insert([
-                "kd_kec" => $data['kecamatan'],
-                "nama_kec" => $kec->nama_kec,
-                "kd_desa" => str_replace('.', '', $data['desa']),
-                "nama_desa" => $desa->nama,
-                "alamat_desa" => $data['alamat'],
-                "telp_desa" => "-",
-                "sebutan" => "1",
-                "kode_desa" => $data['desa'],
-                "kades" => "-",
-                "pangkat" => "-",
-                "nip" => "-",
-                "no_kades" => "-",
-                "sekdes" => "-",
-                "no_sekdes" => "-",
-                "ked" => "-",
-                "no_ked" => "-",
-                "deskripsi_desa" => "-",
-                "uname" => "-",
-                "pass" => "-",
+                'kd_kec' => $data['kecamatan'],
+                'nama_kec' => $kec->nama_kec,
+                'kd_desa' => str_replace('.', '', $data['desa']),
+                'nama_desa' => $desa->nama,
+                'alamat_desa' => $data['alamat'],
+                'telp_desa' => '-',
+                'sebutan' => '1',
+                'kode_desa' => $data['desa'],
+                'kades' => '-',
+                'pangkat' => '-',
+                'nip' => '-',
+                'no_kades' => '-',
+                'sekdes' => '-',
+                'no_sekdes' => '-',
+                'ked' => '-',
+                'no_ked' => '-',
+                'deskripsi_desa' => '-',
+                'uname' => '-',
+                'pass' => '-',
             ]);
         }
 
@@ -273,96 +276,97 @@ class AuthController extends Controller
         $domain = str_replace(' ', '-', $domain);
 
         $usaha = Usaha::create([
-            "kd_desa" => $data['desa'],
-            "nama_usaha" => $data['nama_usaha'],
-            "kepala_lembaga" => "-",
-            "badan_pengawas" => "-",
-            "kabag_administrasi" => "-",
-            "kabag_keuangan" => "-",
-            "bkk_bkm_bm" => "-",
-            "npwp" => "-",
-            "tgl_npwp" => date('Y-m-d'),
-            "nomor_bh" => "-",
-            "alamat" => $data['alamat'],
-            "email" => $data['email'],
-            "telpon" => $data['telpon'],
-            "domain" => $domain . '.akubumdes.id',
-            "domain_alt" => $domain . '.siupk.net',
-            "logo" => "-",
-            "background" => "-",
-            "tgl_register" => Tanggal::tglNasional($data['tgl_register']),
-            "tgl_pakai" => Tanggal::tglNasional($data['tgl_register']),
-            "biaya" => "0",
-            "peraturan_desa" => "-",
+            'kd_desa' => $data['desa'],
+            'nama_usaha' => $data['nama_usaha'],
+            'kepala_lembaga' => '-',
+            'badan_pengawas' => '-',
+            'kabag_administrasi' => '-',
+            'kabag_keuangan' => '-',
+            'bkk_bkm_bm' => '-',
+            'npwp' => '-',
+            'tgl_npwp' => date('Y-m-d'),
+            'nomor_bh' => '-',
+            'alamat' => $data['alamat'],
+            'email' => $data['email'],
+            'telpon' => $data['telpon'],
+            'domain' => $domain.'.akubumdes.id',
+            'domain_alt' => $domain.'.siupk.net',
+            'logo' => '-',
+            'background' => '-',
+            'tgl_register' => Tanggal::tglNasional($data['tgl_register']),
+            'tgl_pakai' => Tanggal::tglNasional($data['tgl_register']),
+            'biaya' => '0',
+            'peraturan_desa' => '-',
         ]);
 
         Session::put('lokasi', $usaha->id);
+
         return redirect('/register/user');
     }
 
     public function user()
     {
         User::create([
-            "namadepan" => "Direktur",
-            "namabelakang" => "",
-            "ins" => "DR",
-            "jk" => "",
-            "tempat_lahir" => "",
-            "tgl_lahir" => date('Y-m-d'),
-            "alamat" => "",
-            "hp" => "",
-            "nik" => "",
-            "pendidikan" => "1",
-            "jabatan" => "1",
-            "level" => "1",
-            "usaha" => Session::get('lokasi'),
-            "lokasi" => Session::get('lokasi'),
-            "foto" => "",
-            "status" => "1",
-            "uname" => "Direktur",
-            "pass" => "Direktur",
+            'namadepan' => 'Direktur',
+            'namabelakang' => '',
+            'ins' => 'DR',
+            'jk' => '',
+            'tempat_lahir' => '',
+            'tgl_lahir' => date('Y-m-d'),
+            'alamat' => '',
+            'hp' => '',
+            'nik' => '',
+            'pendidikan' => '1',
+            'jabatan' => '1',
+            'level' => '1',
+            'usaha' => Session::get('lokasi'),
+            'lokasi' => Session::get('lokasi'),
+            'foto' => '',
+            'status' => '1',
+            'uname' => 'Direktur',
+            'pass' => 'Direktur',
         ]);
 
         User::create([
-            "namadepan" => "Sekretaris",
-            "namabelakang" => "",
-            "ins" => "SK",
-            "jk" => "",
-            "tempat_lahir" => "",
-            "tgl_lahir" => date('Y-m-d'),
-            "alamat" => "",
-            "hp" => "",
-            "nik" => "",
-            "pendidikan" => "1",
-            "jabatan" => "2",
-            "level" => "1",
-            "usaha" => Session::get('lokasi'),
-            "lokasi" => Session::get('lokasi'),
-            "foto" => "",
-            "status" => "1",
-            "uname" => "Sekretaris",
-            "pass" => "Sekretaris",
+            'namadepan' => 'Sekretaris',
+            'namabelakang' => '',
+            'ins' => 'SK',
+            'jk' => '',
+            'tempat_lahir' => '',
+            'tgl_lahir' => date('Y-m-d'),
+            'alamat' => '',
+            'hp' => '',
+            'nik' => '',
+            'pendidikan' => '1',
+            'jabatan' => '2',
+            'level' => '1',
+            'usaha' => Session::get('lokasi'),
+            'lokasi' => Session::get('lokasi'),
+            'foto' => '',
+            'status' => '1',
+            'uname' => 'Sekretaris',
+            'pass' => 'Sekretaris',
         ]);
 
         User::create([
-            "namadepan" => "Bendahara",
-            "namabelakang" => "",
-            "ins" => "SK",
-            "jk" => "",
-            "tempat_lahir" => "",
-            "tgl_lahir" => date('Y-m-d'),
-            "alamat" => "",
-            "hp" => "",
-            "nik" => "",
-            "pendidikan" => "1",
-            "jabatan" => "3",
-            "level" => "1",
-            "usaha" => Session::get('lokasi'),
-            "lokasi" => Session::get('lokasi'),
-            "foto" => "",
-            "status" => "1",
-            "uname" => "Bendahara",
-            "pass" => "Bendahara",
+            'namadepan' => 'Bendahara',
+            'namabelakang' => '',
+            'ins' => 'SK',
+            'jk' => '',
+            'tempat_lahir' => '',
+            'tgl_lahir' => date('Y-m-d'),
+            'alamat' => '',
+            'hp' => '',
+            'nik' => '',
+            'pendidikan' => '1',
+            'jabatan' => '3',
+            'level' => '1',
+            'usaha' => Session::get('lokasi'),
+            'lokasi' => Session::get('lokasi'),
+            'foto' => '',
+            'status' => '1',
+            'uname' => 'Bendahara',
+            'pass' => 'Bendahara',
         ]);
 
         $lokasi = Session::get('lokasi');
@@ -435,13 +439,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $user = auth()->user()->namadepan . ' ' . auth()->user()->namabelakang;
+        $user = auth()->user()->namadepan.' '.auth()->user()->namabelakang;
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('pesan', 'Terima Kasih ' . $user);
+        return redirect('/')->with('pesan', 'Terima Kasih '.$user);
     }
 
     private function generateInvoice($usaha)
@@ -449,7 +453,7 @@ class AuthController extends Controller
         $tgl_pembuatan_invoice = date('Y-m-d', strtotime('-14 days', strtotime($usaha->masa_aktif)));
         $invoice = AdminInvoice::where([
             ['lokasi', $usaha->id],
-            ['jenis_pembayaran', '2']
+            ['jenis_pembayaran', '2'],
         ])->where('tgl_invoice', '>=', $tgl_pembuatan_invoice);
 
         $is_invoice = false;
@@ -464,11 +468,11 @@ class AuthController extends Controller
                 'lokasi' => $usaha->id,
                 'nomor' => $nomor_invoice,
                 'jenis_pembayaran' => 2,
-                'tgl_invoice' =>  $tgl_pembuatan_invoice,
-                'tgl_lunas' =>  $tgl_pembuatan_invoice,
+                'tgl_invoice' => $tgl_pembuatan_invoice,
+                'tgl_lunas' => $tgl_pembuatan_invoice,
                 'status' => 'UNPAID',
                 'jumlah' => $usaha->biaya * $usaha->tagihan_invoice,
-                'id_user' => 1
+                'id_user' => 1,
             ]);
 
             if (date('Y-m-d') >= $tgl_pembuatan_invoice) {
@@ -487,7 +491,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'success' => true,
-            'time' => date('Y-m-d H:i:s')
+            'time' => date('Y-m-d H:i:s'),
         ]);
     }
 }

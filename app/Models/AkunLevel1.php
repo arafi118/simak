@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Session;
-use App\Models\Usaha;
+
 class AkunLevel1 extends Model
 {
     use HasFactory;
-    public $timestamps = false;
-    protected $primaryKey = 'kode_akun';
-    protected $keyType = 'string';
 
+    public $timestamps = false;
+
+    protected $primaryKey = 'kode_akun';
+
+    protected $keyType = 'string';
 
     public function __construct(array $attributes = [])
     {
@@ -24,6 +26,10 @@ class AkunLevel1 extends Model
             if (Session::get('jenis_akun') == 7) {
                 $this->table = 'akun_level_1s';
             }
+
+            if (Session::get('jenis_akun') == '5k') {
+                $this->table = 'akun_level_1_koperasi';
+            }
         }
 
         if (Session::has('lokasi')) {
@@ -34,11 +40,8 @@ class AkunLevel1 extends Model
                 Session::put('jenis_akun', 7);
             }
 
-            
         }
     }
-
-
 
     public function akun2()
     {
