@@ -102,7 +102,7 @@
                 <small class="text-danger" id="msg_peraturan_desa"></small>
             </div>
         </div>
-        <div class="col-md-4">
+        {{-- <div class="col-md-4">
             <div class="form-group mb-1">
                 <label class="form-label fw-bold mb-0">Jenis Pengelola Keuangan</label>
 
@@ -127,7 +127,7 @@
                 <div class="text-muted mt-1" style="font-size: 13px;">
                     Pilih A / B untuk menentukan jenis pengelolaan keuangan usaha </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </form>
 
