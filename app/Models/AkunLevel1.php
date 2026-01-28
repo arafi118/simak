@@ -27,7 +27,7 @@ class AkunLevel1 extends Model
                 $this->table = 'akun_level_1s';
             }
 
-            if (Session::get('jenis_akun') == '5k') {
+            if (Session::get('jenis_akun') == '8') {
                 $this->table = 'akun_level_1_koperasi';
             }
         }
