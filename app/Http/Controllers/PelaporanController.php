@@ -36,11 +36,24 @@ class PelaporanController extends Controller
     public function index()
     {
         $usaha = Usaha::where('id', Session::get('lokasi'))->first();
-        $laporan = JenisLaporan::where('file', '!=', '0')->orderBy('urut', 'ASC')->get();
+        $jenisAkun = (int) $usaha->jenis_akun;
+
+        $laporan = JenisLaporan::where('file', '!=', '0')
+            ->orderBy('urut', 'ASC')
+            ->get()
+            ->filter(function ($row) use ($jenisAkun) {
+                // jenis akun 7 → hanya V2
+                if ($jenisAkun === 7) {
+                    return $row->file !== 'laba_rugi';
+                }
+
+                // selain 7 → hanya laba_rugi lama
+                return $row->file !== 'labarugiv2';
+            });
+
         $title = 'Pelaporan';
         return view('pelaporan.index', compact('title', 'usaha', 'laporan'));
     }
-
 
     public function subLaporan($file)
     {
@@ -216,6 +229,17 @@ class PelaporanController extends Controller
          
 
         $file = $request->laporan;
+        // mapping laba rugi berdasarkan jenis akun
+        if (in_array($file, ['laba_rugi', 'labarugiv2'])) {
+            $jenisAkun = (int) $usaha->jenis_akun;
+
+            if ($jenisAkun === 7) {
+                $file = 'labarugiv2';
+            } else {
+                $file = 'laba_rugi';
+            }
+        }
+
         if ($file == 3) {
             $laporan = explode('_', $request->sub_laporan);
             $file = $laporan[0];
