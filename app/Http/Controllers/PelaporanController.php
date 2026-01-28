@@ -37,19 +37,6 @@ class PelaporanController extends Controller
     {
         $usaha = Usaha::where('id', Session::get('lokasi'))->first();
         $laporan = JenisLaporan::where('file', '!=', '0')->orderBy('urut', 'ASC')->get();
-
-        if ($usaha->jenis_akun == 7) {
-            // akun 7 tidak boleh lihat laba_rugi
-            $laporan = $laporan->reject(function($item) {
-                return $item->file === 'laba_rugi';
-            });
-        } elseif ($usaha->jenis_akun == 5) {
-            // akun 5 tidak boleh lihat labarugiv2
-            $laporan = $laporan->reject(function($item) {
-                return $item->file === 'labarugiv2';
-            });
-        }
-
         $title = 'Pelaporan';
         return view('pelaporan.index', compact('title', 'usaha', 'laporan'));
     }
@@ -226,13 +213,7 @@ class PelaporanController extends Controller
         $data['nama_hari'] = Tanggal::namaHari($data['tgl_kondisi']);
         $data['nama_bulan'] = Tanggal::namaBulan($data['tgl_kondisi']);
 
-        $jenis_akun = Usaha::where('id', Session::get('lokasi'))->first()->jenis_akun;
-
-        if ($jenis_akun == 7 && $request->laporan === 'laba_rugi') {
-            abort(403, "Anda tidak diizinkan mengakses laporan ini.");
-        } elseif ($jenis_akun == 5 && $request->laporan === 'labarugiv2') {
-            abort(403, "Anda tidak diizinkan mengakses laporan ini.");
-        }     
+         
 
         $file = $request->laporan;
         if ($file == 3) {
@@ -427,7 +408,6 @@ class PelaporanController extends Controller
         if ($bulan === 1 && $hari === '01') {
             return $this->laba_rugi_tutup_buku($data);
         }
-        Session::put('jenis_akun', 7);
         $keuangan = new Keuangan();
         $hasil = $keuangan->laba_rugiv2($tahun, $bulan);
 
