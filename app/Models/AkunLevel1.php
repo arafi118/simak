@@ -31,16 +31,6 @@ class AkunLevel1 extends Model
                 $this->table = 'akun_level_1_koperasi';
             }
         }
-
-        if (Session::has('lokasi')) {
-            $usaha = Usaha::find(Session::get('lokasi'));
-
-            if ($usaha && $usaha->jenis_akun == 7) {
-                $this->table = 'akun_level_1s';
-                Session::put('jenis_akun', 7);
-            }
-
-        }
     }
 
     public function akun2()
