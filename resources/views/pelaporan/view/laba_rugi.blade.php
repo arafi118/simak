@@ -293,7 +293,7 @@
                     <tr style="background: rgb(200, 200, 200); font-weight: bold;">
                         <td width="55%" align="left">
                             {{ Session::get('jenis_akun') == '8'
-                                ? 'Sisa Hasil Usaha (SHU) Tahun Berjalan'
+                                ? 'C. Hasil Usaha Setelah Taksiran Pajak (A + B)'
                                 : 'C. Laba Rugi Setelah Taksiran Pajak (A + B)' }}
                         </td>
 
