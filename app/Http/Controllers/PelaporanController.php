@@ -561,10 +561,15 @@ class PelaporanController extends Controller
         $bln = $data['bulan'];
         $hari = $data['hari'];
 
+        $rekening_laba = Session::get('jenis_akun') == 8
+            ? '3.3.02.01' // SHU Tahun Berjalan
+            : '3.2.01.01'; // Cadangan Umum
+
         $trx = Transaksi::where([
-            ['keterangan_transaksi', 'LIKE', '%tahun ' . $data['tahun'] - 1],
-            ['rekening_debit', '3.2.01.01']
+            ['keterangan_transaksi', 'LIKE', '%tahun ' . ($data['tahun'] - 1)],
+            ['rekening_debit', $rekening_laba]
         ])->first();
+
 
         $data['tgl_mad'] = $data['tgl_kondisi'];
         if ($trx) {

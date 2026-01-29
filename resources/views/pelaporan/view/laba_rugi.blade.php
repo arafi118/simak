@@ -15,8 +15,8 @@
             <td colspan="4" align="center">
                 <div style="font-size: 18px;">
                     <b>
-                        @if (Session::get('jenis_akun') == '5k')
-                            Perhitungan Hasil Usaha
+                        @if (Session::get('jenis_akun') == '8')
+                            LAPORAN PERHITUNGAN HASIL USAHA
                         @else
                             LAPORAN LABA RUGI
                         @endif
@@ -131,7 +131,11 @@
         @endforeach
 
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
-            <td align="left">A. Laba Rugi OPERASIONAL (Kode Akun 4.1 - 5.1 - 5.2) </td>
+            <td align="left">
+                {{ Session::get('jenis_akun') == '8'
+                    ? 'A. Hasil Usaha Operasional (Kode Akun 4.1 - 5.1 - 5.2)'
+                    : 'A. Laba Rugi OPERASIONAL (Kode Akun 4.1 - 5.1 - 5.2)' }}
+            </td>
             <td align="right">{{ number_format($saldo_bln_lalu1, 2) }}</td>
             <td align="right">{{ number_format($saldo1 - $saldo_bln_lalu1, 2) }}</td>
             <td align="right">{{ number_format($saldo1, 2) }}</td>
@@ -226,7 +230,11 @@
         @endforeach
 
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
-            <td align="left">B. Laba Rugi OPERASIONAL (Kode Akun 4.2 - 5.3) </td>
+            <td align="left">
+                {{ Session::get('jenis_akun') == '8'
+                    ? 'B. Hasil Usaha OPERASIONAL (Kode Akun 4.2 - 5.3)'
+                    : 'B. Laba Rugi OPERASIONAL (Kode Akun 4.2 - 5.3)' }}
+            </td>
             <td align="right">{{ number_format($saldo_bln_lalu2, 2) }}</td>
             <td align="right">{{ number_format($saldo2 - $saldo_bln_lalu2, 2) }}</td>
             <td align="right">{{ number_format($saldo2, 2) }}</td>
@@ -237,7 +245,11 @@
         </tr>
 
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
-            <td align="left">C. Laba Rugi Sebelum Taksiran Pajak (A + B) </td>
+            <td align="left">
+                {{ Session::get('jenis_akun') == '8'
+                    ? 'C. Hasil Usaha Sebelum Taksiran Pajak (A + B)'
+                    : 'C. Laba Rugi Sebelum Taksiran Pajak (A + B)' }}
+            </td>
             <td align="right">{{ number_format($saldo_bln_lalu1 + $saldo_bln_lalu2, 2) }}</td>
             <td align="right">{{ number_format($saldo1 - $saldo_bln_lalu1 + ($saldo2 - $saldo_bln_lalu2), 2) }}</td>
             <td align="right">{{ number_format($saldo1 + $saldo2, 2) }}</td>
@@ -279,7 +291,12 @@
                 <table class="p" border="0" width="100%" cellspacing="0" cellpadding="0"
                     style="font-size: 11px;">
                     <tr style="background: rgb(200, 200, 200); font-weight: bold;">
-                        <td width="55%" align="left">C. Laba Rugi Setelah Taksiran Pajak (A + B) </td>
+                        <td width="55%" align="left">
+                            {{ Session::get('jenis_akun') == '8'
+                                ? 'Sisa Hasil Usaha (SHU) Tahun Berjalan'
+                                : 'C. Laba Rugi Setelah Taksiran Pajak (A + B)' }}
+                        </td>
+
                         <td width="15%" align="right">
                             {{ number_format($saldo_bln_lalu1 + $saldo_bln_lalu2 - $pajak_bulan_lalu, 2) }}</td>
                         <td width="15%" align="right">

@@ -239,6 +239,12 @@ class TransaksiController extends Controller
 
             $data_id = [];
             $saldo_tutup_buku = [];
+
+            //akun laba sesuai jenis akun 
+            $akun_laba = Session::get('jenis_akun') == 8
+                ? '3.3.02.01'   // SHU Tahun Berjalan
+                : '3.2.01.01';  // Cadangan / Laba Ditahan
+
             foreach ($kode_rekening as $rek) {
                 $saldo_awal_debit = 0;
                 $saldo_awal_kredit = 0;
@@ -295,7 +301,7 @@ class TransaksiController extends Controller
                 $saldo_debit = $saldo_awal_debit + $debit;
                 $saldo_kredit = $saldo_awal_kredit + $kredit;
 
-                if ($rek->kode_akun == '3.2.01.01') {
+                if ($rek->kode_akun == $akun_laba) {
                     $saldo_kredit += $surplus;
                 }
 
@@ -373,9 +379,11 @@ class TransaksiController extends Controller
             3 => 'Bonus UPK',
             4 => 'Lain-lain',
         ];
-
+        $akun_laba = Session::get('jenis_akun') == 8
+        ? '3.3.02.01'   // SHU Tahun Berjalan
+        : '3.2.01.01';  // Laba Ditahan / Cadangan
         $alokasi_laba = [
-            '3.2.01.01' => 0
+            $akun_laba => 0
         ];
 
         $cadangan_resiko = $data['cadangan_resiko'];
@@ -384,7 +392,7 @@ class TransaksiController extends Controller
 
         foreach ($laba_ditahan as $key => $val) {
             $value = str_replace(',', '', str_replace('.00', '', $val));
-            $alokasi_laba['3.2.01.01'] += floatval($value);
+            $alokasi_laba[$akun_laba] += floatval($value);
         }
 
         $trx = [
@@ -416,9 +424,10 @@ class TransaksiController extends Controller
 
             $id = str_replace('.', '', $rek->kode_akun) . $tahun_tb . '00';
 
-            if ($rek->kode_akun == '3.2.01.01') {
-                $saldo_kredit += floatval($alokasi_laba['3.2.01.01']);
+            if ($rek->kode_akun == $akun_laba) {
+                $saldo_kredit += floatval($alokasi_laba[$akun_laba]);
             }
+
 
             // Cadangan Kerugian Piutang
             if (Keuangan::startWith($rek->kode_akun, '1.1.04')) {
@@ -428,7 +437,7 @@ class TransaksiController extends Controller
                 if ($jumlah != 0) {
                     $trx['insert'][] = [
                         'tgl_transaksi' => $data['tgl_mad'],
-                        'rekening_debit' => '3.2.01.01',
+                        'rekening_debit' => $akun_laba,
                         'rekening_kredit' => $rek->kode_akun,
                         'idtp' => '0',
                         'id_pinj' => '0',
@@ -449,7 +458,8 @@ class TransaksiController extends Controller
                         'kredit' => (string) $jumlah
                     ];
 
-                    $alokasi_laba['3.2.01.01'] += $jumlah;
+                    $alokasi_laba[$akun_laba] += $jumlah;
+
                 }
                 $trx['delete'][] = $keterangan;
             }
@@ -462,7 +472,7 @@ class TransaksiController extends Controller
                 if ($jumlah != 0) {
                     $trx['insert'][] = [
                         'tgl_transaksi' => $data['tgl_mad'],
-                        'rekening_debit' => '3.2.01.01',
+                        'rekening_debit' => $akun_laba,
                         'rekening_kredit' => $rek->kode_akun,
                         'idtp' => '0',
                         'id_pinj' => '0',
@@ -483,7 +493,8 @@ class TransaksiController extends Controller
                         'kredit' => (string) $jumlah
                     ];
 
-                    $alokasi_laba['3.2.01.01'] += floatval($jumlah);
+                    $alokasi_laba[$akun_laba] += floatval($jumlah);
+
                 }
                 $trx['delete'][] = $keterangan;
             } else {

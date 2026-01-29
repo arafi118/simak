@@ -52,13 +52,22 @@
                     @foreach ($lev3->rek as $rek)
                         @php
                             $saldo = $keuangan->komSaldo($rek);
-                            if ($rek->kode_akun == '3.2.02.01') {
-                                $saldo = $keuangan->laba_rugi($tgl_kondisi);
+
+                            // 🔑 penempatan laba rugi sesuai jenis akun
+                            if (Session::get('jenis_akun') == '8') {
+                                if ($rek->kode_akun == '3.3.02.01') {
+                                    $saldo = $keuangan->laba_rugi($tgl_kondisi);
+                                }
+                            } else {
+                                if ($rek->kode_akun == '3.2.02.01') {
+                                    $saldo = $keuangan->laba_rugi($tgl_kondisi);
+                                }
                             }
 
                             $sum_saldo += $saldo;
                         @endphp
                     @endforeach
+
                     @php
                         $bg = 'rgb(230, 230, 230)';
                         if ($loop->iteration % 2 == 0) {
