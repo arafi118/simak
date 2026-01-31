@@ -133,7 +133,7 @@
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
             <td align="left">
                 {{ Session::get('jenis_akun') == '8'
-                    ? 'A. Hasil Usaha Operasional (Kode Akun 4.1 - 5.1 - 5.2)'
+                    ? 'A. Hasil Usaha (Kode Akun 4.1 - 5.1 - 5.2)'
                     : 'A. Laba Rugi OPERASIONAL (Kode Akun 4.1 - 5.1 - 5.2)' }}
             </td>
             <td align="right">{{ number_format($saldo_bln_lalu1, 2) }}</td>
@@ -232,7 +232,7 @@
         <tr style="background: rgb(200, 200, 200); font-weight: bold;">
             <td align="left">
                 {{ Session::get('jenis_akun') == '8'
-                    ? 'B. Hasil Usaha OPERASIONAL (Kode Akun 4.2 - 5.3)'
+                    ? 'B. Hasil Non Usaha (Kode Akun 4.2 - 5.3)'
                     : 'B. Laba Rugi OPERASIONAL (Kode Akun 4.2 - 5.3)' }}
             </td>
             <td align="right">{{ number_format($saldo_bln_lalu2, 2) }}</td>

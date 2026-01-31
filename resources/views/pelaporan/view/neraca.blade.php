@@ -53,7 +53,7 @@
                         @php
                             $saldo = $keuangan->komSaldo($rek);
 
-                            // 🔑 penempatan laba rugi sesuai jenis akun
+                            //laba rugi sesuai jenis akun
                             if (Session::get('jenis_akun') == '8') {
                                 if ($rek->kode_akun == '3.3.02.01') {
                                     $saldo = $keuangan->laba_rugi($tgl_kondisi);
