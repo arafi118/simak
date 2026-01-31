@@ -2374,7 +2374,7 @@ class PelaporanController extends Controller
             $data['nama_kabupaten'] = ' Kabupaten '.ucwords(strtolower($kab->nama_kab));
         }
 
-        if (Session::get('lokasi') == '14') {
+        if (Session::get('usaha') == '14') {
             $data['nama_kecamatan'] = 'Jawa Tengah';
         }
 
