@@ -119,7 +119,7 @@
                             alt="{{ $logo }}">
                     </td>
                     <td>
-                        <div style="font-size: 12px;">{{ strtoupper($nama_usaha) }}</div>
+                        <div style="font-size: 12px; text-transform: uppercase;">{!! $nama_usaha !!}</div>
                         <div style="font-size: 12px;">
                             <b>{{ strtoupper($nama_kecamatan) }}</b>
                         </div>
