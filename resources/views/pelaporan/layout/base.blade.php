@@ -138,7 +138,7 @@
     @php
         $style =
             'position: relative; top: ' .
-            (Session::get('lokasi') == '14' ? '80px' : '60px') .
+            (Session::get('lokasi') == '14' ? '70px' : '60px') .
             '; font-size: 12px; padding-bottom: 37.79px;';
         if ($laporan == 'surat_pengantar') {
             $style = 'margin-top: 80px; font-size: 12px; padding-bottom: 37.79px;';
