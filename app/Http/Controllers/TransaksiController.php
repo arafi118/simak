@@ -242,7 +242,7 @@ class TransaksiController extends Controller
 
             //akun laba sesuai jenis akun 
             $akun_laba = Session::get('jenis_akun') == 8
-                ? '3.3.02.01'   // SHU Tahun Berjalan
+                ? '3.3.03.01'   // SHU Tahun Berjalan
                 : '3.2.01.01';  // Cadangan / Laba Ditahan
 
             foreach ($kode_rekening as $rek) {
@@ -380,7 +380,7 @@ class TransaksiController extends Controller
             4 => 'Lain-lain',
         ];
         $akun_laba = Session::get('jenis_akun') == 8
-        ? '3.3.02.01'   // SHU Tahun Berjalan
+        ? '3.3.03.01'   // SHU Tahun Berjalan
         : '3.2.01.01';  // Laba Ditahan / Cadangan
         $alokasi_laba = [
             $akun_laba => 0
