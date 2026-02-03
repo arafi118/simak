@@ -59,7 +59,7 @@
                     <b>CATATAN ATAS LAPORAN KEUANGAN</b>
                 </div>
                 <div style="font-size: 18px; text-transform: uppercase;">
-                    <b>{{ $usaha->nama_usaha }}</b>
+                    <b>{!! $usaha->nama_usaha !!}</b>
                 </div>
                 <div style="font-size: 16px;">
                     <b>{{ strtoupper($sub_judul) }}</b>
