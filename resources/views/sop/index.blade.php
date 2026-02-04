@@ -1,6 +1,7 @@
 @php
     $identitas_lembaga = 'active show';
     $pengelola_bumdes = '';
+    $kop_dokumen = '';
     $upload_logo = '';
 
     if (!in_array('personalisasi_sop.identitas_lembaga', Session::get('tombol'))) {
@@ -9,14 +10,21 @@
 
     if (
         in_array('personalisasi_sop.sebutan_pengelola', Session::get('tombol')) &&
-        ($identitas_lembaga == '' && $upload_logo == '')
+        ($identitas_lembaga == '' && $kop_dokumen == '' && $upload_logo == '')
     ) {
         $pengelola_bumdes = 'active show';
     }
 
     if (
+        in_array('personalisasi_sop.kop_dokumen', Session::get('tombol')) &&
+        ($identitas_lembaga == '' && $pengelola_bumdes == '' && $upload_logo == '')
+    ) {
+        $kop_dokumen = 'active show';
+    }
+
+    if (
         in_array('personalisasi_sop.logo', Session::get('tombol')) &&
-        ($identitas_lembaga == '' && $pengelola_bumdes == '')
+        ($identitas_lembaga == '' && $pengelola_bumdes == '' && $kop_dokumen == '')
     ) {
         $upload_logo = 'active show';
     }
@@ -50,6 +58,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="tab-pane fade {{ $kop_dokumen }}" id="kop" role="tabpanel" aria-labelledby="kop-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Kop Dokumen</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            @include('sop.partials._kop')
+                        </div>
+                    </div>
+                </div>
                 <div class="tab-pane fade {{ $upload_logo }}" id="upload-logo" role="tabpanel"
                     aria-labelledby="upload-logo-tab">
                     <div class="card">
@@ -73,6 +91,8 @@
                     <a class="nav-link {{ $pengelola_bumdes }}" id="pengelola-tab" data-toggle="pill" href="#pengelola"
                         role="tab" aria-controls="pengelola" aria-selected="false">Sebutan Pengelola</a>
                 @endif
+                <a class="nav-link {{ $kop_dokumen }}" id="kop-tab" data-toggle="pill" href="#kop" role="tab"
+                    aria-controls="kop" aria-selected="false">Kop Dokumen</a>
                 @if (in_array('personalisasi_sop.logo', Session::get('tombol')))
                     <a class="nav-link {{ $upload_logo }}" id="upload-logo-tab" data-toggle="pill" href="#upload-logo"
                         role="tab" aria-controls="logo" aria-selected="false">Logo</a>
@@ -83,6 +103,169 @@
 @endsection
 
 @section('script')
+    <script src="https://cdn.tiny.cloud/1/rhedf7n960hbva1kt51t8gz54xlm2ad7q87fp5p3l9w3nehg/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin" crossorigin="anonymous"></script>
+
+    <script>
+        tinymce.init({
+            selector: '#kop-laporan',
+            height: 500,
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsizeselect | bold italic underline strikethrough | link image media table customtableborder | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            fontsize_formats: "1pt 2pt 3pt 4pt 5pt 6pt 7pt 8pt 9pt 10pt 11px 12pt",
+            file_picker_types: 'image',
+            file_picker_callback: function(callback, value, meta) {
+                if (meta.filetype === 'image') {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+
+                    input.onchange = function() {
+                        var file = this.files[0];
+                        var reader = new FileReader();
+
+                        reader.onload = function() {
+                            var base64 = reader.result;
+
+                            callback(base64, {
+                                alt: file.name,
+                                title: file.name
+                            });
+                        };
+
+                        reader.readAsDataURL(file);
+                    };
+
+                    input.click();
+                }
+            },
+            paste_data_images: true,
+            images_upload_handler: function(blobInfo, success, failure) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    success(reader.result);
+                };
+                reader.onerror = function() {
+                    failure('Gagal membaca gambar');
+                };
+                reader.readAsDataURL(blobInfo.blob());
+            },
+            setup: function(editor) {
+                // Custom dialog untuk border individual
+                editor.ui.registry.addButton('customtableborder', {
+                    text: 'Border Detail',
+                    onAction: function() {
+                        const selectedTable = editor.dom.getParent(editor.selection.getNode(),
+                            'table');
+                        const selectedCell = editor.dom.getParent(editor.selection.getNode(),
+                            'td,th');
+
+                        if (!selectedTable && !selectedCell) {
+                            alert('Pilih table atau cell terlebih dahulu');
+                            return;
+                        }
+
+                        const element = selectedCell || selectedTable;
+                        const currentStyle = element.style;
+
+                        editor.windowManager.open({
+                            title: 'Custom Border Properties',
+                            body: {
+                                type: 'panel',
+                                items: [{
+                                    type: 'grid',
+                                    columns: 2,
+                                    items: [{
+                                            type: 'label',
+                                            label: 'Border Top',
+                                            items: []
+                                        },
+                                        {
+                                            type: 'input',
+                                            name: 'borderTop',
+                                            placeholder: 'e.g. 1px solid black'
+                                        },
+
+                                        {
+                                            type: 'label',
+                                            label: 'Border Bottom',
+                                            items: []
+                                        },
+                                        {
+                                            type: 'input',
+                                            name: 'borderBottom',
+                                            placeholder: 'e.g. 1px solid black'
+                                        },
+
+                                        {
+                                            type: 'label',
+                                            label: 'Border Left',
+                                            items: []
+                                        },
+                                        {
+                                            type: 'input',
+                                            name: 'borderLeft',
+                                            placeholder: 'e.g. 1px solid black'
+                                        },
+
+                                        {
+                                            type: 'label',
+                                            label: 'Border Right',
+                                            items: []
+                                        },
+                                        {
+                                            type: 'input',
+                                            name: 'borderRight',
+                                            placeholder: 'e.g. 1px solid black'
+                                        }
+                                    ]
+                                }]
+                            },
+                            initialData: {
+                                borderTop: currentStyle.borderTop || '',
+                                borderBottom: currentStyle.borderBottom || '',
+                                borderLeft: currentStyle.borderLeft || '',
+                                borderRight: currentStyle.borderRight || ''
+                            },
+                            buttons: [{
+                                    type: 'cancel',
+                                    text: 'Cancel'
+                                },
+                                {
+                                    type: 'submit',
+                                    text: 'Apply',
+                                    primary: true
+                                }
+                            ],
+                            onSubmit: function(api) {
+                                const data = api.getData();
+
+                                if (data.borderTop) element.style.borderTop = data
+                                    .borderTop;
+                                if (data.borderBottom) element.style.borderBottom = data
+                                    .borderBottom;
+                                if (data.borderLeft) element.style.borderLeft = data
+                                    .borderLeft;
+                                if (data.borderRight) element.style.borderRight = data
+                                    .borderRight;
+
+                                api.close();
+                            }
+                        });
+                    }
+                });
+            },
+            table_default_attributes: {
+                border: '0'
+            },
+            table_default_styles: {
+                width: '100%'
+            },
+            table_use_colgroups: true,
+            table_responsive_width: true
+        });
+    </script>
+
     <script>
         $(".date").flatpickr({
             dateFormat: "d/m/Y"
@@ -102,6 +285,10 @@
 
             if ($(this).attr('id') == 'SimpanBeritaAcara') {
                 await $('#ba').val(quill1.container.firstChild.innerHTML)
+            }
+
+            if ($(this).attr('id') == 'SimpanKopLaporan') {
+                await $('#kop_laporan').val(tinymce.get('kop-laporan').getContent())
             }
 
             var form = $($(this).attr('data-target'))

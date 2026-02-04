@@ -112,26 +112,30 @@
                 </tr>
             </table>
         @else
-            <table width="100%" style="border-bottom: 1px solid grey;">
-                <tr>
-                    <td width="30">
-                        <img src="../storage/app/public/logo/{{ $logo }}" width="40"
-                            alt="{{ $logo }}">
-                    </td>
-                    <td>
-                        <div style="font-size: 12px; text-transform: uppercase;">{!! $nama_usaha !!}</div>
-                        <div style="font-size: 12px;">
-                            <b>{{ strtoupper($nama_kecamatan) }}</b>
-                        </div>
-                        <div style="font-size: 8px;">
-                            {{ $nomor_usaha }}
-                        </div>
-                        <div style="font-size: 8px;">
-                            <i>{{ $info }}</i>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+            @if ($usaha->kop_laporan)
+                {!! $usaha->kop_laporan !!}
+            @else
+                <table width="100%" style="border-bottom: 1px solid #808080;">
+                    <tr>
+                        <td width="30">
+                            <img src="../storage/app/public/logo/{{ $logo }}" width="40"
+                                alt="{{ $logo }}">
+                        </td>
+                        <td>
+                            <div style="font-size: 12px; text-transform: uppercase;">{!! $nama_usaha !!}</div>
+                            <div style="font-size: 12px;">
+                                <b>{{ strtoupper($nama_kecamatan) }}</b>
+                            </div>
+                            <div style="font-size: 8px;">
+                                {{ $nomor_usaha }}
+                            </div>
+                            <div style="font-size: 8px;">
+                                <i>{{ $info }}</i>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            @endif
         @endif
     </header>
 

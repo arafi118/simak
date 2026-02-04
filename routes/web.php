@@ -13,7 +13,6 @@ use App\Http\Controllers\PelaporanController;
 use App\Http\Controllers\SopController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
-use App\Models\Kecamatan;
 use App\Models\Usaha;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -108,6 +107,7 @@ Route::middleware('maintenance')->group(function () {
     Route::put('/pengaturan/lembaga/{usaha}', [SopController::class, 'lembaga'])->middleware(['auth', 'is_aktif']);
     Route::put('/pengaturan/pengelola/{usaha}', [SopController::class, 'pengelola'])->middleware(['auth', 'is_aktif']);
     Route::put('/pengaturan/logo/{usaha}', [SopController::class, 'logo'])->middleware(['auth', 'is_aktif']);
+    Route::put('/pengaturan/kop_laporan/{usaha}', [SopController::class, 'kopLaporan'])->middleware(['auth', 'is_aktif']);
     Route::get('/pengaturan/local_view/{key}/{val?}', [SopController::class, 'localView'])->middleware(['auth', 'is_aktif']);
 
     Route::post('/pengaturan/whatsapp/{token}', [SopController::class, 'whatsapp'])->middleware(['auth', 'is_aktif']);
@@ -194,7 +194,7 @@ Route::middleware('maintenance')->group(function () {
     });
 
     Route::get('/download/{file}', function ($file) {
-        return response()->download(storage_path('app/public/docs/' . $file));
+        return response()->download(storage_path('app/public/docs/'.$file));
     })->name('download');
 
     Route::get('/generate', [GenerateController::class, 'index']);
