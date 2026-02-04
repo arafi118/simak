@@ -75,7 +75,8 @@
         <li>
             <div style="text-transform: uppercase;">Gambaran Umum</div>
             <div style="text-align: justify">
-                {{ $usaha->nama_usaha }} adalah Badan Usaha yang didirikan oleh Desa-desa
+                {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} adalah Badan Usaha yang didirikan
+                oleh Desa-desa
                 se-Kecamatan {{ $usaha->d->kec->nama_kec }} sebagai tindak lanjut dari amanat
                 Pemerintahan Republik Indonesia yang antara lain tertuang dalam UU nomer 6 Tahun 2014 Tentang Desa.,
                 Peraturan Menteri Desa Pembangunan Daerah Tertinggal dan Transmigrasi Nomor 4 Tahun 2015 tentang Pendirian,
@@ -84,17 +85,21 @@
                 Tahun 2011 Tentang Bumdes.
             </div>
             <p style="text-align: justify">
-                Sesuai amanat regulasi maka setiap desa bisa berinvestasi kepada Bumdesma {{ $usaha->nama_usaha }} melalui
+                Sesuai amanat regulasi maka setiap desa bisa berinvestasi kepada Bumdesma
+                {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} melalui
                 penetapan APBDes sebagai modal tambahan dan bisa menerima investasi masyarakat jika diperlukan. Modal
                 tersebut digunakan untuk meningkatkan produktifitas ekonomi masyarakat dan keuangan desa dengan
                 mengembangkan fungsi dan manfaat potensi sumber daya alam dan sumber daya manusia di wilayah Kecamatan
                 {{ $usaha->d->kec->nama_kec }}, disamping mencari sumber dukungan dana pengembangan dari pihak pemerintah
             </p>
             <p style="text-align: justify">
-                {{ $usaha->nama_usaha }} didirikan berdasarkan Keputusan Musyawarah Antar Desa.
-                Bumdesma {{ $usaha->nama_usaha }} telah mendapatkan Sertifikat Badan Hukum dari Menteri Hukum dan Hak Asasi
+                {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} didirikan berdasarkan Keputusan
+                Musyawarah Antar Desa.
+                Bumdesma {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} telah mendapatkan
+                Sertifikat Badan Hukum dari Menteri Hukum dan Hak Asasi
                 Manusia No. {{ $usaha->nomor_bh }}. Dalam perjalanan pengelolaan manajeman dan
-                bisnis{{ $usaha->nama_usaha }} memiliki struktur kepengurusan pusat sebagai berikut :
+                bisnis{{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} memiliki struktur
+                kepengurusan pusat sebagai berikut :
             </p>
             <table style="margin-top: -10px; margin-left: 15px;">
                 <tr>
@@ -360,7 +365,8 @@
                 Ketentuan Pembagian Laba Usaha
             </div>
             <div style="text-align: justify">
-                Pembagian laba {{ $usaha->nama_usaha }} ditentukan dalam rapat pertanggungjawaban Musyawarah Antar Desa
+                Pembagian laba {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} ditentukan dalam
+                rapat pertanggungjawaban Musyawarah Antar Desa
                 (MAD). Adapun hasil keputusan pembagian laba tahun buku {{ $tahun }} adalah sebagai berikut:
             </div>
             <ol>
@@ -368,10 +374,12 @@
                     Total Laba bersih Rp. .....................
                 </li>
                 <li>
-                    Alokasi penambahan modal {{ $usaha->nama_usaha }} Rp. .................
+                    Alokasi penambahan modal {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} Rp.
+                    .................
                 </li>
                 <li>
-                    Alokasi PADes {{ $usaha->nama_usaha }} Rp. .................
+                    Alokasi PADes {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} Rp.
+                    .................
                 </li>
             </ol>
         </li>
@@ -395,16 +403,18 @@
                             Penutup
                         </div>
                         <div style="text-align: justify">
-                            Laporan Keuangan {{ $usaha->nama_usaha }} ini disajikan dengan berpedoman pada Keputusan
+                            Laporan Keuangan {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} ini
+                            disajikan dengan berpedoman pada Keputusan
                             Kementerian
                             Desa Nomor 136/2022 Tentang Panduan Penyusunan Pelaporan Bumdes. Catatan atas Laporan Keuangan
                             (CaLK) ini merupakan bagian tidak terpisahkan dari Laporan Keuangan Badan Usaha Milik Desa
-                            (Bumdes) {{ $usaha->nama_usaha }} untuk Laporan Operasi Bulan {{ $nama_bulan }} Tahun
+                            (Bumdes) {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} untuk Laporan
+                            Operasi Bulan {{ $nama_bulan }} Tahun
                             {{ $tahun }}.
                             Selanjutnya Catatan atas Laporan Keuangan ini diharapkan untuk dapat berguna bagi pihak-pihak
                             yang berkepentingan (stakeholders) serta memenuhi prinsip-prinsip transparansi, akuntabilitas,
                             pertanggungjawaban, independensi, dan fairness dalam pengelolaan keuangan
-                            {{ $usaha->nama_usaha }}.
+                            {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }}.
                         </div>
 
                         <table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-size: 11px;"

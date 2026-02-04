@@ -95,7 +95,7 @@
                             alt="{{ $kec->id }}">
                     </td>
                     <td align="center">
-                        <div>{{ strtoupper($nama_usaha) }}</div>
+                        <div>{{ strtoupper(str_ireplace(['<br>', '<br/>', '<br />'], ' ', $nama_usaha)) }}</div>
                         <div>
                             <b>{{ strtoupper($nama_kecamatan) }}</b>
                         </div>

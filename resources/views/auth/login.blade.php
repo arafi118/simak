@@ -48,7 +48,9 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-12 p-0">
-                                            <p class="text-center h5 text-capitalize">{{ $usaha->nama_usaha }}</p>
+                                            <p class="text-center h5 text-capitalize">
+                                                {!! $usaha->nama_usaha !!}
+                                            </p>
                                             <div class="mb-3 text-center">
                                                 {{ $usaha->d->sebutan_desa->sebutan_desa }} {{ $usaha->d->nama_desa }},
                                                 {{ $usaha->d->kec->nama_kec }}
