@@ -91,14 +91,15 @@
             @if ($usaha->kop_laporan)
                 {!! $usaha->kop_laporan !!}
             @else
-                <table width="100%" style="border-bottom: 1px double #000; border-width: 4px;">
+                <table width="100%">
                     <tr>
-                        <td width="70">
-                            <img src="../storage/app/public/logo/{{ $logo }}" height="70"
-                                alt="{{ $kec->id }}">
+                        <td width="70" valign="bottom">
+                            <img src="../storage/app/public/logo/{{ $logo }}" height="70">
                         </td>
-                        <td align="center">
-                            <div>{{ strtoupper(str_ireplace(['<br>', '<br/>', '<br />'], ' ', $nama_usaha)) }}</div>
+                        <td align="center" valign="bottom">
+                            <div style="font-weight:bold;">
+                                {{ strtoupper(str_ireplace(['<br>', '<br/>', '<br />'], ' ', $nama_usaha)) }}
+                            </div>
                             <div>
                                 <b>{{ strtoupper($nama_kecamatan) }}</b>
                             </div>
@@ -111,6 +112,12 @@
                             <div style="font-size: 10px; color: grey;">
                                 <i>{{ $email }}</i>
                             </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <hr style="border:0; border-top:3px double #000; margin-top:6px;">
                         </td>
                     </tr>
                 </table>
