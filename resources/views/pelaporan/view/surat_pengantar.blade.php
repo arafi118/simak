@@ -3,12 +3,12 @@
 @section('content')
     <table border="0">
         <tr>
+            <td width="5%">Nomor</td>
             @if (Session::get('jenis_akun') == 8)
-                <td width="5%">Nomor</td>
-            @else
                 <td width="50%">: ______________________</td>
+            @else
+                <td width="50%">: </td>
             @endif
-            <td width="50%">: </td>
             <td width="45%" align="right">
                 @if (Session::get('jenis_akun') == 8)
                     {{ $kab->nama_kab }},
