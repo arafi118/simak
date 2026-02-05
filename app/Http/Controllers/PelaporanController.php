@@ -271,23 +271,30 @@ class PelaporanController extends Controller
         $bln = $data['bulan'];
         $hari = $data['hari'];
 
-        $tgl = $thn.'-'.$bln.'-'.$hari;
+        $tgl = $thn . '-' . $bln . '-' . $hari;
+
+        $data['tgl'] = $tgl;
         $data['judul'] = 'Laporan Keuangan';
-        $data['sub_judul'] = 'Tahun '.Tanggal::tahun($tgl);
+        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+
         if ($data['bulanan']) {
-            $data['judul'] = 'Laporan Keuangan';
-            $data['sub_judul'] = 'Bulan '.Tanggal::namaBulan($tgl).' '.Tanggal::tahun($tgl);
+            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        $view = view('pelaporan.view.cover', $data)->render();
+        // PILIH VIEW COVER
+        $viewName = 'pelaporan.view.cover';
+
+        if ((int) $data['usaha']->jenis_akun === 8) {
+            $viewName = 'pelaporan.view.cover_8';
+        }
+
+        $view = view($viewName, $data)->render();
 
         if ($data['type'] == 'pdf') {
-            $pdf = PDF::loadHTML($view);
-
-            return $pdf->stream();
-        } else {
-            return $view;
+            return PDF::loadHTML($view)->stream();
         }
+
+        return $view;
     }
 
     private function surat_pengantar(array $data)
@@ -319,15 +326,20 @@ class PelaporanController extends Controller
             ['lokasi', Session::get('lokasi')],
         ])->first();
 
-        $view = view('pelaporan.view.surat_pengantar', $data)->render();
+         
+        $viewName = 'pelaporan.view.surat_pengantar';
+
+        if ((int) $data['usaha']->jenis_akun === 8) {
+            $viewName = 'pelaporan.view.surat_pengantar_8';
+        }
+
+        $view = view($viewName, $data)->render();
 
         if ($data['type'] == 'pdf') {
-            $pdf = PDF::loadHTML($view);
-
-            return $pdf->stream();
-        } else {
-            return $view;
+            return PDF::loadHTML($view)->stream();
         }
+
+        return $view;
     }
 
     private function neraca(array $data)
