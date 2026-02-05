@@ -5,9 +5,9 @@
         <tr>
             <td width="5%">Nomor</td>
             @if (Session::get('jenis_akun') == 8)
-                <td width="50%">: ______________________</td>
-            @else
                 <td width="50%">: </td>
+            @else
+                <td width="50%">: ______________________</td>
             @endif
             <td width="45%" align="right">
                 @if (Session::get('jenis_akun') == 8)
