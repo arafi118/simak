@@ -1,6 +1,10 @@
 @extends('pelaporan.layout.base')
 
 @section('content')
+    @if (Session::get('jenis_akun') == 8)
+    @else
+        <br>
+    @endif
     <table border="0">
         <tr>
             <td width="5%">Nomor</td>
