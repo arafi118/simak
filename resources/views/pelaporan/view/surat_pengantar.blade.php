@@ -5,7 +5,14 @@
         <tr>
             <td width="5%">Nomor</td>
             <td width="50%">: ______________________</td>
-            <td width="45%" align="right">{{ $kec->nama_kec }}, {{ $tgl }}</td>
+            <td width="45%" align="right">
+                @if (Session::get('jenis_akun') == 8)
+                    {{ $kab->nama_kab }},
+                @else
+                    {{ $kec->nama_kec }},
+                @endif
+                {{ $tgl }}
+            </td>
         </tr>
         <tr>
             <td>Lampiran</td>
@@ -66,12 +73,15 @@
             <td align="center">
                 <div>{!! $nama_usaha !!} {{ $kec->nama_kec }}</div>
                 <div>
-                    @if ($dir_utama)
+                    @if (Session::get('jenis_akun') == 8)
+                        Ketua,
+                    @elseif ($dir_utama)
                         {{ $dir_utama->j->nama_jabatan }},
                     @else
                         {{ $dir->j->nama_jabatan }},
                     @endif
                 </div>
+
                 <br>
                 <br>
                 <br>
