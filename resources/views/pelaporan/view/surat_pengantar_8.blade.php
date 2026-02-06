@@ -125,6 +125,8 @@
                 <div>
                     Tembusan :
                     <ol>
+                        <li>Kepala Dinas Koperasi dan UMKM Provinsi Jawa Tengah</li>
+                        <li>Kepala Dinas Koperasi dan UMKM Kabupaten</li>
                         <li>Arsip</li>
                     </ol>
                 </div>
