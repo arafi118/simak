@@ -321,15 +321,20 @@ class PelaporanController extends Controller
             ['lokasi', Session::get('lokasi')],
         ])->first();
 
-        $view = view('pelaporan.view.surat_pengantar', $data)->render();
+           
+        $viewName = 'pelaporan.view.surat_pengantar';
+
+        if ((int) $data['usaha']->jenis_akun === 8) {
+            $viewName = 'pelaporan.view.surat_pengantar_8';
+        }
+
+        $view = view($viewName, $data)->render();
 
         if ($data['type'] == 'pdf') {
-            $pdf = PDF::loadHTML($view);
-
-            return $pdf->stream();
-        } else {
-            return $view;
+            return PDF::loadHTML($view)->stream();
         }
+
+        return $view;
     }
 
     private function neraca(array $data)
