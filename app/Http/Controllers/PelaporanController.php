@@ -281,20 +281,15 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-        // PILIH VIEW COVER
-        $viewName = 'pelaporan.view.cover';
-
-        if ((int) $data['usaha']->jenis_akun === 8) {
-            $viewName = 'pelaporan.view.cover_8';
-        }
-
-        $view = view($viewName, $data)->render();
+       $view = view('pelaporan.view.cover', $data)->render();
 
         if ($data['type'] == 'pdf') {
-            return PDF::loadHTML($view)->stream();
-        }
+            $pdf = PDF::loadHTML($view);
 
-        return $view;
+            return $pdf->stream();
+        } else {
+            return $view;
+        }
     }
 
     private function surat_pengantar(array $data)
@@ -326,20 +321,15 @@ class PelaporanController extends Controller
             ['lokasi', Session::get('lokasi')],
         ])->first();
 
-         
-        $viewName = 'pelaporan.view.surat_pengantar';
-
-        if ((int) $data['usaha']->jenis_akun === 8) {
-            $viewName = 'pelaporan.view.surat_pengantar_8';
-        }
-
-        $view = view($viewName, $data)->render();
+        $view = view('pelaporan.view.surat_pengantar', $data)->render();
 
         if ($data['type'] == 'pdf') {
-            return PDF::loadHTML($view)->stream();
-        }
+            $pdf = PDF::loadHTML($view);
 
-        return $view;
+            return $pdf->stream();
+        } else {
+            return $view;
+        }
     }
 
     private function neraca(array $data)
