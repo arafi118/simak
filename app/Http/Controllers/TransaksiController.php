@@ -1575,47 +1575,79 @@ class TransaksiController extends Controller
 
     public function rekening($id)
     {
-        $jenis_transaksi = JenisTransaksi::where('id', $id)->firstOrFail();
         $label1 = 'Pilih Sumber Dana';
 
-        // 🔑 penentu rekening / accounts
+        // penentu rekening / accounts
         $akunModel = Session::get('jenis_akun') == 7
             ? Accounts::class
             : Rekening::class;
 
-        if ($id == 1) {
+        // 1. MENAMBAH ASET
+        if ($id == 1 && $akunModel === Accounts::class) {
 
-            $rek1 = $akunModel::where(function ($query) {
-                $query->where('lev1', '2')
-                    ->orWhere('lev1', '3')
-                    ->orWhere('lev1', '4');
-            })->orderBy('kode_akun', 'ASC')->get();
+            // sumber dana (kredit)
+            $rek1 = Accounts::where(function ($q) {
+                $q->whereIn('lev1', [2, 3, 4])
+                ->orWhere(function ($q2) {
+                    $q2->where('lev1', 7)
+                        ->where('jenis_mutasi', 'kredit');
+                });
+            })
+            ->orderBy('kode_akun', 'ASC')
+            ->get();
 
-            $rek2 = $akunModel::where('lev1', '1')
+            // disimpan ke aset
+            $rek2 = Accounts::where('lev1', 1)
                 ->orderBy('kode_akun', 'ASC')
                 ->get();
 
             $label2 = 'Disimpan Ke';
 
-        } elseif ($id == 2) {
+        }
 
-            $rek1 = $akunModel::where(function ($query) {
-                $query->where('lev1', '1')
-                    ->orWhere('lev1', '2');
-            })->orderBy('kode_akun', 'ASC')->get();
+        // 2. ASET KELUAR
+        elseif ($id == 2 && $akunModel === Accounts::class) {
 
-            $rek2 = $akunModel::where(function ($query) {
-                $query->where('lev1', '2')
-                    ->orWhere('lev1', '3')
-                    ->orWhere('lev1', '5');
-            })->orderBy('kode_akun', 'ASC')->get();
+            // sumber dana
+            $rek1 = Accounts::whereIn('lev1', [1, 2])
+                ->orderBy('kode_akun', 'ASC')
+                ->get();
+
+            // keperluan
+            $rek2 = Accounts::where(function ($q) {
+                $q->whereIn('lev1', [5, 6])
+                ->orWhere(function ($q2) {
+                    $q2->where('lev1', 7)
+                        ->where('jenis_mutasi', 'debet');
+                })
+                ->orWhere(function ($q3) {
+                    $q3->where('lev1', 1)
+                        ->where('kode_akun', 'like', '1.1.04.%');
+                });
+            })
+            ->orderBy('kode_akun', 'ASC')
+            ->get();
 
             $label2 = 'Keperluan';
 
-        } elseif ($id == 3) {
+        }
 
-            $rek1 = $akunModel::orderBy('kode_akun', 'ASC')->get();
-            $rek2 = $akunModel::orderBy('kode_akun', 'ASC')->get();
+        // 3. PINDAH SALDO
+        // (BEBAS, HANYA GESER)
+        elseif ($id == 3 && $akunModel === Accounts::class) {
+
+            // tampilkan SEMUA akun
+            $rek1 = Accounts::orderBy('kode_akun', 'ASC')->get();
+            $rek2 = Accounts::orderBy('kode_akun', 'ASC')->get();
+
+            $label2 = 'Disimpan Ke';
+        }
+
+        // FALLBACK REKENING
+        else {
+
+            $rek1 = Rekening::orderBy('kode_akun', 'ASC')->get();
+            $rek2 = Rekening::orderBy('kode_akun', 'ASC')->get();
 
             $label2 = 'Disimpan Ke';
         }
@@ -1623,6 +1655,9 @@ class TransaksiController extends Controller
         return view('transaksi.jurnal_umum.partials.rekening')
             ->with(compact('rek1', 'rek2', 'label1', 'label2'));
     }
+
+
+
 
     public function form()
     {
@@ -1690,7 +1725,7 @@ class TransaksiController extends Controller
                 $keterangan_transaksi = '';
                 if ($jenis_transaksi == 1) {
                     if (!empty($disimpan_ke)) {
-                        $keterangan_transaksi = "Dari " . $rek_sumber->nama_akun . " ke " . $rek_simpan->nama_akun;
+                        $keterangan_transaksi = $rek_sumber->nama_akun . " ke " . $rek_simpan->nama_akun;
                     }
                 } else if ($jenis_transaksi == 2) {
                     if (!empty($disimpan_ke)) {
