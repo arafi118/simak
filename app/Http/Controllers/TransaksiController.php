@@ -1573,58 +1573,108 @@ class TransaksiController extends Controller
         ]);
     }
 
-     public function rekening($id)
+    public function rekening($id)
     {
-        $jenis_transaksi = JenisTransaksi::where('id', $id)->firstOrFail();
         $label1 = 'Pilih Sumber Dana';
 
-        // 🔑 penentu rekening / accounts
-        $akunModel = Session::get('jenis_akun') == 7
-            ? Accounts::class
-            : Rekening::class;
+        $isAccounts = Session::get('jenis_akun') == 7;
 
-        if ($id == 1) {
+        //Accounts
+        if ($isAccounts) {
 
-            $rek1 = $akunModel::where(function ($query) {
-                $query->where('lev1', '2')
-                    ->orWhere('lev1', '3')
-                    ->orWhere('lev1', '4');
-            })->orderBy('kode_akun', 'ASC')->get();
+            // 1. MENAMBAH ASET
+            if ($id == 1) {
 
-            $rek2 = $akunModel::where('lev1', '1')
+                $rek1 = Accounts::where(function ($q) {
+                    $q->whereIn('lev1', [2, 3, 4])
+                    ->orWhere(function ($q2) {
+                        $q2->where('lev1', 7)
+                            ->where('jenis_mutasi', 'kredit');
+                    });
+                })
                 ->orderBy('kode_akun', 'ASC')
                 ->get();
 
-            $label2 = 'Disimpan Ke';
+                $rek2 = Accounts::where('lev1', 1)
+                    ->orderBy('kode_akun', 'ASC')
+                    ->get();
 
-        } elseif ($id == 2) {
+                $label2 = 'Disimpan Ke';
+            }
 
-            $rek1 = $akunModel::where(function ($query) {
-                $query->where('lev1', '1')
-                    ->orWhere('lev1', '2');
-            })->orderBy('kode_akun', 'ASC')->get();
+            // 2. ASET KELUAR
+            elseif ($id == 2) {
 
-            $rek2 = $akunModel::where(function ($query) {
-                $query->where('lev1', '2')
-                    ->orWhere('lev1', '3')
-                    ->orWhere('lev1', '5');
-            })->orderBy('kode_akun', 'ASC')->get();
+                $rek1 = Accounts::whereIn('lev1', [1, 2])
+                    ->orderBy('kode_akun', 'ASC')
+                    ->get();
 
-            $label2 = 'Keperluan';
+                $rek2 = Accounts::where(function ($q) {
+                    $q->whereIn('lev1', [5, 6])
+                    ->orWhere(function ($q2) {
+                        $q2->where('lev1', 7)
+                            ->where('jenis_mutasi', 'debet');
+                    })
+                    ->orWhere(function ($q3) {
+                        $q3->where('lev1', 1)
+                            ->where('kode_akun', 'like', '1.1.04.%');
+                    });
+                })
+                ->orderBy('kode_akun', 'ASC')
+                ->get();
 
-        } elseif ($id == 3) {
+                $label2 = 'Keperluan';
+            }
 
-            $rek1 = $akunModel::orderBy('kode_akun', 'ASC')->get();
-            $rek2 = $akunModel::orderBy('kode_akun', 'ASC')->get();
+            // 3. PINDAH SALDO (BEBAS)
+            elseif ($id == 3) {
 
-            $label2 = 'Disimpan Ke';
+                $rek1 = Accounts::orderBy('kode_akun', 'ASC')->get();
+                $rek2 = Accounts::orderBy('kode_akun', 'ASC')->get();
+
+                $label2 = 'Disimpan Ke';
+            }
+        }
+
+        // REKENING
+        else {
+
+            if ($id == 1) {
+
+                $rek1 = Rekening::whereIn('lev1', [2, 3, 4])
+                    ->orderBy('kode_akun', 'ASC')
+                    ->get();
+
+                $rek2 = Rekening::where('lev1', 1)
+                    ->orderBy('kode_akun', 'ASC')
+                    ->get();
+
+                $label2 = 'Disimpan Ke';
+
+            } elseif ($id == 2) {
+
+                $rek1 = Rekening::whereIn('lev1', [1, 2])
+                    ->orderBy('kode_akun', 'ASC')
+                    ->get();
+
+                $rek2 = Rekening::whereIn('lev1', [2, 3, 5])
+                    ->orderBy('kode_akun', 'ASC')
+                    ->get();
+
+                $label2 = 'Keperluan';
+
+            } elseif ($id == 3) {
+
+                $rek1 = Rekening::orderBy('kode_akun', 'ASC')->get();
+                $rek2 = Rekening::orderBy('kode_akun', 'ASC')->get();
+
+                $label2 = 'Disimpan Ke';
+            }
         }
 
         return view('transaksi.jurnal_umum.partials.rekening')
             ->with(compact('rek1', 'rek2', 'label1', 'label2'));
     }
-
-
 
 
     public function form()
