@@ -325,6 +325,7 @@ class Keuangan
     public function saldoAwal($tgl_kondisi, $kode_akun)
     {
         $thn_kondisi = explode('-', $tgl_kondisi)[0];
+
         $saldo = Saldo::where([
             ['tahun', $thn_kondisi],
             ['bulan', '0'],
@@ -332,10 +333,11 @@ class Keuangan
         ])->first();
 
         return [
-            'debit' => floatval($saldo->debit),
-            'kredit' => floatval($saldo->kredit)
+            'debit'  => floatval($saldo->debit ?? 0),
+            'kredit' => floatval($saldo->kredit ?? 0)
         ];
     }
+
 
     public function saldoPerBulan($tgl_kondisi, $kode_akun)
     {
