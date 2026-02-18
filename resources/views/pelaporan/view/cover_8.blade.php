@@ -10,29 +10,37 @@
             margin: 30px;
         }
 
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ================= BLOK KANAN ATAS ================= */
         .right-box {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            text-align: center;
+            text-align: right;
         }
 
         .right-box h1,
         .right-box h2,
         .right-box h3 {
-            margin: 4px 0;
+            margin: 6px 0;
             white-space: nowrap;
         }
 
         .logo {
-            margin-top: 6px;
+            margin-top: -5px;
+            /* kecilkan jarak supaya naik */
+            text-align: center;
+            /* pastikan center */
         }
 
         .logo img {
-            display: block;
-            margin: 0 auto;
-
+            display: inline-block;
         }
 
         /* ================= GRAFIK BAWAH ================= */
@@ -54,12 +62,14 @@
             font-size: 0;
         }
 
+        /* GROUP */
         .group {
             display: inline-block;
             vertical-align: bottom;
             margin-left: 51px;
         }
 
+        /* ANGKA DI ATAS BATANG */
         .bar-value {
             position: absolute;
             bottom: 100%;
@@ -75,6 +85,7 @@
             white-space: nowrap;
         }
 
+        /* WRAP BATANG */
         .bar-wrap {
             position: relative;
             display: inline-block;
@@ -85,6 +96,7 @@
             margin-right: 6px;
         }
 
+        /* BATANG */
         .bar {
             position: absolute;
             bottom: 0;
@@ -92,6 +104,7 @@
             left: 0;
             width: 29px;
         }
+
 
         .yellow {
             background: #fbff00;
@@ -113,6 +126,7 @@
             background: #f57c00;
         }
 
+        /* ================= FOOTER GRAFIK ================= */
         .graphic-base {
             position: absolute;
             bottom: 0;
