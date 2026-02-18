@@ -281,15 +281,19 @@ class PelaporanController extends Controller
             $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
         }
 
-       $view = view('pelaporan.view.cover', $data)->render();
+        $viewName = 'pelaporan.view.cover';
+
+        if ((int) $data['usaha']->jenis_akun === 8) {
+            $viewName = 'pelaporan.view.cover_8';
+        }
+
+        $view = view($viewName, $data)->render();
 
         if ($data['type'] == 'pdf') {
-            $pdf = PDF::loadHTML($view);
-
-            return $pdf->stream();
-        } else {
-            return $view;
+            return PDF::loadHTML($view)->stream();
         }
+
+        return $view;
     }
 
     private function surat_pengantar(array $data)
