@@ -33,10 +33,10 @@
         }
 
         .logo {
-            margin-top: -15px;
+            margin-top: -10px;
             /* naikkan lagi supaya lebih dekat */
             text-align: right;
-            padding-right: 40px;
+            padding-right: 60px;
             /* geser lebih ke kiri */
         }
 
