@@ -33,16 +33,17 @@
         }
 
         .logo {
-            margin-top: -5px;
+            margin-top: -15px;
+            /* naikkan lagi supaya lebih dekat */
             text-align: right;
-            padding-right: 20px;
-            /* geser sedikit lagi */
+            padding-right: 40px;
+            /* geser lebih ke kiri */
         }
-
 
         .logo img {
             display: inline-block;
         }
+
 
         /* ================= GRAFIK BAWAH ================= */
         .graphic-wrap {
