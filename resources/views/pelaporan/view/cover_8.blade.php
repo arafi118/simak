@@ -34,10 +34,11 @@
 
         .logo {
             margin-top: -5px;
-            /* kecilkan jarak supaya naik */
-            text-align: center;
-            /* pastikan center */
+            text-align: right;
+            padding-right: 20px;
+            /* geser sedikit lagi */
         }
+
 
         .logo img {
             display: inline-block;
