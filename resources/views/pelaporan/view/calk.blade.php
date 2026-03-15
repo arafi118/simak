@@ -371,15 +371,16 @@
             </div>
             <ol>
                 <li>
-                    Total Laba bersih Rp. .....................
+                    Total Laba bersih Rp.
+                    {{ Session::get('lokasi') == '3' ? number_format(26723134.0, 2) : '.....................' }}
                 </li>
                 <li>
                     Alokasi penambahan modal {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} Rp.
-                    .................
+                    {{ Session::get('lokasi') == '3' ? number_format(0, 2) : '.....................' }}
                 </li>
                 <li>
                     Alokasi PADes {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} Rp.
-                    .................
+                    {{ Session::get('lokasi') == '3' ? number_format(268500000, 2) : '.....................' }}
                 </li>
             </ol>
         </li>
