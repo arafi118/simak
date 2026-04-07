@@ -26,6 +26,16 @@ class Rekening extends Model
         }
     }
 
+    protected static function booted()
+    {
+        static::addGlobalScope('aktif', function ($builder) {
+            $builder->where(function ($query) {
+                $query->whereNull('tgl_nonaktif')
+                    ->orWhere('tgl_nonaktif', '>', date('Y-m-d'));
+            });
+        });
+    }
+
     // public function __construct()
     // {
     //     $this->table = 'rekening_' . Session::get('lokasi');
