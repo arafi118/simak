@@ -371,25 +371,92 @@
                     Adapun hasil keputusan pembagian laba tahun buku {{ $tahun }} adalah sebagai berikut:
                 @else
                     Pembagian laba {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} ditentukan
-                    dalam
-                    rapat pertanggungjawaban Musyawarah Antar Desa (MAD).
+                    dalam rapat pertanggungjawaban Musyawarah Antar Desa (MAD).
                     Adapun hasil keputusan pembagian laba tahun buku {{ $tahun }} adalah sebagai berikut:
                 @endif
             </div>
-            <ol>
-                <li>
-                    Total Laba bersih Rp.
-                    {{ Session::get('lokasi') == '3' ? number_format(26723134.0, 2) : '.....................' }}
-                </li>
-                <li>
-                    Alokasi penambahan modal {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} Rp.
-                    {{ Session::get('lokasi') == '3' ? number_format(0, 2) : '.....................' }}
-                </li>
-                <li>
-                    Alokasi PADes {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} Rp.
-                    {{ Session::get('lokasi') == '3' ? number_format(268500000, 2) : '.....................' }}
-                </li>
-            </ol>
+
+            @php
+                $pades = 0;
+                $diklat = 0;
+                $sosial = 0;
+                $bonus = 0;
+
+                foreach ($akun1 as $lev1) {
+                    foreach ($lev1->akun2 as $lev2) {
+                        foreach ($lev2->akun3 as $lev3) {
+                            foreach ($lev3->rek as $rek) {
+                                $saldo = $keuangan->komSaldo($rek);
+
+                                if ($rek->kode_akun == '2.1.01.01') {
+                                    $pades += $saldo;
+                                }
+                                if ($rek->kode_akun == '2.1.01.02') {
+                                    $diklat += $saldo;
+                                }
+                                if ($rek->kode_akun == '2.1.01.03') {
+                                    $sosial += $saldo;
+                                }
+                                if ($rek->kode_akun == '2.1.01.04') {
+                                    $bonus += $saldo;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $laba_bersih = $keuangan->laba_rugi($tahun - 1 . '-12-31');
+                $penambahan_modal = $laba_bersih - ($pades + $diklat + $sosial + $bonus);
+            @endphp
+
+            @if (Session::get('lokasi') == 4 && $bulan >= 2)
+                {{-- LOKASI 4 (Feb–Des) --}}
+                <ol>
+                    <li>
+                        Total Laba bersih Rp. {{ number_format($laba_bersih, 2) }}
+                    </li>
+
+                    <li>
+                        Penambahan Modal Rp.
+                        {{ number_format($penambahan_modal, 2) }}
+                    </li>
+
+                    <li>
+                        Utang Dividen Kelurahan Rp. {{ number_format($pades, 2) }}
+                    </li>
+
+                    <li>
+                        Alokasi Diklat Rp. {{ number_format($diklat, 2) }}
+                    </li>
+
+                    <li>
+                        Alokasi Dana Sosial Rp. {{ number_format($sosial, 2) }}
+                    </li>
+
+                    <li>
+                        Bonus Pengurus Rp. {{ number_format($bonus, 2) }}
+                    </li>
+                </ol>
+            @elseif (Session::get('lokasi') == 3)
+                {{-- LOKASI 3 --}}
+                <ol>
+                    <li>
+                        Total Laba bersih Rp.
+                        {{ number_format(26723134.0, 2) }}
+                    </li>
+
+                    <li>
+                        Alokasi penambahan modal {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }}
+                        Rp.
+                        {{ number_format(0, 2) }}
+                    </li>
+
+                    <li>
+                        Alokasi PADes {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} Rp.
+                        {{ number_format(268500000, 2) }}
+                    </li>
+                </ol>
+            @endif
         </li>
 
         @if ($keterangan)
