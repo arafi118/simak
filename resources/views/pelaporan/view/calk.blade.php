@@ -368,7 +368,7 @@
                 @if (Session::get('lokasi') == 4)
                     Pembagian laba {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }}
                     dalam rapat/musyawarah desa/musyawarah kalurahan.
-                    Adapun hasil keputusan pembagian laba tahun buku {{ $tahun }} adalah sebagai berikut:
+                    Adapun hasil keputusan pembagian laba tahun buku {{ $tahun - 1}} adalah sebagai berikut:
                 @else
                     Pembagian laba {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} ditentukan
                     dalam rapat pertanggungjawaban Musyawarah Antar Desa (MAD).
