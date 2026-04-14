@@ -368,7 +368,7 @@
                 @if (Session::get('lokasi') == 4)
                     Pembagian laba {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }}
                     dalam rapat/musyawarah desa/musyawarah kalurahan.
-                    Adapun hasil keputusan pembagian laba tahun buku {{ $tahun - 1}} adalah sebagai berikut:
+                    Adapun hasil keputusan pembagian laba tahun buku {{ $tahun - 1 }} adalah sebagai berikut:
                 @else
                     Pembagian laba {{ str_ireplace(['<br>', '<br/>', '<br />'], ' ', $usaha->nama_usaha) }} ditentukan
                     dalam rapat pertanggungjawaban Musyawarah Antar Desa (MAD).
@@ -382,30 +382,16 @@
                 $sosial = 0;
                 $bonus = 0;
 
-                foreach ($akun1 as $lev1) {
-                    foreach ($lev1->akun2 as $lev2) {
-                        foreach ($lev2->akun3 as $lev3) {
-                            foreach ($lev3->rek as $rek) {
-                                $saldo = $keuangan->komSaldo($rek);
+                //  ambil langsung dari transaksi
+                $pembagian = $keuangan->getPembagianLabaAll($tahun);
 
-                                if ($rek->kode_akun == '2.1.01.01') {
-                                    $pades += $saldo;
-                                }
-                                if ($rek->kode_akun == '2.1.01.02') {
-                                    $diklat += $saldo;
-                                }
-                                if ($rek->kode_akun == '2.1.01.03') {
-                                    $sosial += $saldo;
-                                }
-                                if ($rek->kode_akun == '2.1.01.04') {
-                                    $bonus += $saldo;
-                                }
-                            }
-                        }
-                    }
-                }
+                $pades = $pembagian['2.1.01.01'] ?? 0;
+                $diklat = $pembagian['2.1.01.02'] ?? 0;
+                $sosial = $pembagian['2.1.01.03'] ?? 0;
+                $bonus = $pembagian['2.1.01.04'] ?? 0;
 
                 $laba_bersih = $keuangan->laba_rugi($tahun - 1 . '-12-31');
+
                 $penambahan_modal = $laba_bersih - ($pades + $diklat + $sosial + $bonus);
             @endphp
 

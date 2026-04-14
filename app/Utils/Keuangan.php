@@ -212,6 +212,18 @@ class Keuangan
 
         return $saldo;
     }
+    public function getPembagianLabaAll($tahun)
+    {
+        $lokasi = session('lokasi');
+        $tabel = 'transaksi_' . $lokasi;
+
+        return DB::table($tabel)
+            ->select('rekening_kredit', DB::raw('SUM(jumlah) as total'))
+            ->whereYear('tgl_transaksi', $tahun)
+            ->where('rekening_kredit', 'like', '2.1.01.%')
+            ->groupBy('rekening_kredit')
+            ->pluck('total', 'rekening_kredit');
+    }
 
     public function saldoBulanIni($rek)
     {
