@@ -1099,16 +1099,23 @@ class Keuangan
             ];
 
             //persediaan
-            if ($acc->kode_akun === '1.1.03.01') {
-                $data['persediaan_awal']  = $debit_awal - $kredit_awal;
-                $data['persediaan_akhir'] = $saldo;
+           if (str_starts_with($acc->kode_akun, '1.1.03')) {
+                // hanya untuk 1.1.03.01 tetap jadi acuan awal/akhir
+                if ($acc->kode_akun === '1.1.03.01') {
+                    $data['persediaan_awal']  = $debit_awal - $kredit_awal;
+                    $data['persediaan_akhir'] = $saldo;
+                }
 
                 $data['sections']['pembelian'][] = $row;
                 continue;
             }
-
             //akun yang tidak ditampilkan
-            if (in_array($acc->kode_akun, ['4.1.01.04', '5.1.01.01'])) {
+           if (in_array($acc->kode_akun, ['4.1.01.04'])) {
+                continue;
+            }
+            
+            if ($acc->kode_akun === '5.1.01.01') {
+                $data['sections']['pembelian'][] = $row;
                 continue;
             }
 
