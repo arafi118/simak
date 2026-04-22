@@ -1047,7 +1047,7 @@ class Keuangan
         $accounts = Accounts::with([
             'saldo' => fn ($q) => $q->where('tahun', $tahun)->where('bulan', 0),
             'kom_saldo' => fn ($q) => $q->where('tahun', $tahun)
-                ->whereIn('bulan', [$bulan - 1, $bulan]),
+                ->where('bulan', $bulan)
         ])->orderBy('kode_akun')->get();
 
         $data = [
@@ -1082,7 +1082,8 @@ class Keuangan
             //hitung saldo
             if (
                 str_starts_with($acc->kode_akun, '4') ||
-                str_starts_with($acc->kode_akun, '7')
+                str_starts_with($acc->kode_akun, '7.1') ||
+                str_starts_with($acc->kode_akun, '7.2')
             ) {
                 $saldo = ($kredit_awal - $debit_awal)
                        + ($kredit_mutasi - $debit_mutasi);
