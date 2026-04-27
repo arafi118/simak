@@ -95,9 +95,9 @@
         {{-- PENJUALAN --}}
         @foreach ($penjualan as $acc)
             <tr>
-                <td class="l b">{{ $acc['kode_akun'] }}</td>
-                <td class="l b r">{{ $acc['nama'] }}</td>
-                <td class="b r" align="right">{{ formatKurung($acc['saldo']) }}</td>
+                <td class="l b" width="8%">{{ $acc['kode_akun'] }}</td>
+                <td class="l b r" width="60%">{{ $acc['nama'] }}</td>
+                <td class="b r" width="18%" align="right">{{ formatKurung($acc['saldo']) }}</td>
             </tr>
         @endforeach
 
