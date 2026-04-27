@@ -1046,50 +1046,44 @@ class Keuangan
     {
         $accounts = Accounts::with([
             'saldo' => fn ($q) => $q->where('tahun', $tahun)->where('bulan', 0),
-            'kom_saldo' => fn ($q) => $q->where('tahun', $tahun)
-                ->where('bulan', $bulan)
+            'kom_saldo' => fn ($q) => $q->where('tahun', $tahun)->where('bulan', $bulan)
         ])->orderBy('kode_akun')->get();
 
         $data = [
             'sections' => [
                 'penjualan'            => [],
                 'pembelian'            => [],
+                'persediaan'           => [],
                 'pendapatan_lain'      => [],
                 'beban_operasional'    => [],
                 'pendapatan_non_usaha' => [],
                 'beban_non_usaha'      => [],
                 'beban_pajak'          => [],
             ],
-            'persediaan_awal'  => 0,
-            'persediaan_akhir' => 0,
+
+            'persediaan_awal'       => 0,
+            'persediaan_akhir'      => 0,
+            'pembelian_persediaan'  => 0, // G
+            'potongan_pembelian'    => 0, // H
         ];
 
         foreach ($accounts as $acc) {
 
-            //saldo awal
             $debit_awal  = $acc->saldo->debit  ?? 0;
             $kredit_awal = $acc->saldo->kredit ?? 0;
 
-            //mutasi
-            $debit_mutasi  = 0;
-            $kredit_mutasi = 0;
+            $debit_mutasi  = $acc->kom_saldo->sum('debit');
+            $kredit_mutasi = $acc->kom_saldo->sum('kredit');
 
-            foreach ($acc->kom_saldo as $m) {
-                $debit_mutasi  += $m->debit;
-                $kredit_mutasi += $m->kredit;
-            }
-
-            //hitung saldo
+            // HITUNG SALDO
             if (
                 str_starts_with($acc->kode_akun, '4') ||
                 str_starts_with($acc->kode_akun, '7.1') ||
                 str_starts_with($acc->kode_akun, '7.2')
             ) {
-                $saldo = ($kredit_awal - $debit_awal)
-                       + ($kredit_mutasi - $debit_mutasi);
+                $saldo = ($kredit_awal - $debit_awal) + ($kredit_mutasi - $debit_mutasi);
             } else {
-                $saldo = ($debit_awal - $kredit_awal)
-                       + ($debit_mutasi - $kredit_mutasi);
+                $saldo = ($debit_awal - $kredit_awal) + ($debit_mutasi - $kredit_mutasi);
             }
 
             $row = [
@@ -1098,66 +1092,84 @@ class Keuangan
                 'saldo'     => $saldo,
             ];
 
-            //persediaan
-          if (str_starts_with($acc->kode_akun, '1.1.03')) {
+            // PERSEDIAAN (F & K)
+            if (str_starts_with($acc->kode_akun, '1.1.03')) {
 
-                // saldo akhir (tetap seperti kamu sekarang)
-                $saldo_persediaan = $debit_mutasi - $kredit_mutasi;
+                $saldo_awal  = $debit_awal - $kredit_awal;
+                $saldo_akhir = $saldo_awal + ($debit_mutasi - $kredit_mutasi);
 
-                //   (akumulasi semua persediaan awal)
-                $data['persediaan_awal'] += ($debit_awal - $kredit_awal);
-
-                
-                if ($acc->kode_akun === '1.1.03.01') {
-                    $data['persediaan_akhir'] = $saldo_persediaan;
-                }
-
-                $data['sections']['pembelian'][] = [
-                    'kode_akun' => $acc->kode_akun,
-                    'nama'      => $acc->nama_akun,
-                    'saldo'     => $saldo_persediaan,
-                ];
+                $data['persediaan_awal']  += $saldo_awal;
+                $data['persediaan_akhir'] += $saldo_akhir;
 
                 continue;
             }
-            //akun yang tidak ditampilkan
-           if (in_array($acc->kode_akun, ['4.1.01.04'])) {
+
+            // PENJUALAN (A,B,C,D)
+            if (in_array($acc->kode_akun, [
+                '4.1.01.01',
+                '4.1.01.02',
+                '4.1.01.03',
+                '4.1.01.06',
+            ])) {
+                $data['sections']['penjualan'][] = $row;
                 continue;
             }
 
-            if ($acc->kode_akun === '5.1.01.01') {
-                $data['sections']['pembelian'][] = $row;
-                continue;
-            }
-
-            //MAPPING
+            // PENDAPATAN LAIN
             if ($acc->kode_akun === '4.1.01.05') {
                 $data['sections']['pendapatan_lain'][] = $row;
+                continue;
+            }
 
-            } elseif (str_starts_with($acc->kode_akun, '4.1')) {
-                $data['sections']['penjualan'][] = $row;
+            // PEMBELIAN (G & H )
+            if (in_array($acc->kode_akun, [
+                '5.1.01.01',
+                '5.1.01.02',
+                '5.1.01.03',
+                '5.1.01.04',
+                '5.1.01.05',
+                '5.1.01.06',
+            ])) {
 
-            } elseif (str_starts_with($acc->kode_akun, '5.1')) {
+                // G = hanya pembelian utama
+                if ($acc->kode_akun === '5.1.01.01') {
+                    $data['pembelian_persediaan'] += $saldo;
+                } 
+                // H = SEMUA SELAIN ITU (sesuai excel)
+                else {
+                    $data['potongan_pembelian'] += abs($saldo);
+                }
+
                 $data['sections']['pembelian'][] = $row;
+                continue;
+            }
 
-            } elseif (str_starts_with($acc->kode_akun, '6.')) {
+            // BEBAN
+            if (str_starts_with($acc->kode_akun, '6.')) {
                 $data['sections']['beban_operasional'][] = $row;
+                continue;
+            }
 
-            } elseif (
-                str_starts_with($acc->kode_akun, '7.1') ||
-                str_starts_with($acc->kode_akun, '7.2')
-            ) {
+            if (str_starts_with($acc->kode_akun, '7.1') || str_starts_with($acc->kode_akun, '7.2')) {
                 $data['sections']['pendapatan_non_usaha'][] = $row;
+                continue;
+            }
 
-            } elseif (str_starts_with($acc->kode_akun, '7.3')) {
+            if (str_starts_with($acc->kode_akun, '7.3')) {
                 $data['sections']['beban_non_usaha'][] = $row;
+                continue;
+            }
 
-            } elseif (str_starts_with($acc->kode_akun, '7.4')) {
+            if (str_starts_with($acc->kode_akun, '7.4')) {
                 $data['sections']['beban_pajak'][] = $row;
+                continue;
             }
         }
 
+        // I = G - H
+        $data['total_pembelian'] =
+            $data['pembelian_persediaan'] - $data['potongan_pembelian'];
+
         return $data;
     }
-
 }
