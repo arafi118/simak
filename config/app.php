@@ -168,7 +168,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        // Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Clockwork\Support\Laravel\ClockworkServiceProvider::class,
