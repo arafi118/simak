@@ -271,14 +271,14 @@ class PelaporanController extends Controller
         $bln = $data['bulan'];
         $hari = $data['hari'];
 
-        $tgl = $thn . '-' . $bln . '-' . $hari;
+        $tgl = $thn.'-'.$bln.'-'.$hari;
 
         $data['tgl'] = $tgl;
         $data['judul'] = 'Laporan Keuangan';
-        $data['sub_judul'] = 'Tahun ' . Tanggal::tahun($tgl);
+        $data['sub_judul'] = 'Tahun '.Tanggal::tahun($tgl);
 
         if ($data['bulanan']) {
-            $data['sub_judul'] = 'Bulan ' . Tanggal::namaBulan($tgl) . ' ' . Tanggal::tahun($tgl);
+            $data['sub_judul'] = 'Bulan '.Tanggal::namaBulan($tgl).' '.Tanggal::tahun($tgl);
         }
 
         $viewName = 'pelaporan.view.cover';
@@ -320,12 +320,11 @@ class PelaporanController extends Controller
         }
 
         $data['dir_utama'] = User::where([
-            ['level', '2'],
-            ['jabatan', '65'],
+            ['level', '1'],
+            ['jabatan', '7'],
             ['lokasi', Session::get('lokasi')],
         ])->first();
 
-           
         $viewName = 'pelaporan.view.surat_pengantar';
 
         if ((int) $data['usaha']->jenis_akun === 8) {
