@@ -86,7 +86,7 @@
                 </div>
             </td>
         </tr>
-        {{-- <tr>
+        <tr>
             <td colspan="3">
                 <div>
                     Tembusan :
@@ -95,6 +95,6 @@
                     </ol>
                 </div>
             </td>
-        </tr> --}}
+        </tr>
     </table>
 @endsection
