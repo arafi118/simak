@@ -21,7 +21,10 @@ services:
             - app
         networks:
             - akubumdes-network
+            - web-network
 
 networks:
     akubumdes-network:
         driver: bridge
+    web-network:
+        external: true
