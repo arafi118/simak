@@ -19,3 +19,5 @@ jobs:
             cd /home/enpii/apps/akubumdes
             git pull origin master
             docker compose up -d --build
+            docker compose exec app composer install
+            docker compose exec app php artisan optimize:clear
