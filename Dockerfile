@@ -28,11 +28,14 @@ WORKDIR /var/www/html
 # Copy composer files first for better caching
 COPY composer.json composer.lock* ./
 
-# Install PHP dependencies
-RUN composer install
+# Install PHP dependencies without scripts and autoloader first
+RUN composer install --no-interaction --no-plugins --no-scripts --no-dev --prefer-dist
 
 # Copy the rest of the application
 COPY . /var/www/html
+
+# Generate autoloader and run scripts now that files are present
+RUN composer dump-autoload --optimize --no-dev
 
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
