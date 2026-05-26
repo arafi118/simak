@@ -12,7 +12,6 @@ storage/logs/*.log
 public/build
 Dockerfile
 docker-compose.yml
-docker
 README.md
 phpunit.xml
 tests
